@@ -1,0 +1,330 @@
+version: '3.9'
+
+services:
+  postgres01:
+    container_name: postgres01
+    image: postgres:17.0-alpine3.20
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=core_db
+    ports:
+      - "5432:5432"
+    networks:
+      - bank-network
+    volumes:
+      - postgres01-volume:/var/lib/postgresql/data
+  
+  postgres02:
+    container_name: postgres02
+    image: postgres:17.0-alpine3.20
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=auth_db
+    ports:
+      - "5433:5432"
+    networks:
+      - bank-network
+    volumes:
+      - postgres02-volume:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7.4-alpine3.20
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - bank-network
+    volumes:
+      - redis-volume:/data
+
+networks:
+  bank-network:
+    driver: bridge
+  monitor-network:
+    driver: bridge
+
+volumes:
+  postgres01-volume:
+  postgres02-volume:
+  redis-volume:
+
+
+  # traefik:
+  #   container_name: traefik
+  #   image: traefik:v3.1
+  #   restart: unless-stopped
+  #   command:
+  #     - "--api.insecure=true"
+  #     - "--api.dashboard=true"
+  #     - "--providers.docker=true"
+  #     - "--providers.docker.exposedbydefault=false"
+  #     - "--entryPoints.traefik.address=:80"                           # Traefik Dashboard
+  #     - "--entryPoints.manage-service-web.address=:8080"              # HTTP Manage Service
+  #     - "--entryPoints.manage-service-rpc.address=:9090"              # gRPC Manage Service
+  #     - "--entryPoints.auth-service-web.address=:8081"                # HTTP Auth Service
+  #     - "--entryPoints.auth-service-rpc.address=:9091"                # gRPC Auth Service
+  #     - "--accesslog.filepath=/var/log/traefik/access.log"
+  #   ports:
+  #     - "80:80"     # Dashboard
+  #     - "8080:8080" # HTTP
+  #     - "9090:9090" # gRPC
+  #     - "8081:8081" # HTTP
+  #     - "9091:9091" # gRPC
+  #     - "8082:8082" # HTTP
+  #     - "9092:9092" # gRPC
+  #   networks:
+  #     - bank-network
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+
+  # manager-service:
+  #   container_name: manager-service
+  #   build:
+  #     context: .
+  #     dockerfile: dockerfiles/Dockerfile.manager
+  #   environment:
+  #     - DB_SOURCE=postgresql://root:secret@postgres:5432/banking_db?sslmode=disable
+  #     - REDIS_ADDRESS=redis:6379
+  #   depends_on:
+  #     - postgres
+  #     - traefik
+  #     - redis
+  #   networks:
+  #     - bank-network
+  #   entrypoint: [ "/app/wait-for.sh", "postgres:5432", "--", "/app/start.sh" ]
+  #   command: [ "/app/main" ]
+
+  # worker-service:
+  #   container_name: worker-service
+  #   build:
+  #     context: .
+  #     dockerfile: dockerfiles/Dockerfile.worker
+  #   environment:
+  #     - DB_SOURCE=postgresql://root:secret@postgres:5432/banking_db?sslmode=disable
+  #     - REDIS_ADDRESS=redis:6379
+  #   depends_on:
+  #     - postgres
+  #     - traefik
+  #     - redis
+  #   networks:
+  #     - bank-network
+  #   entrypoint: [ "/app/wait-for.sh", "postgres:5432", "--", "/app/start.sh" ]
+  #   command: [ "/app/main" ]
+
+  # customer-service:
+  #   container_name: customer-service
+  #   build:
+  #     context: .
+  #     dockerfile: dockerfiles/Dockerfile.customer
+  #   environment:
+  #     - DB_SOURCE=postgresql://root:secret@postgres:5432/banking_db?sslmode=disable
+  #     - REDIS_ADDRESS=redis:6379
+  #   depends_on:
+  #     - postgres
+  #     - traefik
+  #     - redis
+  #   networks:
+  #     - bank-network
+  #   entrypoint: [ "/app/wait-for.sh", "postgres:5432", "--", "/app/start.sh" ]
+  #   command: [ "/app/main" ]
+  #   labels:
+  #     - "traefik.enable=true"
+
+  #     # HTTP routing for customer-service
+  #     # - "traefik.http.routers.api-http.rule=Host(`localhost`)"                      # Routing rule for HTTP
+  #     - "traefik.http.routers.customer-service-http.rule=PathPrefix(`/`)"             # Rule for all HTTP requests
+  #     - "traefik.http.routers.customer-service-http.service=customer-service-http"    # Explicitly link to the HTTP service
+  #     - "traefik.http.routers.customer-service-http.entrypoints=customer-service-web"
+  #     - "traefik.http.services.customer-service-http.loadbalancer.server.port=8080"   # HTTP port for Traefik
+
+  #     # gRPC routing for customer-service
+  #     # - "traefik.http.routers.api-grpc.rule=Host(`localhost`)"                     # Routing rule for gRPC
+  #     - "traefik.http.routers.customer-service-grpc.rule=PathPrefix(`/`)"            # Rule for all gRPC requests
+  #     - "traefik.http.routers.customer-service-grpc.service=customer-service-grpc"   # Explicitly link to the gRPC service
+  #     - "traefik.http.routers.customer-service-grpc.entrypoints=customer-service-rpc"
+  #     - "traefik.http.services.customer-service-grpc.loadbalancer.server.scheme=h2c" 
+  #     - "traefik.http.services.customer-service-grpc.loadbalancer.server.port=9090"  # gRPC port for Traefik
+  #   # deploy:
+  #   #   resources:
+  #   #     limits:
+  #   #       cpus: "1.0"
+  #   #       memory: "2G"
+  #   #     reservations:
+  #   #       cpus: "0.5"
+  #   #       memory: "512M"
+
+  # auth-service:
+  #   container_name: auth-service
+  #   build:
+  #     context: .
+  #     dockerfile: dockerfiles/Dockerfile.auth
+  #   environment:
+  #     - DB_SOURCE=postgresql://root:secret@postgres:5432/banking_db?sslmode=disable
+  #     - REDIS_ADDRESS=redis:6379
+  #   depends_on:
+  #     - postgres
+  #     - traefik
+  #     - redis
+  #   networks:
+  #     - bank-network
+  #   entrypoint: [ "/app/wait-for.sh", "postgres:5432", "--", "/app/start.sh" ]
+  #   command: [ "/app/main" ]
+  #   labels:
+  #     - "traefik.enable=true"
+
+  #     # HTTP routing for auth-service
+  #     # - "traefik.http.routers.auth-service-http.rule=Host(`localhost`)"        # Routing rule for HTTP
+  #     - "traefik.http.routers.auth-service-http.rule=PathPrefix(`/`)"            # Rule for all HTTP requests
+  #     - "traefik.http.routers.auth-service-http.service=auth-service-http"       # Explicitly link to the HTTP service
+  #     - "traefik.http.routers.auth-service-http.entrypoints=auth-service-web"
+  #     - "traefik.http.services.auth-service-http.loadbalancer.server.port=8081"  # HTTP port for Traefik
+
+  #     # gRPC routing for auth-service
+  #     # - "traefik.http.routers.auth-service-grpc.rule=Host(`localhost`)"        # Routing rule for gRPC
+  #     - "traefik.http.routers.auth-service-grpc.rule=PathPrefix(`/`)"            # Rule for all gRPC requests
+  #     - "traefik.http.routers.auth-service-grpc.service=auth-service-grpc"       # Explicitly link to the gRPC service
+  #     - "traefik.http.routers.auth-service-grpc.entrypoints=auth-service-rpc"
+  #     - "traefik.http.services.auth-service-grpc.loadbalancer.server.scheme=h2c" 
+  #     - "traefik.http.services.auth-service-grpc.loadbalancer.server.port=9091"  # gRPC port for Traefik
+  #   # deploy:
+  #   #   resources:
+  #   #     limits:
+  #   #       cpus: "1.0"
+  #   #       memory: "2G"
+  #   #     reservations:
+  #   #       cpus: "0.5"
+  #   #       memory: "512M"
+
+
+  # account-service:
+  #   # container_name: account-service
+  #   build:
+  #     context: .
+  #     dockerfile: dockerfiles/Dockerfile.account
+  #   environment:
+  #     - DB_SOURCE=postgresql://root:secret@postgres:5432/banking_db?sslmode=disable
+  #     - REDIS_ADDRESS=redis:6379
+  #   depends_on:
+  #     - postgres
+  #     - traefik
+  #     - redis
+  #   networks:
+  #     - bank-network
+  #   entrypoint: [ "/app/wait-for.sh", "postgres:5432", "--", "/app/start.sh" ]
+  #   command: [ "/app/main" ]
+  #   labels:
+  #     - "traefik.enable=true"
+
+  #     # HTTP routing for account-service
+  #     # - "traefik.http.routers.account-service-http.rule=Host(`localhost`)"          # Routing rule for HTTP
+  #     - "traefik.http.routers.account-service-http.rule=PathPrefix(`/`)"              # Rule for all HTTP requests
+  #     - "traefik.http.routers.account-service-http.service=account-service-http"      # Explicitly link to the HTTP service
+  #     - "traefik.http.routers.account-service-http.entrypoints=account-service-web"
+  #     - "traefik.http.services.account-service-http.loadbalancer.server.port=8082"    # HTTP port for Traefik
+
+  #     # gRPC routing for account-service
+  #     # - "traefik.http.routers.account-service-grpc.rule=Host(`localhost`)"          # Routing rule for gRPC
+  #     - "traefik.http.routers.account-service-grpc.rule=PathPrefix(`/`)"              # Rule for all gRPC requests
+  #     - "traefik.http.routers.account-service-grpc.service=account-service-grpc"      # Explicitly link to the gRPC service
+  #     - "traefik.http.routers.account-service-grpc.entrypoints=account-service-rpc"
+  #     - "traefik.http.services.account-service-grpc.loadbalancer.server.scheme=h2c" 
+  #     - "traefik.http.services.account-service-grpc.loadbalancer.server.port=9092"    # gRPC port for Traefik
+  #   deploy:
+  #     replicas: 2
+  #     resources:
+  #       limits:
+  #         cpus: "2.0"
+  #         memory: "2G"
+  #       reservations:
+  #         cpus: "0.5"
+  #         memory: "512M"
+
+#   # cAdvisor
+#   cadvisor:
+#     container_name: cadvisor
+#     image: gcr.io/cadvisor/cadvisor:v0.50.0
+#     privileged: true
+#     devices:
+#       - /dev/kmsg:/dev/kmsg
+#     volumes:
+#       - /var/run:/var/run:ro
+#       - /sys:/sys:ro
+#       - /var/lib/docker/:/var/lib/docker:ro
+#       - /var/run/docker.sock:/var/run/docker.sock:ro
+#       - /etc/machine-id:/etc/machine-id:ro
+#       - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro
+#     restart: unless-stopped
+#     ports:
+#       - "8091:8080"  # cAdvisor UI
+#     networks:
+#       - monitor-network
+#     labels:
+#       org.label-schema.group: "monitoring"
+
+#   # Prometheus
+#   prometheus:
+#     image: prom/prometheus:v2.55.0
+#     container_name: prometheus
+#     networks:
+#       - monitor-network
+#     ports:
+#       - 8092:9090
+#     command:
+#       - --config.file=/etc/prometheus/prometheus.yml
+#     volumes:
+#       - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+#     depends_on:
+#       - cadvisor
+    
+#   # Grafana
+#   grafana:
+#     image: grafana/grafana:11.1.8
+#     container_name: grafana
+#     networks:
+#       - monitor-network
+#     ports:
+#       - "3000:3000"  # Grafana UI
+#     environment:
+#       - GF_SECURITY_ADMIN_USER=admin
+#       - GF_SECURITY_ADMIN_PASSWORD=admin 
+#     depends_on:
+#       - prometheus
+
+#   # Loki - Log aggregation
+#   loki:
+#     image: grafana/loki:latest
+#     container_name: loki
+#     ports:
+#       - "3100:3100"  # Loki API
+#     volumes:
+#       - ./config/loki-config.yml:/etc/loki/local-config.yaml  # Cấu hình Loki
+#     networks:
+#       - monitor-network
+
+#   # Promtail - Loki log collector
+#   promtail:
+#     image: grafana/promtail:latest
+#     container_name: promtail
+#     volumes:
+#       - /var/log:/var/log  # Thu thập log từ hệ thống
+#       - ./config/promtail-config.yml:/etc/promtail/config.yml
+#     networks:
+#       - monitor-network
+#     command: -config.file=/etc/promtail/config.yml
+
+#   # Metricbeat - Thu thập metrics hệ thống
+#   metricbeat:
+#     image: docker.elastic.co/beats/metricbeat:7.14.0
+#     container_name: metricbeat
+#     user: root
+#     volumes:
+#       - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+#       - /proc:/hostfs/proc:ro
+#       - /:/hostfs:ro
+#       - ./config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml  # Cấu hình Metricbeat
+#     networks:
+#       - monitor-network

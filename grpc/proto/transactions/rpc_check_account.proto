@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package transaction;
+
+import "manage/account/account.proto";
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/transactions";
+
+message CheckAccountRequest {
+    string acc_number = 1;
+    string currency_type = 2;
+}
+
+message CheckAccountResponse {
+    account.Account account = 1;
+}

@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package transaction;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+import "transactions/rpc_check_account.proto";
+import "transactions/rpc_fast_internal_transfer.proto";
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/transactions";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Core Banking";
+    version: "1.1";
+    contact: {
+      name: "Nguyen Van Tu";
+      url: "https://github.com/tunvx";
+      email: "tunv.todo@gmail.com";
+    };
+  };
+};
+
+service TransactionService {
+    rpc CheckAccount (CheckAccountRequest) returns (CheckAccountResponse) {
+        option (google.api.http) = {
+            post: "/v1/check_account"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to validate account status and currency",
+            summary: "Check Account"
+        };
+    };
+    
+    rpc FastInternalTransfer (FastInternalTransferRequest) returns (FastInternalTransferResponse) {
+        option (google.api.http) = {
+            post: "/v1/fast_internal_transfer"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to perform fast internal transfer money";
+            summary: "Fast internal transfer";
+        };
+    };
+} 

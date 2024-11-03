@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package auth;
+
+import "manage/customer/customer.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/auth";
+
+message LoginCustomerRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message LoginCustomerResponse {
+    customer.Customer customer = 1;
+    string session_id = 2;
+    string access_token = 3;
+    string refresh_token = 4;
+    google.protobuf.Timestamp access_token_expires_at = 5;
+    google.protobuf.Timestamp refresh_token_expires_at = 6;
+}
