@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package customer;
+
+import "manage/customer/customer.proto";
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/manage/customer";
+
+message CreateCustomerRequest {
+    string customer_rid = 1;
+    string fullname = 2;
+    string date_of_birth = 3;
+    string address = 4;
+    string phone_number = 5;
+    string email = 6;
+    string customer_tier = 7;
+    string customer_segment = 8;
+    string financial_status = 9;
+}
+
+message CreateCustomerResponse {
+    Customer customer = 1;   
+}

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package auth;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/auth";
+
+message GenerateTestAccessTokenRequest {}
+
+message GenerateTestAccessTokenResponse {
+    string access_token = 1;
+    google.protobuf.Timestamp access_token_expires_at = 2;
+}

@@ -1,0 +1,205 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Core Banking",
+    "version": "1.1",
+    "contact": {
+      "name": "Nguyen Van Tu",
+      "url": "https://github.com/tunvx",
+      "email": "tunv.todo@gmail.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "TransactionService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/check_account": {
+      "post": {
+        "summary": "Check Account",
+        "description": "Use this API to validate account status and currency",
+        "operationId": "TransactionService_CheckAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/transactionCheckAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/transactionCheckAccountRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TransactionService"
+        ]
+      }
+    },
+    "/v1/fast_internal_transfer": {
+      "post": {
+        "summary": "Fast internal transfer",
+        "description": "Use this API to perform fast internal transfer money",
+        "operationId": "TransactionService_FastInternalTransfer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/transactionFastInternalTransferResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/transactionFastInternalTransferRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TransactionService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "accountAccount": {
+      "type": "object",
+      "properties": {
+        "accountNumber": {
+          "type": "string"
+        },
+        "currentBalance": {
+          "type": "string",
+          "format": "int64"
+        },
+        "currencyType": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string"
+        },
+        "accountStatus": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "transactionCheckAccountRequest": {
+      "type": "object",
+      "properties": {
+        "accNumber": {
+          "type": "string"
+        },
+        "currencyType": {
+          "type": "string"
+        }
+      }
+    },
+    "transactionCheckAccountResponse": {
+      "type": "object",
+      "properties": {
+        "account": {
+          "$ref": "#/definitions/accountAccount"
+        }
+      }
+    },
+    "transactionFastInternalTransferRequest": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "string",
+          "format": "int64"
+        },
+        "senderAccNumber": {
+          "type": "string"
+        },
+        "recipientBankCode": {
+          "type": "string"
+        },
+        "recipientAccNumber": {
+          "type": "string"
+        },
+        "recipientName": {
+          "type": "string"
+        },
+        "currencyType": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "transactionFastInternalTransferResponse": {
+      "type": "object",
+      "properties": {
+        "senderAccount": {
+          "$ref": "#/definitions/accountAccount"
+        },
+        "recipientAccount": {
+          "$ref": "#/definitions/accountAccount"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package auth;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+import "auth/rpc_login_customer.proto";
+import "auth/rpc_create_customer_credential.proto";
+import "auth/rpc_update_customer_credential.proto";
+import "auth/rpc_generate_test_access_token.proto";
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/auth";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Core Banking";
+    version: "1.1";
+    contact: {
+      name: "Nguyen Van Tu";
+      url: "https://github.com/tunvx";
+      email: "tunv.todo@gmail.com";
+    };
+  };
+};
+
+service AuthService {
+    rpc CreateCustomerCredential (CreateCustomerCredentialRequest) returns (CreateCustomerCredentialResponse) {
+        option (google.api.http) = {
+            post: "/v1/create_customer_credential"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to create a customer credential";
+            summary: "Create customer credential";
+        };
+    }; 
+
+    rpc LoginCustomer (LoginCustomerRequest) returns (LoginCustomerResponse) {
+        option (google.api.http) = {
+            post: "/v1/login_customer"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to login user and get access token";
+            summary: "Login user";
+        };
+    };
+
+    rpc UpdateCustomerCredential (UpdateCustomerCredentialRequest) returns (UpdateCustomerCredentialResponse) {
+        option (google.api.http) = {
+            patch: "/v1/update_customer_credential"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to update the customer credential";
+            summary: "Update customer credential";
+        };
+    }; 
+
+    rpc GenerateTestAccessToken (GenerateTestAccessTokenRequest) returns (GenerateTestAccessTokenResponse) {
+        option (google.api.http) = {
+            get: "/v1/generate_test_access_token"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to generate an access token with banker role for testing purposes";
+            summary: "Generate banker role access token";
+        };
+    }
+} 
