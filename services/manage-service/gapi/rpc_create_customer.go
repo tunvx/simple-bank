@@ -8,9 +8,9 @@ import (
 	cuspb "github.com/tunvx/simplebank/grpc/pb/manage/customer"
 	db "github.com/tunvx/simplebank/manage/db/sqlc"
 	"github.com/tunvx/simplebank/manage/gapi/val"
+	"github.com/tunvx/simplebank/notification/redis"
 	errdb "github.com/tunvx/simplebank/pkg/errs/db"
 	errga "github.com/tunvx/simplebank/pkg/errs/gapi"
-	"github.com/tunvx/simplebank/worker"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -43,13 +43,13 @@ func (service *Service) CreateCustomer(ctx context.Context, req *cuspb.CreateCus
 
 		// Important step: Distribute/assign the task of sending verification mail for background worker.
 		AfterCreate: func(custom db.Customer) error {
-			taskPayload := &worker.PayloadSendVerifyEmail{
+			taskPayload := &redis.PayloadSendVerifyEmail{
 				CustomerRid: custom.CustomerRid,
 			}
 			opts := []asynq.Option{
 				asynq.MaxRetry(10),
 				asynq.ProcessIn(10 * time.Second),
-				asynq.Queue(worker.QueueCritical),
+				asynq.Queue(redis.QueueCritical),
 			}
 
 			// Time to distribute/assign the task is very small

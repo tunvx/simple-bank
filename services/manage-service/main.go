@@ -22,10 +22,10 @@ import (
 	pb "github.com/tunvx/simplebank/grpc/pb/manage"
 	db "github.com/tunvx/simplebank/manage/db/sqlc"
 	"github.com/tunvx/simplebank/manage/gapi"
+	"github.com/tunvx/simplebank/notification/redis"
 	"github.com/tunvx/simplebank/pkg/logger"
 	"github.com/tunvx/simplebank/pkg/mail"
 	"github.com/tunvx/simplebank/pkg/util"
-	"github.com/tunvx/simplebank/worker"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -79,7 +79,7 @@ func main() {
 		Addr: config.RedisAddress,
 	}
 
-	taskDistributor := worker.NewRedisTaskDistributor(redisOpt)
+	taskDistributor := redis.NewRedisTaskDistributor(redisOpt)
 
 	waitGroup, ctx := errgroup.WithContext(ctx)
 
@@ -118,7 +118,7 @@ func runTaskProcessor(
 	store db.Store,
 ) {
 	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
-	taskProcessor := worker.NewRedisTaskProcessor(redisOpt, store, mailer)
+	taskProcessor := redis.NewRedisTaskProcessor(redisOpt, store, mailer)
 
 	log.Info().Msgf("start task processor at [::]:%s", strings.Split(redisOpt.Addr, ":")[1])
 	err := taskProcessor.Start()
@@ -143,7 +143,7 @@ func runGrpcServer(
 	waitGroup *errgroup.Group,
 	config util.Config,
 	store db.Store,
-	taskDistributor worker.TaskDistributor,
+	taskDistributor redis.TaskDistributor,
 ) {
 	// Create a new account service
 	accountService, err := gapi.NewService(config, store, taskDistributor)
@@ -199,7 +199,7 @@ func runGatewayServer(
 	waitGroup *errgroup.Group,
 	config util.Config,
 	store db.Store,
-	taskDistributor worker.TaskDistributor,
+	taskDistributor redis.TaskDistributor,
 ) {
 	// Create a new gRPC Gateway server
 	accountService, err := gapi.NewService(config, store, taskDistributor)

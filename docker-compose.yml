@@ -41,6 +41,37 @@ services:
     volumes:
       - redis-volume:/data
 
+  zookeeper:
+    image: bitnami/zookeeper:3.9.3
+    container_name: zookeeper
+    restart: always
+    ports:
+      - "2181:2181"
+    networks:
+      - bank-network
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes  # Enables anonymous login for Zookeeper
+
+  kafka:
+    image: bitnami/kafka:3.6.2
+    container_name: kafka
+    restart: always
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - ALLOW_PLAINTEXT_LISTENER=yes  # Allows plaintext listener for development
+    depends_on:
+      - zookeeper
+    networks:
+      - bank-network
+    volumes:
+      - kafka-data:/bitnami/kafka  # Mount volume for Kafka persistence
+
 networks:
   bank-network:
     driver: bridge
@@ -51,6 +82,7 @@ volumes:
   postgres01-volume:
   postgres02-volume:
   redis-volume:
+  kafka-data:
 
 
   # traefik:
