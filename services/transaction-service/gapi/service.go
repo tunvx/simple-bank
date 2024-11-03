@@ -5,10 +5,10 @@ import (
 
 	pb "github.com/tunvx/simplebank/grpc/pb/transactions"
 	db "github.com/tunvx/simplebank/manage/db/sqlc"
+	worker "github.com/tunvx/simplebank/notification/redis"
 	"github.com/tunvx/simplebank/pkg/token"
 	"github.com/tunvx/simplebank/pkg/util"
 	"github.com/tunvx/simplebank/transactions/cache"
-	"github.com/tunvx/simplebank/worker"
 )
 
 type Service struct {

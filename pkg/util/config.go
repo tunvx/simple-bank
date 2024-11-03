@@ -14,6 +14,7 @@ type Config struct {
 	MigrationURL   string `mapstructure:"MIGRATION_URL"`
 
 	RedisAddress                  string `mapstructure:"REDIS_ADDRESS"`
+	KafkaAddress                  string `mapstructure:"KAFKA_ADDRESS"`
 	HTTPManageServiceAddress      string `mapstructure:"HTTP_MANAGE_SERVICE_ADDRESS"`
 	GRPCManageServiceAddress      string `mapstructure:"GRPC_MANAGE_SERVICE_ADDRESS"`
 	HTTPAuthServiceAddress        string `mapstructure:"HTTP_AUTH_SERVICE_ADDRESS"`

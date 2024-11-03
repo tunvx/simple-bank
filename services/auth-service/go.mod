@@ -3,10 +3,10 @@ module github.com/tunvx/simplebank/auth
 go 1.22.6
 
 replace (
-	github.com/tunvx/simplebank/grpc => ../../grpc
-	github.com/tunvx/simplebank/manage => ../../services/manage-service
 	github.com/tunvx/simplebank/pkg => ../../pkg
+	github.com/tunvx/simplebank/grpc => ../../grpc
 	github.com/tunvx/simplebank/worker => ../../services/worker
+	github.com/tunvx/simplebank/manage => ../../services/manage-service
 )
 
 require (

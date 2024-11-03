@@ -4,9 +4,9 @@ go 1.22.6
 
 replace (
 	github.com/tunvx/simplebank/grpc => ../../grpc
-	github.com/tunvx/simplebank/manage => ../../services/manage-service
 	github.com/tunvx/simplebank/pkg => ../../pkg
-	github.com/tunvx/simplebank/worker => ../../services/worker
+	github.com/tunvx/simplebank/manage => ../../services/manage-service
+	github.com/tunvx/simplebank/notification => ../../services/notification-service
 )
 
 require (
@@ -18,8 +18,8 @@ require (
 	github.com/rs/zerolog v1.33.0
 	github.com/tunvx/simplebank/grpc v0.0.0-00010101000000-000000000000
 	github.com/tunvx/simplebank/manage v0.0.0-00010101000000-000000000000
+	github.com/tunvx/simplebank/notification v0.0.0-00010101000000-000000000000
 	github.com/tunvx/simplebank/pkg v0.0.0-00010101000000-000000000000
-	github.com/tunvx/simplebank/worker v0.0.0-00010101000000-000000000000
 	golang.org/x/sync v0.8.0
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20241021214115-324edc3d5d38
 	google.golang.org/grpc v1.67.1
