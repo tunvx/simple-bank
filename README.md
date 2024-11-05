@@ -7,7 +7,7 @@ Note: Loan and savings features are planned for future releases.
 
 **Banking System Architecture:**
 
-![Architecture Diagram](./simple_bank.jpg)
+![Architecture Diagram](./SimpleBank.jpg)
 
 ### Banking service description
 + Customer Registration: Allows new customers to register, with a background process for email verification.

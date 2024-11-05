@@ -3,6 +3,7 @@ package gapi
 import (
 	"context"
 
+	"github.com/rs/zerolog/log"
 	pb "github.com/tunvx/simplebank/grpc/pb/transactions"
 	db "github.com/tunvx/simplebank/manage/db/sqlc"
 	errga "github.com/tunvx/simplebank/pkg/errs/gapi"
@@ -20,16 +21,16 @@ func (service *Service) FastInternalTransfer(ctx context.Context, req *pb.FastIn
 	}
 
 	// Log the start of the transfer request
-	// log.Info().
-	// 	Int64("user_id", authPayload.UserID).
-	// 	Str("session_id", authPayload.ID.String()).
-	// 	Str("operation", "FastInternalTransfer").
-	// 	Str("role", authPayload.Role).
-	// 	Int64("amount", req.GetAmount()).
-	// 	Str("currency", req.GetCurrencyType()).
-	// 	Str("sender_account", req.GetSenderAccNumber()).
-	// 	Str("recipient_account", req.GetRecipientAccNumber()).
-	// 	Msg("internal transfer initiated")
+	log.Info().
+		Int64("user_id", authPayload.UserID).
+		Str("session_id", authPayload.ID.String()).
+		Str("operation", "FastInternalTransfer").
+		Str("role", authPayload.Role).
+		Int64("amount", req.GetAmount()).
+		Str("currency", req.GetCurrencyType()).
+		Str("sender_account", req.GetSenderAccNumber()).
+		Str("recipient_account", req.GetRecipientAccNumber()).
+		Msg("internal transfer initiated")
 
 	violations := validateFastInternalTransfer(req)
 	if violations != nil {
@@ -72,19 +73,19 @@ func (service *Service) FastInternalTransfer(ctx context.Context, req *pb.FastIn
 	}
 
 	// Log the successful transfer
-	// log.Info().
-	// 	Int64("user_id", authPayload.UserID).
-	// 	Str("session_id", authPayload.ID.String()).
-	// 	Str("operation", "FastInternalTransfer").
-	// 	Str("role", authPayload.Role).
-	// 	Int64("amount", req.GetAmount()).
-	// 	Str("currency", req.GetCurrencyType()).
-	// 	Str("sender_account", req.GetSenderAccNumber()).
-	// 	Int64("sender_balance_after", result.SenderAccount.CurrentBalance).
-	// 	Str("recipient_account", req.GetRecipientAccNumber()).
-	// 	Int64("recipient_balance_after", result.RecipientAccount.CurrentBalance).
-	// 	Str("transaction_status", "completed").
-	// 	Msg("internal transfer completed successfully")
+	log.Info().
+		Int64("user_id", authPayload.UserID).
+		Str("session_id", authPayload.ID.String()).
+		Str("operation", "FastInternalTransfer").
+		Str("role", authPayload.Role).
+		Int64("amount", req.GetAmount()).
+		Str("currency", req.GetCurrencyType()).
+		Str("sender_account", req.GetSenderAccNumber()).
+		Int64("sender_balance_after", result.SenderAccount.CurrentBalance).
+		Str("recipient_account", req.GetRecipientAccNumber()).
+		Int64("recipient_balance_after", result.RecipientAccount.CurrentBalance).
+		Str("transaction_status", "completed").
+		Msg("internal transfer completed successfully")
 
 	response := &pb.FastInternalTransferResponse{
 		SenderAccount:    convertAccount(result.SenderAccount),

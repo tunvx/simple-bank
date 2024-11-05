@@ -24,7 +24,6 @@ import (
 	"github.com/tunvx/simplebank/manage/gapi"
 	"github.com/tunvx/simplebank/notification/redis"
 	"github.com/tunvx/simplebank/pkg/logger"
-	"github.com/tunvx/simplebank/pkg/mail"
 	"github.com/tunvx/simplebank/pkg/util"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
@@ -40,7 +39,7 @@ var interruptSignals = []os.Signal{
 
 func main() {
 	// Load configuration from the environment or config file
-	config, err := util.LoadConfig("../../")
+	config, err := util.LoadConfig(".")
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot load config")
 	}
@@ -76,14 +75,14 @@ func main() {
 	store := db.NewStore(connPool)
 
 	redisOpt := asynq.RedisClientOpt{
-		Addr: config.RedisAddress,
+		Addr: config.DockerRedisAddress,
 	}
 
 	taskDistributor := redis.NewRedisTaskDistributor(redisOpt)
+	log.Info().Msgf("start Task:Distributor at [::]:%s", strings.Split(redisOpt.Addr, ":")[1])
 
 	waitGroup, ctx := errgroup.WithContext(ctx)
 
-	runTaskProcessor(ctx, waitGroup, config, redisOpt, store)
 	runGrpcServer(ctx, waitGroup, config, store, taskDistributor)
 	runGatewayServer(ctx, waitGroup, config, store, taskDistributor)
 
@@ -110,33 +109,6 @@ func runDBMigration(migrationURL string, dbSource string) {
 	defer migration.Close()
 }
 
-func runTaskProcessor(
-	ctx context.Context,
-	waitGroup *errgroup.Group,
-	config util.Config,
-	redisOpt asynq.RedisClientOpt,
-	store db.Store,
-) {
-	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
-	taskProcessor := redis.NewRedisTaskProcessor(redisOpt, store, mailer)
-
-	log.Info().Msgf("start task processor at [::]:%s", strings.Split(redisOpt.Addr, ":")[1])
-	err := taskProcessor.Start()
-	if err != nil {
-		log.Fatal().Err(err).Msg("failed to start task processor")
-	}
-
-	waitGroup.Go(func() error {
-		<-ctx.Done()
-		log.Info().Msg("graceful shutdown task processor")
-
-		taskProcessor.Shutdown()
-		log.Info().Msg("task processor is stopped")
-
-		return nil
-	})
-}
-
 // runGrpcServer starts the gRPC server for handling core banking services
 func runGrpcServer(
 	ctx context.Context,
@@ -145,18 +117,18 @@ func runGrpcServer(
 	store db.Store,
 	taskDistributor redis.TaskDistributor,
 ) {
-	// Create a new account service
-	accountService, err := gapi.NewService(config, store, taskDistributor)
+	// Create a new manage service
+	manageService, err := gapi.NewService(config, store, taskDistributor)
 	if err != nil {
-		log.Fatal().Err(err).Msg("cannot create account service")
+		log.Fatal().Err(err).Msg("cannot create manage service")
 	}
 
 	// Attach gRPC logger middleware for logging requests
 	grpcLogger := grpc.UnaryInterceptor(logger.GrpcLogger)
 	grpcServer := grpc.NewServer(grpcLogger)
 
-	// Register the accountService to the gRPC server
-	pb.RegisterManageServiceServer(grpcServer, accountService)
+	// Register the manageService to the gRPC server
+	pb.RegisterManageServiceServer(grpcServer, manageService)
 
 	// Enable reflection for gRPC, useful for debugging or using CLI tools like grpcurl
 	reflection.Register(grpcServer)
@@ -168,7 +140,7 @@ func runGrpcServer(
 	}
 
 	waitGroup.Go(func() error {
-		log.Info().Msgf("start gRPC ManageService as server at %s", listener.Addr().String())
+		log.Info().Msgf("start gRPC Manage:Service as server at %s", listener.Addr().String())
 
 		err = grpcServer.Serve(listener)
 		if err != nil {
@@ -202,7 +174,7 @@ func runGatewayServer(
 	taskDistributor redis.TaskDistributor,
 ) {
 	// Create a new gRPC Gateway server
-	accountService, err := gapi.NewService(config, store, taskDistributor)
+	manageService, err := gapi.NewService(config, store, taskDistributor)
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot create server")
 	}
@@ -220,7 +192,7 @@ func runGatewayServer(
 	// Create a new gRPC Gateway multiplexer to route HTTP requests
 	grpcMux := runtime.NewServeMux(jsonOption)
 
-	err = pb.RegisterManageServiceHandlerServer(ctx, grpcMux, accountService)
+	err = pb.RegisterManageServiceHandlerServer(ctx, grpcMux, manageService)
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot register handler server")
 	}
@@ -240,7 +212,7 @@ func runGatewayServer(
 	}
 
 	waitGroup.Go(func() error {
-		log.Info().Msgf("start HTTPGateway ManageService as server at [::]:%s", strings.Split(httpServer.Addr, ":")[1])
+		log.Info().Msgf("start HTTPGateway Manage:Service as server at [::]:%s", strings.Split(httpServer.Addr, ":")[1])
 		err = httpServer.ListenAndServe()
 		if err != nil {
 			if errors.Is(err, http.ErrServerClosed) {

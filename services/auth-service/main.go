@@ -36,7 +36,7 @@ var interruptSignals = []os.Signal{
 
 func main() {
 	// Load configuration from the environment or config file
-	config, err := util.LoadConfig("../../")
+	config, err := util.LoadConfig(".")
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot load config")
 	}
@@ -121,7 +121,7 @@ func runGrpcServer(
 	}
 
 	waitGroup.Go(func() error {
-		log.Info().Msgf("start GRPC AuthService as server at %s", listener.Addr().String())
+		log.Info().Msgf("start GRPC Auth:Service as server at %s", listener.Addr().String())
 
 		err = grpcServer.Serve(listener)
 		if err != nil {
@@ -192,7 +192,7 @@ func runGatewayServer(
 	}
 
 	waitGroup.Go(func() error {
-		log.Info().Msgf("start HTTPGateway AuthService as server at [::]:%s", strings.Split(httpServer.Addr, ":")[1])
+		log.Info().Msgf("start HTTPGateway Auth:Service as server at [::]:%s", strings.Split(httpServer.Addr, ":")[1])
 		err = httpServer.ListenAndServe()
 		if err != nil {
 			if errors.Is(err, http.ErrServerClosed) {

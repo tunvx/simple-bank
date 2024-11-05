@@ -19,12 +19,7 @@ start-infra:
 
 # Stop the docker compose services and remove Docker images
 stop-infra:
-	docker compose -f $(DOCKER_COMPOSE_FILE) down && \
-	docker rmi core-banking-services-manager-service && \
-	docker rmi core-banking-services-worker-service && \
-	docker rmi core-banking-services-customer-service && \
-	docker rmi core-banking-services-auth-service && \
-	docker rmi core-banking-services-account-service
+	docker compose -f $(DOCKER_COMPOSE_FILE) down
 
 # stop-infra:
 # 	docker compose -f $(DOCKER_COMPOSE_FILE) down && \
