@@ -26,7 +26,7 @@ var interruptSignals = []os.Signal{
 
 func main() {
 	// Load configuration from the environment or config file
-	config, err := util.LoadConfig("../../")
+	config, err := util.LoadConfig(".")
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot load config")
 	}
@@ -50,7 +50,7 @@ func main() {
 	cusStore := cusdb.NewStore(connPool)
 
 	redisOpt := asynq.RedisClientOpt{
-		Addr: config.RedisAddress,
+		Addr: config.DockerRedisAddress,
 	}
 
 	waitGroup, ctx := errgroup.WithContext(ctx)
@@ -73,7 +73,7 @@ func runTaskProcessor(
 	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
 	taskProcessor := redis.NewRedisTaskProcessor(redisOpt, cusStore, mailer)
 
-	log.Info().Msgf("start task processor at [::]:%s", strings.Split(redisOpt.Addr, ":")[1])
+	log.Info().Msgf("start Task:Processor at [::]:%s", strings.Split(redisOpt.Addr, ":")[1])
 	err := taskProcessor.Start()
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to start task processor")

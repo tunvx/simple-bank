@@ -23,7 +23,6 @@ import (
 	db "github.com/tunvx/simplebank/manage/db/sqlc"
 	worker "github.com/tunvx/simplebank/notification/redis"
 	"github.com/tunvx/simplebank/pkg/logger"
-	"github.com/tunvx/simplebank/pkg/mail"
 	"github.com/tunvx/simplebank/pkg/util"
 	"github.com/tunvx/simplebank/transactions/cache"
 	"github.com/tunvx/simplebank/transactions/gapi"
@@ -41,7 +40,7 @@ var interruptSignals = []os.Signal{
 
 func main() {
 	// Load configuration from the environment or config file
-	config, err := util.LoadConfig("../../")
+	config, err := util.LoadConfig(".")
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot load config")
 	}
@@ -74,18 +73,19 @@ func main() {
 	store := db.NewStore(connPool)
 
 	redisOpt1 := redis.Options{
-		Addr: config.RedisAddress,
+		Addr: config.DockerRedisAddress,
 	}
 	cache := cache.NewRedisCache(&redisOpt1)
 
 	redisOpt2 := asynq.RedisClientOpt{
-		Addr: config.RedisAddress,
+		Addr: config.DockerRedisAddress,
 	}
+
 	taskDistributor := worker.NewRedisTaskDistributor(redisOpt2)
+	log.Info().Msgf("start Task:Distributor at [::]:%s", strings.Split(redisOpt2.Addr, ":")[1])
 
 	waitGroup, ctx := errgroup.WithContext(ctx)
 
-	runTaskProcessor(ctx, waitGroup, config, redisOpt2, store)
 	runGrpcServer(ctx, waitGroup, config, store, cache, taskDistributor)
 	runGatewayServer(ctx, waitGroup, config, store, cache, taskDistributor)
 
@@ -93,33 +93,6 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("error from wait group")
 	}
-}
-
-func runTaskProcessor(
-	ctx context.Context,
-	waitGroup *errgroup.Group,
-	config util.Config,
-	redisOpt asynq.RedisClientOpt,
-	store db.Store,
-) {
-	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
-	taskProcessor := worker.NewRedisTaskProcessor(redisOpt, store, mailer)
-
-	log.Info().Msgf("start task processor at [::]:%s", strings.Split(redisOpt.Addr, ":")[1])
-	err := taskProcessor.Start()
-	if err != nil {
-		log.Fatal().Err(err).Msg("failed to start task processor")
-	}
-
-	waitGroup.Go(func() error {
-		<-ctx.Done()
-		log.Info().Msg("graceful shutdown task processor")
-
-		taskProcessor.Shutdown()
-		log.Info().Msg("task processor is stopped")
-
-		return nil
-	})
 }
 
 // runGrpcServer starts the gRPC server for handling core banking services
@@ -131,17 +104,17 @@ func runGrpcServer(
 	cache cache.Cache,
 	taskDistributor worker.TaskDistributor,
 ) {
-	// Create a new account service
+	// Create a new transaction service
 	tranService, err := gapi.NewService(config, store, cache, taskDistributor)
 	if err != nil {
-		log.Fatal().Err(err).Msg("cannot create account service")
+		log.Fatal().Err(err).Msg("cannot create transaction service")
 	}
 
 	// Attach gRPC logger middleware for logging requests
 	grpcLogger := grpc.UnaryInterceptor(logger.GrpcLogger)
 	grpcServer := grpc.NewServer(grpcLogger)
 
-	// Register the accountService to the gRPC server
+	// Register the transactionService to the gRPC server
 	pb.RegisterTransactionServiceServer(grpcServer, tranService)
 
 	// Enable reflection for gRPC, useful for debugging or using CLI tools like grpcurl
@@ -154,7 +127,7 @@ func runGrpcServer(
 	}
 
 	waitGroup.Go(func() error {
-		log.Info().Msgf("start gRPC ManageService as server at %s", listener.Addr().String())
+		log.Info().Msgf("start gRPC Transaction:Service as server at %s", listener.Addr().String())
 
 		err = grpcServer.Serve(listener)
 		if err != nil {
@@ -227,7 +200,7 @@ func runGatewayServer(
 	}
 
 	waitGroup.Go(func() error {
-		log.Info().Msgf("start HTTPGateway ManageService as server at [::]:%s", strings.Split(httpServer.Addr, ":")[1])
+		log.Info().Msgf("start HTTPGateway Transaction:Service as server at [::]:%s", strings.Split(httpServer.Addr, ":")[1])
 		err = httpServer.ListenAndServe()
 		if err != nil {
 			if errors.Is(err, http.ErrServerClosed) {

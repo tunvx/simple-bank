@@ -34,7 +34,7 @@ func NewService(config util.Config, store db.Store) (*Service, error) {
 	// Dial the Management Service (Insecure for local dev environments)
 	// Using insecure credentials for local development
 	conn, err := grpc.NewClient(
-		config.GRPCManageServiceAddress,
+		config.DockerGrpcManageServiceAddress,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		icallInterceptor,
 	)
