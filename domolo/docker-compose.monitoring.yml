@@ -1,0 +1,98 @@
+version: '3.9'
+
+networks:
+  monitor-network:
+    driver: bridge
+
+volumes:
+  grafana-volume:
+  prometheus-volume:
+
+###############################################################################################
+#                                       MONITORING                                            #
+###############################################################################################
+
+services:
+  cadvisor:
+    container_name: cadvisor
+    image: gcr.io/cadvisor/cadvisor:v0.50.0
+    restart: always
+    expose:
+      - 8080
+    networks:
+      - monitor-network
+    volumes:
+      - /:/rootfs:ro                   # For root-level access as in the original command
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /dev/disk/:/dev/disk:ro         # Optional: if disk monitoring is needed
+      - /etc/machine-id:/etc/machine-id:ro
+      - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    labels:
+      org.label-schema.group: "monitoring"
+
+  
+  node-exporter:
+    container_name: node-exporter
+    image: prom/node-exporter:v1.8.2
+    restart: always
+    expose:
+      - 9100
+    networks:
+      - monitor-network
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command: 
+      - '--path.procfs=/host/proc' 
+      - '--path.sysfs=/host/sys'
+      - --collector.filesystem.ignored-mount-points
+      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+    labels:
+      org.label-schema.group: "monitoring"
+
+
+  # Prometheus
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v2.55.0
+    restart: always
+    expose:
+      - 9090
+    networks:
+      - monitor-network
+    volumes:
+      - ./monitoring/prometheus:/etc/prometheus
+      - prometheus-volume:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    depends_on:
+      - cadvisor
+      - node-exporter  
+    labels:
+      org.label-schema.group: "monitoring"
+  
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:11.1.8
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - monitor-network
+    volumes:
+      - grafana-volume:/var/lib/grafana
+      # - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      # - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+    env_file:
+      - config
+    depends_on:
+    - prometheus
+    labels:
+      org.label-schema.group: "monitoring"

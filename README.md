@@ -1,36 +1,92 @@
-# Simple Bank (Serve-Side)
+# Simple Bank (in Microservices)
 
 This project implements the server-side of a simple banking system. It leverages a microservices architecture to deliver a range of banking functionalities, including customer and account management, secure authentication, money transfer transactions, notifications, historical data management, logging, and monitoring.
 
 Note: Loan and savings features are planned for future releases.
 
-
 **Banking System Architecture:**
 
 ![Architecture Diagram](./SimpleBank.jpg)
 
-### Banking service description
-+ Customer Registration: Allows new customers to register, with a background process for email verification.
-+ Customer Credential Creation: Manages secure creation and storage of customer login credentials.
-+ Account Creation: Enables customers to create and manage their bank accounts with ease.
+### Description of banking service
+1. **Manage Service**
+  + Customer Registration: Allows new customers to register, with a background process to send email verification.
+  + Account Creation: Allows customers to create thier accounts.
+2. **Auth Service**
++ Customer Credential Creation: Allows customers to create login credentials.
++ Login and Session Management: Provides secure login functionality and session management.
+3. **Transaction Service**
 + Money Transfer Transactions: Support secure, consistent and efficient money transfers between accounts.
-+ Notification service: Support notification to customer's email after each transaction or send verification email.
+4. **Notification Service**
+- Email Verification: Sends verification emails to customers as part of the registration process.
+- Transaction Notifications: Sends email notifications to customers after each transaction.
 
 ## Tech Stack
 
-**Architecture:** Microservice, SOA.
++ **Architecture:** Microservices, Service-Oriented Architecture (SOA).
 
-**Languages:** Golang.
++ **Languages:** Golang.
 
-**DB:** PosgreSQL, Cassandra.
++ **DB:** PosgreSQL.
 
-**APIs:** RESTful (client-to-service), gRPC ( service-to-service).
++ **APIs:** RESTful (client-to-service), gRPC ( service-to-service).
 
-**Build/Test/Deployment:** CI/CD, GitHub Actions, unit tests, performance tests, Docker Compose.
++ **Build/Test/Deployment:** CI/CD with GitHub Actions, unit and performance testing, Docker Compose.
 
-**Advantage Techs:** JWT/Paseto (web security), Kafka (message queue), Redis (caching), logging, and monitoring.
++ **Advanced Techs:** JWT/Paseto (authentication/security), Kafka (message queue), Redis (caching), logging, monitoring.
 
-**Future Additional Techs:** Distributed SQL, Docker Swarm/Kubernetes for auto-scaling.
++ **Planned:** Distributed SQL, Docker Swarm/Kubernetes for auto-scaling.
+
+## Setup local development (MacOS)
+### Install tools
++ [Docker desktop](https://www.docker.com/products/docker-desktop)
++ [TablePlus](https://tableplus.com/)
++ [Homebrew](https://brew.sh/)
++ [Golang 1.22](https://golang.org/)
++ Sqlc
+```bash
+  brew install sqlc
+```
++ Protoc
+```bash
+  brew install protobuf
+```
++ Migrate
+```bash
+  brew install golang-migrate
+```
+
+## Deploy as Docker Containers
++ Clone the project
+```bash
+  git clone https://github.com/tunvx/simple-bank
+```
+
++ Go to the project directory
+```bash
+  cd simple-bank
+```
+
++ Go to the domolo directory (docker + monitoring + logging) 
+```bash
+  cd domolo
+```
+
++ Start the server
+```bash
+  make start-infra
+```
+
++ Start the monitor
+```bash
+  make start-monitor
+```
+
+### Steps for a basic monitoring
+After deploy monitor, do the following steps:
++ Login to grafana ( admin : abc13579 )
++ Connections -> Add a new connection -> Find and enter "Prometheus" -> Add a new data source -> Enter "http://prometheus:9090" into "Prometheus server URL" -> Save and Test
++ Dashboards -> New -> Import -> Enter "1860" and "193" ID (for node-exporter and cadvisor) -> Select data source is "prometheus" -> Import -> You can see defaul dashboards -> Save
 
 ## Appendix
 
@@ -43,3 +99,4 @@ The tags I read this while doing this project. I make notes of them because I th
 + _ unittest, performance_test, load_testing, k6.
 + _ docker, docker_compose, dockerfile, containerization.
 + _ redis, kafka, message_queue, background_worker, asynchronous_communication, asynchronous_processing, caching, logging, monitoring, alerting, metrics collection.
+

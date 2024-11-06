@@ -1,303 +1,302 @@
-version: '3.9'
+# version: '3.9'
 
-networks:
-  bank-network:
-    driver: bridge
-  monitor-network:
-    driver: bridge
+# networks:
+#   bank-network:
+#     driver: bridge
+#   monitor-network:
+#     driver: bridge
 
-volumes:
-  postgres01-volume:
-  postgres02-volume:
-  redis-volume:
-  kafka-volume:
-  grafana-volume:
-  prometheus-volume:
-  elasticsearch-volume:
-  manage-service-logs:
-  auth-service-logs:
-  transaction-service-logs:
-  notification-service-logs:
+# volumes:
+#   postgres01-volume:
+#   postgres02-volume:
+#   redis-volume:
+#   kafka-volume:
+#   grafana-volume:
+#   prometheus-volume:
+#   elasticsearch-volume:
+#   manage-service-logs:
+#   auth-service-logs:
+#   transaction-service-logs:
+#   notification-service-logs:
 
-services:
-  postgres01:
-    container_name: postgres01
-    image: postgres:17.0-alpine3.20
-    restart: always
-    environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=secret
-      - POSTGRES_DB=core_db
-    ports:
-      - "5432:5432"
-    networks:
-      - bank-network
-    volumes:
-      - postgres01-volume:/var/lib/postgresql/data
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1g
+# services:
+#   postgres01:
+#     container_name: postgres01
+#     image: postgres:17.0-alpine3.20
+#     restart: always
+#     environment:
+#       - POSTGRES_USER=root
+#       - POSTGRES_PASSWORD=secret
+#       - POSTGRES_DB=core_db
+#     ports:
+#       - "5432:5432"
+#     networks:
+#       - bank-network
+#     volumes:
+#       - postgres01-volume:/var/lib/postgresql/data
+#     deploy:
+#       resources:
+#         limits:
+#           cpus: '1'
+#           memory: 1g
 
-  postgres02:
-    container_name: postgres02
-    image: postgres:17.0-alpine3.20
-    restart: always
-    environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=secret
-      - POSTGRES_DB=auth_db
-    ports:
-      - "5433:5432"
-    networks:
-      - bank-network
-    volumes:
-      - postgres02-volume:/var/lib/postgresql/data
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1g
+#   postgres02:
+#     container_name: postgres02
+#     image: postgres:17.0-alpine3.20
+#     restart: always
+#     environment:
+#       - POSTGRES_USER=root
+#       - POSTGRES_PASSWORD=secret
+#       - POSTGRES_DB=auth_db
+#     ports:
+#       - "5433:5432"
+#     networks:
+#       - bank-network
+#     volumes:
+#       - postgres02-volume:/var/lib/postgresql/data
+#     deploy:
+#       resources:
+#         limits:
+#           cpus: '1'
+#           memory: 1g
 
-  redis:
-    container_name: redis
-    image: redis:7.4-alpine3.20
-    ports:
-      - "6379:6379"
-    networks:
-      - bank-network
-    volumes:
-      - redis-volume:/data
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1g
+#   redis:
+#     container_name: redis
+#     image: redis:7.4-alpine3.20
+#     ports:
+#       - "6379:6379"
+#     networks:
+#       - bank-network
+#     volumes:
+#       - redis-volume:/data
+#     deploy:
+#       resources:
+#         limits:
+#           cpus: '1'
+#           memory: 1g
 
-  kafka:
-    container_name: kafka
-    image: bitnami/kafka:3.6.2
-    restart: always
-    ports:
-    - "9092:9092"
-    - "9093:9093"  # Expose the controller port
-    environment:
-      # KRaft settings
-      - KAFKA_CFG_NODE_ID=1
-      - KAFKA_CFG_PROCESS_ROLES=controller,broker
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
-      # Listeners
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
-    networks:
-      - bank-network
-    volumes:
-      - kafka-volume:/bitnami/kafka 
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1g
+#   kafka:
+#     container_name: kafka
+#     image: bitnami/kafka:3.6.2
+#     restart: always
+#     ports:
+#     - "9092:9092"
+#     - "9093:9093"  # Expose the controller port
+#     environment:
+#       # KRaft settings
+#       - KAFKA_CFG_NODE_ID=1
+#       - KAFKA_CFG_PROCESS_ROLES=controller,broker
+#       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+#       # Listeners
+#       - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+#       - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
+#       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+#       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+#       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+#     networks:
+#       - bank-network
+#     volumes:
+#       - kafka-volume:/bitnami/kafka 
+#     deploy:
+#       resources:
+#         limits:
+#           cpus: '1'
+#           memory: 1g
 
-  manage-service:
-    container_name: manage-service
-    build:
-      context: ../ 
-      dockerfile: ./docker/dockerfiles/Dockerfile.0001.manage
-    depends_on:
-      - redis
-      - postgres01
-    ports:
-      - "8080:8080"
-      - "8090:8090"
-    networks:
-      - bank-network
-    volumes:
-      - manage-service-logs:/var/log
-    entrypoint: [ "/app/wait-for.sh", "redis:6379", "postgres01:5432", "--", "/app/start.sh" ]
-    command: [ "/app/main" ]
+#   manage-service:
+#     container_name: manage-service
+#     build:
+#       context: ../ 
+#       dockerfile: ./docker/dockerfiles/Dockerfile.0001.manage
+#     depends_on:
+#       - redis
+#       - postgres01
+#     ports:
+#       - "8080:8080"
+#       - "8090:8090"
+#     networks:
+#       - bank-network
+#     volumes:
+#       - manage-service-logs:/var/log
+#     entrypoint: [ "/app/wait-for.sh", "redis:6379", "postgres01:5432", "--", "/app/start.sh" ]
+#     command: [ "/app/main" ]
 
-  auth-service:
-    container_name: auth-service
-    build:
-      context: ../ 
-      dockerfile: ./docker/dockerfiles/Dockerfile.0002.auth
-    depends_on:
-      - redis
-      - postgres02
-    ports:
-      - "8081:8081"
-      - "8091:8091"
-    networks:
-      - bank-network
-    volumes:
-      - auth-service-logs:/var/log
-    entrypoint: [ "/app/wait-for.sh", "redis:6379", "postgres02:5432", "--", "/app/start.sh" ]
-    command: [ "/app/main" ]
+#   auth-service:
+#     container_name: auth-service
+#     build:
+#       context: ../ 
+#       dockerfile: ./docker/dockerfiles/Dockerfile.0002.auth
+#     depends_on:
+#       - redis
+#       - postgres02
+#     ports:
+#       - "8081:8081"
+#       - "8091:8091"
+#     networks:
+#       - bank-network
+#     volumes:
+#       - auth-service-logs:/var/log
+#     entrypoint: [ "/app/wait-for.sh", "redis:6379", "postgres02:5432", "--", "/app/start.sh" ]
+#     command: [ "/app/main" ]
 
-  transaction-service:
-    container_name: transaction-service
-    build:
-      context: ../ 
-      dockerfile: ./docker/dockerfiles/Dockerfile.0003.transaction
-    depends_on:
-      - redis
-      - postgres01
-      - manage-service
-    ports:
-      - "8082:8082"
-      - "8092:8092"
-    networks:
-      - bank-network
-    volumes:
-      - transaction-service-logs:/var/log
-    entrypoint: [ "/app/wait-for.sh", "redis:6379", "postgres01:5432", "--", "/app/start.sh" ]
-    command: [ "/app/main" ]
+#   transaction-service:
+#     container_name: transaction-service
+#     build:
+#       context: ../ 
+#       dockerfile: ./docker/dockerfiles/Dockerfile.0003.transaction
+#     depends_on:
+#       - redis
+#       - postgres01
+#       - manage-service
+#     ports:
+#       - "8082:8082"
+#       - "8092:8092"
+#     networks:
+#       - bank-network
+#     volumes:
+#       - transaction-service-logs:/var/log
+#     entrypoint: [ "/app/wait-for.sh", "redis:6379", "postgres01:5432", "--", "/app/start.sh" ]
+#     command: [ "/app/main" ]
 
-  notification-service:
-    container_name: notification-service
-    build:
-      context: ../ 
-      dockerfile: ./docker/dockerfiles/Dockerfile.0004.notification
-    depends_on:
-      - redis
-    networks:
-      - bank-network
-    volumes:
-      - notification-service-logs:/var/log
-    entrypoint: [ "/app/wait-for.sh", "redis:6379", "--", "/app/start.sh" ]
-    command: [ "/app/main" ]
+#   notification-service:
+#     container_name: notification-service
+#     build:
+#       context: ../ 
+#       dockerfile: ./docker/dockerfiles/Dockerfile.0004.notification
+#     depends_on:
+#       - redis
+#     networks:
+#       - bank-network
+#     volumes:
+#       - notification-service-logs:/var/log
+#     entrypoint: [ "/app/wait-for.sh", "redis:6379", "--", "/app/start.sh" ]
+#     command: [ "/app/main" ]
   
 
   ###############################################################################################
   #                                       MONITORING                                            #
   ###############################################################################################
-  cadvisor:
-    container_name: cadvisor
-    image: gcr.io/cadvisor/cadvisor:v0.50.0
-    privileged: true
-    devices:
-      - /dev/kmsg:/dev/kmsg
-    volumes:
-      - /:/rootfs:ro                   # For root-level access as in the original command
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /dev/disk/:/dev/disk:ro         # Optional: if disk monitoring is needed
-      - /etc/machine-id:/etc/machine-id:ro
-      - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro
-    restart: always
-    networks:
-      - monitor-network
+  # cadvisor:
+  #   container_name: cadvisor
+  #   image: gcr.io/cadvisor/cadvisor:v0.50.0
+  #   privileged: true
+  #   devices:
+  #     - /dev/kmsg:/dev/kmsg
+  #   volumes:
+  #     - /:/rootfs:ro                   # For root-level access as in the original command
+  #     - /var/run:/var/run:ro
+  #     - /sys:/sys:ro
+  #     - /var/lib/docker/:/var/lib/docker:ro
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #     - /dev/disk/:/dev/disk:ro         # Optional: if disk monitoring is needed
+  #     - /etc/machine-id:/etc/machine-id:ro
+  #     - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro
+  #   restart: always
+  #   networks:
+  #     - monitor-network
 
-  node-exporter:
-    container_name: node-exporter
-    image: prom/node-exporter:v1.8.2
-    restart: always
-    networks:
-      - monitor-network
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command: 
-      - '--path.procfs=/host/proc' 
-      - '--path.sysfs=/host/sys'
-      - --collector.filesystem.ignored-mount-points
-      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+  # node-exporter:
+  #   container_name: node-exporter
+  #   image: prom/node-exporter:v1.8.2
+  #   restart: always
+  #   networks:
+  #     - monitor-network
+  #   volumes:
+  #     - /proc:/host/proc:ro
+  #     - /sys:/host/sys:ro
+  #     - /:/rootfs:ro
+  #   command: 
+  #     - '--path.procfs=/host/proc' 
+  #     - '--path.sysfs=/host/sys'
+  #     - --collector.filesystem.ignored-mount-points
+  #     - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
 
-  # Prometheus
-  prometheus:
-    container_name: prometheus
-    image: prom/prometheus:v2.55.0
-    restart: always
-    networks:
-      - monitor-network
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus-volume:/prometheus
-    command:
-      - --config.file=/etc/prometheus/prometheus.yml
-    depends_on:
-      - cadvisor
-      - node-exporter  
+  # # Prometheus
+  # prometheus:
+  #   container_name: prometheus
+  #   image: prom/prometheus:v2.55.0
+  #   restart: always
+  #   networks:
+  #     - monitor-network
+  #   volumes:
+  #     - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+  #     - prometheus-volume:/prometheus
+  #   command:
+  #     - --config.file=/etc/prometheus/prometheus.yml
+  #   depends_on:
+  #     - cadvisor
+  #     - node-exporter  
   
-  grafana:
-    container_name: grafana
-    image: grafana/grafana:11.1.8
-    restart: always
-    networks:
-      - monitor-network
-    ports:
-      - 3000:3000
-    volumes:
-      - grafana-volume:/var/lib/grafana
-    depends_on:
-    - prometheus
+  # grafana:
+  #   container_name: grafana
+  #   image: grafana/grafana:11.1.8
+  #   restart: always
+  #   networks:
+  #     - monitor-network
+  #   ports:
+  #     - 3000:3000
+  #   volumes:
+  #     - grafana-volume:/var/lib/grafana
+  #   depends_on:
+  #   - prometheus
 
 
   ###############################################################################################
   #                                       LOGGING                                               #
   ###############################################################################################
-
-  elastic:
-    container_name: elastic
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.2
-    environment:
-      - ELASTIC_PASSWORD=myelasticpass
-      - KIBANA_PASSWORD=kibanapass
-      - discovery.type=single-node
-      - xpack.security.http.ssl.enabled=false
-      - cluster.routing.allocation.disk.threshold_enabled=false
-    volumes:
-      - elasticsearch-volume:/usr/share/elasticsearch/data
-    networks:
-      - monitor-network
-    ports:
-      - "9200:9200"
+  # elastic:
+  #   container_name: elastic
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:8.12.2
+  #   environment:
+  #     - ELASTIC_PASSWORD=myelasticpass
+  #     - KIBANA_PASSWORD=kibanapass
+  #     - discovery.type=single-node
+  #     - xpack.security.http.ssl.enabled=false
+  #     - cluster.routing.allocation.disk.threshold_enabled=false
+  #   volumes:
+  #     - elasticsearch-volume:/usr/share/elasticsearch/data
+  #   networks:
+  #     - monitor-network
+  #   ports:
+  #     - "9200:9200"
   
-  logstash:
-    container_name: logstash
-    image: docker.elastic.co/logstash/logstash:8.12.2
-    volumes:
-      - ./elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-    environment:
-      - ELASTIC_USER=elastic
-      - ELASTIC_PASSWORD=myelasticpass
-      - ELASTIC_HOSTS=http://elastic:9200
-    depends_on:
-      - elastic
-    networks:
-      - monitor-network
+  # logstash:
+  #   container_name: logstash
+  #   image: docker.elastic.co/logstash/logstash:8.12.2
+  #   volumes:
+  #     - ./elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+  #   environment:
+  #     - ELASTIC_USER=elastic
+  #     - ELASTIC_PASSWORD=myelasticpass
+  #     - ELASTIC_HOSTS=http://elastic:9200
+  #   depends_on:
+  #     - elastic
+  #   networks:
+  #     - monitor-network
 
-  kibana:
-    container_name: kibana
-    image: docker.elastic.co/kibana/kibana:8.12.2
-    environment:
-      SERVER_NAME: kibana
-      ELASTICSEARCH_HOSTS: '["http://elastic:9200"]'
-      ELASTICSEARCH_USERNAME: kibana_system
-      ELASTICSEARCH_PASSWORD: kibanapass
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elastic
-    networks:
-      - monitor-network
+  # kibana:
+  #   container_name: kibana
+  #   image: docker.elastic.co/kibana/kibana:8.12.2
+  #   environment:
+  #     SERVER_NAME: kibana
+  #     ELASTICSEARCH_HOSTS: '["http://elastic:9200"]'
+  #     ELASTICSEARCH_USERNAME: kibana_system
+  #     ELASTICSEARCH_PASSWORD: kibanapass
+  #   ports:
+  #     - "5601:5601"
+  #   depends_on:
+  #     - elastic
+  #   networks:
+  #     - monitor-network
 
-  filebeat:
-    container_name: filebeat
-    image: docker.elastic.co/beats/filebeat:8.12.2
-    volumes:
-      - ./elk/filebeat.yml:/usr/share/filebeat/filebeat.yml
-      - transaction-service-logs:/var/log/transaction-service
-    networks:
-      - monitor-network
+  # filebeat:
+  #   container_name: filebeat
+  #   image: docker.elastic.co/beats/filebeat:8.12.2
+  #   volumes:
+  #     - ./elk/filebeat.yml:/usr/share/filebeat/filebeat.yml
+  #     - transaction-service-logs:/var/log/transaction-service
+  #   networks:
+  #     - monitor-network
 
   
 
