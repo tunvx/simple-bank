@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"io"
 	"net"
 	"net/http"
 	"os"
@@ -17,6 +18,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/hibiken/asynq"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/natefinch/lumberjack"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	pb "github.com/tunvx/simplebank/grpc/pb/manage"
@@ -44,9 +46,26 @@ func main() {
 		log.Fatal().Err(err).Msg("cannot load config")
 	}
 
-	// If in development mode, configure logger to output to the console in a readable format
+	// Set up lumberjack for log rotation
+	logFile := &lumberjack.Logger{
+		Filename:   "/var/log/service.log",
+		MaxSize:    1,    // Maximum size in MB before rotation
+		MaxBackups: 3,    // Keep at most 3 old backups
+		MaxAge:     30,   // Max age in days to retain old log files
+		Compress:   true, // Compress rotated log files
+	}
+
+	// Set logger based on environment
 	if config.Environment == "development" {
-		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+		// In development mode, output to console in a readable format
+		log.Logger = zerolog.New(zerolog.ConsoleWriter{Out: os.Stderr}).With().Timestamp().Logger()
+	} else if config.Environment == "production" {
+		// In production, use a multi-writer to log to both stdout and a log file
+		multi := io.MultiWriter(os.Stdout, logFile)
+		log.Logger = zerolog.New(multi).With().Timestamp().Logger()
+	} else {
+		// Default fallback if environment is not recognized
+		log.Fatal().Msg("Unknown environment: " + config.Environment)
 	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), interruptSignals...)
