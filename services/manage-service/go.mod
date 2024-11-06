@@ -3,9 +3,9 @@ module github.com/tunvx/simplebank/manage
 go 1.22.6
 
 replace (
-	github.com/tunvx/simplebank/pkg => ../../pkg
 	github.com/tunvx/simplebank/grpc => ../../grpc
 	github.com/tunvx/simplebank/notification => ../../services/notification-service
+	github.com/tunvx/simplebank/pkg => ../../pkg
 )
 
 require (
@@ -13,6 +13,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.23.0
 	github.com/hibiken/asynq v0.25.0
 	github.com/jackc/pgx/v5 v5.7.1
+	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/rs/zerolog v1.33.0
 	github.com/tunvx/simplebank/grpc v0.0.0-00010101000000-000000000000
 	github.com/tunvx/simplebank/notification v0.0.0-00010101000000-000000000000
@@ -72,5 +73,6 @@ require (
 	golang.org/x/time v0.7.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20241021214115-324edc3d5d38 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

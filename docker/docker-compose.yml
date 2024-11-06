@@ -11,6 +11,11 @@ volumes:
   postgres02-volume:
   redis-volume:
   kafka-volume:
+  elasticsearch-volume:
+  manage-service-logs:
+  auth-service-logs:
+  transaction-service-logs:
+  notification-service-logs:
 
 services:
   postgres01:
@@ -109,6 +114,8 @@ services:
       - "8090:8090"
     networks:
       - bank-network
+    volumes:
+      - manage-service-logs:/var/log
     entrypoint: [ "/app/wait-for.sh", "redis:6379", "postgres01:5432", "--", "/app/start.sh" ]
     command: [ "/app/main" ]
 
@@ -125,6 +132,8 @@ services:
       - "8091:8091"
     networks:
       - bank-network
+    volumes:
+      - auth-service-logs:/var/log
     entrypoint: [ "/app/wait-for.sh", "redis:6379", "postgres02:5432", "--", "/app/start.sh" ]
     command: [ "/app/main" ]
 
@@ -142,6 +151,8 @@ services:
       - "8092:8092"
     networks:
       - bank-network
+    volumes:
+      - transaction-service-logs:/var/log
     entrypoint: [ "/app/wait-for.sh", "redis:6379", "postgres01:5432", "--", "/app/start.sh" ]
     command: [ "/app/main" ]
 
@@ -154,9 +165,74 @@ services:
       - redis
     networks:
       - bank-network
+    volumes:
+      - notification-service-logs:/var/log
     entrypoint: [ "/app/wait-for.sh", "redis:6379", "--", "/app/start.sh" ]
     command: [ "/app/main" ]
 
+
+  ###############################################################################################
+  #                                       LOGGING                                               #
+  ###############################################################################################
+
+  elastic:
+    container_name: elastic
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.2
+    environment:
+      - ELASTIC_PASSWORD=myelasticpass
+      - KIBANA_PASSWORD=kibanapass
+      - discovery.type=single-node
+      - xpack.security.http.ssl.enabled=false
+      - cluster.routing.allocation.disk.threshold_enabled=false
+    volumes:
+      - elasticsearch-volume:/usr/share/elasticsearch/data
+    networks:
+      - monitor-network
+    ports:
+      - "9200:9200"
+  
+  logstash:
+    container_name: logstash
+    image: docker.elastic.co/logstash/logstash:8.12.2
+    volumes:
+      - ./elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    environment:
+      - ELASTIC_USER=elastic
+      - ELASTIC_PASSWORD=myelasticpass
+      - ELASTIC_HOSTS=http://elastic:9200
+    depends_on:
+      - elastic
+    networks:
+      - monitor-network
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:8.12.2
+    environment:
+      SERVER_NAME: kibana
+      ELASTICSEARCH_HOSTS: '["http://elastic:9200"]'
+      ELASTICSEARCH_USERNAME: kibana_system
+      ELASTICSEARCH_PASSWORD: kibanapass
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elastic
+    networks:
+      - monitor-network
+
+  filebeat:
+    container_name: filebeat
+    image: docker.elastic.co/beats/filebeat:8.12.2
+    volumes:
+      - ./elk/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - transaction-service-logs:/var/log/transaction-service
+    networks:
+      - monitor-network
+
+  
+  ###############################################################################################
+  #                                       MONITORING                                            #
+  ###############################################################################################
   cadvisor:
     container_name: cadvisor
     image: gcr.io/cadvisor/cadvisor:v0.50.0
@@ -179,6 +255,9 @@ services:
       - monitor-network
     labels:
       org.label-schema.group: "monitoring"
+
+
+  
 
 
   # traefik:
