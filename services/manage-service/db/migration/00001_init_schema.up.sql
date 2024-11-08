@@ -76,7 +76,8 @@ CREATE TYPE FinancialStatus AS ENUM (
 
 -- Bảng khách hàng của ngân hàng
 CREATE TABLE customers (
-  customer_id bigint PRIMARY KEY DEFAULT shard_1.id_generator(),
+  -- customer_id bigint PRIMARY KEY DEFAULT shard_1.id_generator(),
+  customer_id BIGSERIAL PRIMARY KEY,
   customer_rid varchar(15) UNIQUE NOT NULL,
   fullname varchar NOT NULL,
   date_of_birth date NOT NULL,
@@ -90,7 +91,8 @@ CREATE TABLE customers (
 
 -- Bảng tài khoản của khách hàng
 CREATE TABLE accounts (
-  account_id bigint PRIMARY KEY DEFAULT shard_1.id_generator(),
+  -- account_id bigint PRIMARY KEY DEFAULT shard_1.id_generator(),
+  account_id BIGSERIAL PRIMARY KEY,
   account_number varchar(15) UNIQUE NOT NULL,
   customer_id bigint NOT NULL,
   current_balance bigint NOT NULL,
@@ -102,7 +104,8 @@ CREATE TABLE accounts (
 
 -- Bảng giao dịch chuyển tiền theo tài khoản khách hàng
 CREATE TABLE money_transfer_transactions (
-  transaction_id bigint PRIMARY KEY DEFAULT shard_1.id_generator(),
+  -- transaction_id bigint PRIMARY KEY DEFAULT shard_1.id_generator(),
+  transaction_id BIGSERIAL PRIMARY KEY,
   amount bigint NOT NULL,
   account_id bigint NOT NULL,
   new_balance bigint NOT NULL,
@@ -123,8 +126,6 @@ CREATE INDEX ON accounts (customer_id);
 CREATE INDEX ON accounts (account_status);
 
 CREATE INDEX ON money_transfer_transactions (account_id);
-
-CREATE INDEX ON money_transfer_transactions (transaction_status);
 
 ALTER TABLE accounts ADD FOREIGN KEY (customer_id) REFERENCES customers (customer_id);
 

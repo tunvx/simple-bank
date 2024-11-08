@@ -12,6 +12,8 @@ import (
 	"syscall"
 	"time"
 
+	_ "net/http/pprof"
+
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -50,7 +52,7 @@ func main() {
 	// Set up lumberjack for log rotation
 	logFile := &lumberjack.Logger{
 		Filename:   "/var/log/service.log",
-		MaxSize:    1,    // Maximum size in MB before rotation
+		MaxSize:    10,   // Maximum size in MB before rotation
 		MaxBackups: 3,    // Keep at most 3 old backups
 		MaxAge:     30,   // Max age in days to retain old log files
 		Compress:   true, // Compress rotated log files
@@ -72,16 +74,17 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), interruptSignals...)
 	defer stop()
 
+	// Database connection pool configuration
 	connPoolConfig, err := pgxpool.ParseConfig(config.DBSourceCoreDB)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to parse database config")
 	}
-	connPoolConfig.MaxConns = 100
-	connPoolConfig.MinConns = 40
+	connPoolConfig.MaxConns = 150
+	connPoolConfig.MinConns = 50
 	connPoolConfig.MaxConnLifetime = time.Minute * 10
 	connPoolConfig.MaxConnIdleTime = time.Minute * 2
 
-	// Tạo pool với cấu hình đã điều chỉnh
+	// Create PostgreSQL connection pool
 	connPool, err := pgxpool.NewWithConfig(context.Background(), connPoolConfig)
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot connect to db")
@@ -91,8 +94,11 @@ func main() {
 	// Create a new store to interact with the database
 	store := db.NewStore(connPool)
 
+	// Redis connection pool configuration
 	redisOpt1 := redis.Options{
-		Addr: config.DockerRedisAddress,
+		Addr:            config.DockerRedisAddress,
+		MaxActiveConns:  120,
+		ConnMaxIdleTime: time.Minute * 5,
 	}
 	cache := cache.NewRedisCache(&redisOpt1)
 
@@ -212,10 +218,13 @@ func runGatewayServer(
 	fs := http.FileServer(http.Dir("./doc/swagger"))
 	mux.Handle("/swagger/", http.StripPrefix("/swagger/", fs))
 
+	// Register pprof handlers for profiling
+	// mux.Handle("/debug/pprof/", http.DefaultServeMux)
+
 	loggingHandler := logger.HttpLogger(mux)
 	httpServer := &http.Server{
-		Handler: loggingHandler,
 		Addr:    config.HTTPTransactionServiceAddress,
+		Handler: loggingHandler,
 	}
 
 	waitGroup.Go(func() error {
