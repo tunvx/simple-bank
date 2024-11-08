@@ -124,8 +124,6 @@ CREATE INDEX ON accounts (account_status);
 
 CREATE INDEX ON money_transfer_transactions (account_id);
 
-CREATE INDEX ON money_transfer_transactions (transaction_status);
-
 ALTER TABLE accounts ADD FOREIGN KEY (customer_id) REFERENCES customers (customer_id);
 
 ALTER TABLE money_transfer_transactions ADD FOREIGN KEY (account_id) REFERENCES accounts (account_id);
