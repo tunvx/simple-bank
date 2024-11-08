@@ -29,11 +29,18 @@ services:
       - bank-network
     volumes:
       - postgres01-volume:/var/lib/postgresql/data
+    command: >
+      postgres -c max_connections=200
+               -c log_min_duration_statement=50
+               -c logging_collector=on
+               -c log_directory=log
+               -c log_filename=postgresql-%Y-%m-%d.log 
     deploy:
       resources:
         limits:
-          cpus: '1'
-          memory: 1g
+          cpus: '4'
+          memory: 8g
+
 
   postgres02:
     container_name: postgres02
@@ -49,11 +56,6 @@ services:
       - bank-network
     volumes:
       - postgres02-volume:/var/lib/postgresql/data
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1g
 
   redis:
     container_name: redis
@@ -68,35 +70,35 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 1g
+          memory: 2g
 
-  kafka:
-    container_name: kafka
-    image: bitnami/kafka:3.6.2
-    restart: always
-    ports:
-    - "9092:9092"
-    - "9093:9093"  # Expose the controller port
-    environment:
-      # KRaft settings
-      - KAFKA_CFG_NODE_ID=1
-      - KAFKA_CFG_PROCESS_ROLES=controller,broker
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
-      # Listeners
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
-    networks:
-      - bank-network
-    volumes:
-      - kafka-volume:/bitnami/kafka 
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1g
+  # kafka:
+  #   container_name: kafka
+  #   image: bitnami/kafka:3.6.2
+  #   restart: always
+  #   ports:
+  #   - "9092:9092"
+  #   - "9093:9093"  # Expose the controller port
+  #   environment:
+  #     # KRaft settings
+  #     - KAFKA_CFG_NODE_ID=1
+  #     - KAFKA_CFG_PROCESS_ROLES=controller,broker
+  #     - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+  #     # Listeners
+  #     - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+  #     - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
+  #     - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+  #     - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+  #     - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+  #   networks:
+  #     - bank-network
+  #   volumes:
+  #     - kafka-volume:/bitnami/kafka 
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '1'
+  #         memory: 1g
 
   manage-service:
     container_name: manage-service
@@ -152,6 +154,13 @@ services:
       - transaction-service-logs:/var/log
     entrypoint: [ "/app/wait-for.sh", "redis:6379", "postgres01:5432", "--", "/app/start.sh" ]
     command: [ "/app/main" ]
+    deploy:
+      # replicas: 2
+      resources:
+        limits:
+          cpus: '4'
+          memory: 2g
+    
 
   notification-service:
     container_name: notification-service

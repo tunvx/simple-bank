@@ -88,6 +88,9 @@ After deploy monitor, do the following steps:
 + Connections -> Add a new connection -> Find and enter "Prometheus" -> Add a new data source -> Enter "http://prometheus:9090" into "Prometheus server URL" -> Save and Test
 + Dashboards -> New -> Import -> Enter "1860" and "193" ID (for node-exporter and cadvisor) -> Select data source is "prometheus" -> Import -> You can see defaul dashboards -> Save
 
+## Testing & Performance
++ Refer to the testing folder for details.
+
 ## Appendix
 
 ### Techniques tags 
