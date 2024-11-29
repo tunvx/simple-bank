@@ -118,6 +118,8 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("error from wait group")
 	}
+
+	// log.Info().Msg("add trigger to run github action")
 }
 
 // runGrpcServer starts the gRPC server for handling core banking services
