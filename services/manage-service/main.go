@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 	"time"
 
@@ -98,7 +97,7 @@ func main() {
 	}
 
 	taskDistributor := redis.NewRedisTaskDistributor(redisOpt)
-	log.Info().Msgf("start Task:Distributor at [::]:%s", strings.Split(redisOpt.Addr, ":")[1])
+	log.Info().Msgf("start Task:Distributor at :: %s", redisOpt.Addr)
 
 	waitGroup, ctx := errgroup.WithContext(ctx)
 
@@ -121,13 +120,17 @@ func runDBMigration(migrationURL string, dbSource string) {
 		log.Fatal().Err(err).Msg("cannot create new migrate instance")
 	}
 
-	// Apply the migrations (skip if no changes are detected)
-	if err = migration.Up(); err != nil && err != migrate.ErrNoChange {
-		log.Fatal().Err(err).Msg("failed to run migrate up")
-	}
-
-	log.Info().Msg("db migrated successfully")
 	defer migration.Close()
+
+	// Apply the migrations
+	err = migration.Up()
+	if err == migrate.ErrNoChange {
+		log.Info().Msg("no migration changes detected")
+	} else if err != nil {
+		log.Fatal().Err(err).Msg("failed to run migrate up")
+	} else {
+		log.Info().Msg("db migrated successfully")
+	}
 }
 
 // runGrpcServer starts the gRPC server for handling core banking services
@@ -161,7 +164,7 @@ func runGrpcServer(
 	}
 
 	waitGroup.Go(func() error {
-		log.Info().Msgf("start gRPC Manage:Service as server at %s", listener.Addr().String())
+		log.Info().Msgf("start gRPC Manage:Service as server at :: %s", listener.Addr().String())
 
 		err = grpcServer.Serve(listener)
 		if err != nil {
@@ -233,7 +236,7 @@ func runGatewayServer(
 	}
 
 	waitGroup.Go(func() error {
-		log.Info().Msgf("start HTTPGateway Manage:Service as server at [::]:%s", strings.Split(httpServer.Addr, ":")[1])
+		log.Info().Msgf("start HTTPGateway Manage:Service as server at :: %s", httpServer.Addr)
 		err = httpServer.ListenAndServe()
 		if err != nil {
 			if errors.Is(err, http.ErrServerClosed) {

@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 	"time"
 
@@ -79,10 +78,10 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to parse database config")
 	}
-	connPoolConfig.MaxConns = 150
-	connPoolConfig.MinConns = 50
-	connPoolConfig.MaxConnLifetime = time.Minute * 10
-	connPoolConfig.MaxConnIdleTime = time.Minute * 2
+	// connPoolConfig.MaxConns = 150
+	// connPoolConfig.MinConns = 50
+	// connPoolConfig.MaxConnLifetime = time.Minute * 10
+	// connPoolConfig.MaxConnIdleTime = time.Minute * 2
 
 	// Create PostgreSQL connection pool
 	connPool, err := pgxpool.NewWithConfig(context.Background(), connPoolConfig)
@@ -107,7 +106,7 @@ func main() {
 	}
 
 	taskDistributor := worker.NewRedisTaskDistributor(redisOpt2)
-	log.Info().Msgf("start Task:Distributor at [::]:%s", strings.Split(redisOpt2.Addr, ":")[1])
+	log.Info().Msgf("start Task:Distributor at :: %s", redisOpt2.Addr)
 
 	waitGroup, ctx := errgroup.WithContext(ctx)
 
@@ -154,7 +153,7 @@ func runGrpcServer(
 	}
 
 	waitGroup.Go(func() error {
-		log.Info().Msgf("start gRPC Transaction:Service as server at %s", listener.Addr().String())
+		log.Info().Msgf("start gRPC Transaction:Service as server at :: %s", listener.Addr().String())
 
 		err = grpcServer.Serve(listener)
 		if err != nil {
@@ -230,7 +229,7 @@ func runGatewayServer(
 	}
 
 	waitGroup.Go(func() error {
-		log.Info().Msgf("start HTTPGateway Transaction:Service as server at [::]:%s", strings.Split(httpServer.Addr, ":")[1])
+		log.Info().Msgf("start HTTPGateway Transaction:Service as server at :: %s", httpServer.Addr)
 		err = httpServer.ListenAndServe()
 		if err != nil {
 			if errors.Is(err, http.ErrServerClosed) {
