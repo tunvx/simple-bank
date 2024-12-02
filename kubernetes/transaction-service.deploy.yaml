@@ -1,0 +1,80 @@
+# PersistentVolume (PV) defines the storage resource in the cluster
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: transaction-service-pv
+  labels:
+    type: local
+    app: transaction-service
+spec:
+  storageClassName: manual # Storage class to use for this PV
+  capacity:
+    storage: 5Gi # Storage capacity for the PV
+  accessModes:
+    - ReadWriteMany # PV access mode (can be accessed by multiple pods)
+  hostPath:
+    path: /data/transaction-service-log # Specify a path on the host machine
+
+---
+# PersistentVolumeClaim (PVC) allows a pod to request specific storage resources
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: transaction-service-pvc
+  labels:
+    app: transaction-service
+spec:
+  storageClassName: manual # Storage class to use for this PVC
+  accessModes:
+    - ReadWriteMany # PVC access mode (matching the PV)
+  resources:
+    requests:
+      storage: 5Gi # Requested storage for the PVC
+
+---
+# Deployment for the PostgreSQL instance
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transaction-service
+  labels:
+    app: transaction-service
+spec:
+  replicas: 2 # Number of pod replicas
+  selector:
+    matchLabels:
+      app: transaction-service
+  template:
+    metadata:
+      labels:
+        app: transaction-service
+    spec:
+      containers:
+        - name: transaction-service
+          image: tunvx/simple-bank-transaction-service:v0.0.1 # Dockerhub container image
+          ports:
+            - containerPort: 8080 # Container port HTTP to expose
+            - containerPort: 8090 # Container port GRPC to expose
+          volumeMounts:
+            - name: transaction-service-log
+              mountPath: /var/log # Log files volume mount
+          command:
+            [
+              "/app/wait-for.sh",
+              "redis:6379",
+              "postgres01:5432",
+              "--",
+              "/app/start.sh",
+            ]
+          args: ["/app/main"] # Command to execute the main application
+          resources:
+            requests:
+              cpu: "1" # Requested CPU for the container
+              memory: "1Gi" # Requested memory for the container
+            limits:
+              cpu: "1" # Limit of CPU for the container
+              memory: "1Gi" # Limit of memory for the container
+      volumes:
+        - name: transaction-service-log
+          persistentVolumeClaim:
+            claimName: transaction-service-pvc # Claim the PVC for the deployment
