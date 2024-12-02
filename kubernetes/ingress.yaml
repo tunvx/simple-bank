@@ -1,0 +1,85 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP" # Cho HTTP
+    nginx.ingress.kubernetes.io/grpc-backend: "true"     # Cho gRPC
+spec:
+  rules:
+    - host: auth-service.banking.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port:
+                  number: 8080
+    - host: auth-grpc-service.banking.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port:
+                  number: 8090
+    - host: manage-service.banking.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: manage-service
+                port:
+                  number: 8080
+    - host: manage-grpc-service.banking.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: manage-service
+                port:
+                  number: 8090
+    - host: transaction-service.banking.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: transaction-service
+                port:
+                  number: 8080
+    - host: transaction-grpc-service.banking.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: transaction-service
+                port:
+                  number: 8090
+
+################################################
+#             Config Ingress For Mac           #
+################################################
+### Add to etc/hosts
+# 127.0.0.1 auth-service.banking.com
+# 127.0.0.1 auth-grpc-service.banking.com
+# 127.0.0.1 manage-service.banking.com
+# 127.0.0.1 manage-grpc-service.banking.com
+# 127.0.0.1 transaction-service.banking.com
+# 127.0.0.1 transaction-grpc-service.banking.com
+
+# minikube addons enable ingress
+# minikube tunnel # run "minikube tunnel" and your ingress resources would be available at "127.0.0.1"
+# curl -X GET http://auth-service.banking.com/v1/generate_test_access_token

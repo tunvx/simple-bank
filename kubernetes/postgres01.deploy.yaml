@@ -1,0 +1,101 @@
+# ConfigMap for storing PostgreSQL configuration details
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres01-secret
+  labels:
+    app: postgres01
+data:
+  POSTGRES_DB: core_db # Database name to be created
+  POSTGRES_USER: root # User for the PostgreSQL instance
+  POSTGRES_PASSWORD: secret # Password for the PostgreSQL user
+
+---
+# PersistentVolume (PV) defines the storage resource in the cluster
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres01-pv
+  labels:
+    type: local
+    app: postgres01
+spec:
+  storageClassName: manual # Storage class to use for this PV
+  capacity:
+    storage: 10Gi # Storage capacity for the PV
+  accessModes:
+    - ReadWriteMany # PV access mode (can be accessed by multiple pods)
+  hostPath:
+    path: /data/postgres01 # Path on the host where the data is stored
+
+---
+# PersistentVolumeClaim (PVC) allows a pod to request specific storage resources
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres01-pvc
+  labels:
+    app: postgres01
+spec:
+  storageClassName: manual # Storage class to use for this PVC
+  accessModes:
+    - ReadWriteMany # PVC access mode (matching the PV)
+  resources:
+    requests:
+      storage: 10Gi # Requested storage for the PVC
+
+---
+# Deployment for the PostgreSQL instance
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres01
+  labels:
+    app: postgres01
+spec:
+  replicas: 1 # Number of pod replicas
+  selector:
+    matchLabels:
+      app: postgres01
+  template:
+    metadata:
+      labels:
+        app: postgres01
+    spec:
+      containers:
+        - name: postgres01
+          image: postgres:17.0-alpine3.20 # PostgreSQL container image
+          ports:
+            - containerPort: 5432 # Container port to expose
+          envFrom:
+            - configMapRef:
+                name: postgres01-secret # Reference to ConfigMap for environment variables
+          command: [ "postgres" ]
+          args:
+            - "-c"
+            - "max_connections=200"
+            - "-c"
+            - "log_min_duration_statement=50"
+            - "-c"
+            - "logging_collector=on"
+            - "-c"
+            - "log_directory=log"
+            - "-c"
+            - "log_filename=postgresql-%Y-%m-%d.log"
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data # Path in the container where data will be stored
+              name: postgres01-volume
+          resources:
+            requests:
+              cpu: "2" # Requested CPU for the container
+              memory: "4Gi" # Requested memory for the container
+            limits:
+              cpu: "4" # Limit of CPU for the container
+              memory: "8Gi" # Limit of memory for the container
+          securityContext:
+            runAsUser: 70  # The defaul 'postgres' user UID
+            runAsGroup: 70  # The defaul 'postgres' user GID
+      volumes:
+        - name: postgres01-volume
+          persistentVolumeClaim:
+            claimName: postgres01-pvc # Claim the PVC for the deployment

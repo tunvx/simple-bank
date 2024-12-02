@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres02
+spec:
+  type: NodePort # Proper indentation
+  selector:
+    app: postgres02
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+      # nodePort: 30433 # Must be within 30000-32767

@@ -1,0 +1,18 @@
+# manage-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: manage-service
+spec:
+  selector:
+    app: manage-service
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080 # HTTP
+      targetPort: 8080
+    - name: grpc
+      protocol: TCP
+      port: 8090 # gRPC
+      targetPort: 8090
+  # type: LoadBalancer # Use LoadBalancer to expose externally

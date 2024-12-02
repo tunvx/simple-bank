@@ -1,0 +1,87 @@
+# ConfigMap for storing Redis configuration details
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+  labels:
+    app: redis
+data:
+  REDIS_PASSWORD: secret # Password for the Redis instance
+
+---
+# PersistentVolume (PV) defines the storage resource in the cluster
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis-pv
+  labels:
+    type: local
+    app: redis
+spec:
+  storageClassName: manual # Storage class to use for this PV
+  capacity:
+    storage: 5Gi # Storage capacity for the PV
+  accessModes:
+    - ReadWriteOnce # PV access mode (single pod access)
+  hostPath:
+    path: /data/redis # Path on the host where the data is stored
+
+---
+# PersistentVolumeClaim (PVC) allows a pod to request specific storage resources
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+  labels:
+    app: redis
+spec:
+  storageClassName: manual # Storage class to use for this PVC
+  accessModes:
+    - ReadWriteOnce # PVC access mode (matching the PV)
+  resources:
+    requests:
+      storage: 5Gi # Requested storage for the PVC
+
+---
+# Deployment for the Redis instance
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  replicas: 1 # Number of pod replicas
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7.4-alpine3.20 # Redis container image
+          ports:
+            - containerPort: 6379 # Container port to expose
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: redis-config # Reference to ConfigMap for environment variable
+                  key: REDIS_PASSWORD
+          volumeMounts:
+            - mountPath: /data # Path in the container where data will be stored
+              name: redis-volume
+          resources:
+            requests:
+              cpu: "1" # Requested CPU for the container
+              memory: "1Gi" # Requested memory for the container
+            limits:
+              cpu: "1" # Limit of CPU for the container
+              memory: "1Gi" # Limit of memory for the container
+      volumes:
+        - name: redis-volume
+          persistentVolumeClaim:
+            claimName: redis-pvc # Claim the PVC for the deployment
