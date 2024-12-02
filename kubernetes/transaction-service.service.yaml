@@ -1,0 +1,16 @@
+# transaction-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: transaction-service
+spec:
+  selector:
+    app: transaction-service
+  ports:
+    - protocol: TCP
+      port: 8080 # HTTP
+      targetPort: 8080
+    - protocol: TCP
+      port: 8090 # gRPC
+      targetPort: 8090
+  type: LoadBalancer
