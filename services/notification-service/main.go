@@ -5,7 +5,6 @@ import (
 	"io"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 
 	"github.com/hibiken/asynq"
@@ -94,7 +93,7 @@ func runTaskProcessor(
 	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
 	taskProcessor := redis.NewRedisTaskProcessor(redisOpt, cusStore, mailer)
 
-	log.Info().Msgf("start Task:Processor at [::]:%s", strings.Split(redisOpt.Addr, ":")[1])
+	log.Info().Msgf("start Task:Processor at :: %s", redisOpt.Addr)
 	err := taskProcessor.Start()
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to start task processor")
