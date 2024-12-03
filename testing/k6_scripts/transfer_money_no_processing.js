@@ -11,10 +11,9 @@ export const options = {
 
 
 let totalAccounts = 50000;
-let apiHost = "http://localhost:8082";
+// let apiHost = "http://localhost:8082";                      // Docker 
+let apiHost = "http://transaction-service.banking.com";     // Minikube
 let failedRequestCounter = new Counter('failed_requests');
-
-const BEARER_TOKEN = "v2.public.eyJpZCI6IjNiMmE4NjhjLTlkYTYtNDg4ZS04MGNmLWZjMjllOGZiNWFhNyIsInVzZXJfaWQiOjEsInJvbGUiOiJiYW5rZXIiLCJpc3N1ZWRfYXQiOiIyMDI0LTExLTE4VDE0OjE4OjE0LjI3MzEwNTYyOFoiLCJleHBpcmVkX2F0IjoiMjAyNC0xMS0xOVQxNDoxODoxNC4yNzMxMDU3MTJaIn0ju6XaQSd8LYkGfaA9IZkIQC_aZwbzHYyLmgBT4ebpgSbWVq9Ij0Jc8eK8s_PalMAELkCGU3ZKPS3_KYHH__4A.bnVsbA";
 
 export default function () {
     // Generate two distinct random IDs between 1 and totalAccounts

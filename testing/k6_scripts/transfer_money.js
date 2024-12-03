@@ -11,10 +11,11 @@ export const options = {
 
 
 let totalAccounts = 50000;
-let apiHost = "http://localhost:8082";
+// let apiHost = "http://localhost:8082";                      // Docker 
+let apiHost = "http://transaction-service.banking.com";     // Minikube
 let failedRequestCounter = new Counter('failed_requests');
 
-const BEARER_TOKEN = "v2.public.eyJpZCI6IjNiMmE4NjhjLTlkYTYtNDg4ZS04MGNmLWZjMjllOGZiNWFhNyIsInVzZXJfaWQiOjEsInJvbGUiOiJiYW5rZXIiLCJpc3N1ZWRfYXQiOiIyMDI0LTExLTE4VDE0OjE4OjE0LjI3MzEwNTYyOFoiLCJleHBpcmVkX2F0IjoiMjAyNC0xMS0xOVQxNDoxODoxNC4yNzMxMDU3MTJaIn0ju6XaQSd8LYkGfaA9IZkIQC_aZwbzHYyLmgBT4ebpgSbWVq9Ij0Jc8eK8s_PalMAELkCGU3ZKPS3_KYHH__4A.bnVsbA";
+const BEARER_TOKEN = "v2.public.eyJpZCI6IjU0MzVmNDkyLWYxMDItNGIwNS1hMzZmLWFjZmMxMzI5MWM5NiIsInVzZXJfaWQiOjEsInJvbGUiOiJiYW5rZXIiLCJpc3N1ZWRfYXQiOiIyMDI0LTEyLTAzVDEyOjExOjA5Ljk4MzQwOTgzNloiLCJleHBpcmVkX2F0IjoiMjAyNC0xMi0wNFQxMjoxMTowOS45ODM0MDk5NjFaIn2zqhR2ZLrR9_gbaqUl704kgHNXFe5ZyUtNQVX5TF_j_zox_WeF8-5QN17Xd9igW9MR7xkAJXhl_GTe8PVMabwI.bnVsbA";
 
 export default function () {
     // Generate two distinct random IDs between 1 and totalAccounts

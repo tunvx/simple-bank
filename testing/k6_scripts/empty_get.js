@@ -9,8 +9,8 @@ export const options = {
     duration: __ENV.DURATION ? __ENV.DURATION : undefined,
 };
 
-
-let apiHost = "http://localhost:8082";
+// let apiHost = "http://localhost:8082";                      // Docker 
+let apiHost = "http://transaction-service.banking.com";     // Minikube
 let failedRequestCounter = new Counter('failed_requests');
 
 export default function () {

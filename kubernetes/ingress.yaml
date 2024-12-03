@@ -69,17 +69,10 @@ spec:
                 port:
                   number: 8090
 
-################################################
-#             Config Ingress For Mac           #
-################################################
-### Add to etc/hosts
+### CONFIG INGRESS FOR MAC: Add to etc/hosts
 # 127.0.0.1 auth-service.banking.com
 # 127.0.0.1 auth-grpc-service.banking.com
 # 127.0.0.1 manage-service.banking.com
 # 127.0.0.1 manage-grpc-service.banking.com
 # 127.0.0.1 transaction-service.banking.com
 # 127.0.0.1 transaction-grpc-service.banking.com
-
-# minikube addons enable ingress
-# minikube tunnel # run "minikube tunnel" and your ingress resources would be available at "127.0.0.1"
-# curl -X GET http://auth-service.banking.com/v1/generate_test_access_token
