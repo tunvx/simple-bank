@@ -1,8 +1,8 @@
-# Simple Bank (in Microservices)
+# Simple Bank - Microservices Architecture
 
-This project implements the server-side of a simple banking system. It leverages a microservices architecture to deliver a range of banking functionalities, including customer and account management, secure authentication, money transfer transactions, notifications, historical data management, logging, and monitoring.
+This project implements the server-side of a simple banking system using a microservices architecture. It provides core banking functionalities such as customer and account management, secure authentication, money transfers, notifications, and monitoring capabilities.
 
-Note: Loan and savings features are planned for future releases.
+Note: Loan and saving features are planned for future development.
 
 **Banking System Architecture:**
 
@@ -21,7 +21,7 @@ Note: Loan and savings features are planned for future releases.
 - Email Verification: Sends verification emails to customers as part of the registration process.
 - Transaction Notifications: Sends email notifications to customers after each transaction.
 
-## Tech Stack
+## 1. Tech Stack
 
 + **Architecture:** Microservices, Service-Oriented Architecture (SOA).
 
@@ -31,14 +31,14 @@ Note: Loan and savings features are planned for future releases.
 
 + **APIs:** RESTful (client-to-service), gRPC ( service-to-service).
 
-+ **Build/Test/Deployment:** CI/CD with GitHub Actions, unit and performance testing, Docker Compose.
++ **Build/Test/Deployment:** CI/CD with GitHub Actions, unit and performance testing, Docker Compose, Kubernetes (k8s).
 
 + **Advanced Techs:** JWT/Paseto (authentication/security), Kafka (message queue), Redis (caching), logging, monitoring.
 
-+ **Planned:** Distributed SQL, Docker Swarm/Kubernetes for auto-scaling.
++ **Planned:** Distributed SQL (for auto-scaling at database-level).
 
-## Setup local development (MacOS)
-### Install tools
+## 2. Local Development Setup (MacOS)
+### Install tools (MacOS)
 + [Docker desktop](https://www.docker.com/products/docker-desktop)
 + [TablePlus](https://tableplus.com/)
 + [Homebrew](https://brew.sh/)
@@ -56,40 +56,53 @@ Note: Loan and savings features are planned for future releases.
   brew install golang-migrate
 ```
 
-## Deploy as Docker Containers
-+ Clone the project
+## 3. Docker Deployment - Quick Start
+### 3.1 Deployment Steps
+
+1. Clone the project:
 ```bash
   git clone https://github.com/tunvx/simple-bank
 ```
 
-+ Go to the project directory
+2. Navigate to the project directory:
 ```bash
   cd simple-bank
 ```
 
-+ Go to the domolo directory (docker + monitoring + logging) 
+3. Switch to the `docker-deploy` branch:
+```bash
+  git checkout docker-deploy
+```
+
+4. Navigate to the `domolo` directory (short for docker + monitoring + logging):
 ```bash
   cd domolo
 ```
 
-+ Start the server
+5. Start core banking services (database, Redis, Kafka, etc.):
 ```bash
   make start-infra
 ```
 
-+ Start the monitor
+6. Start the monitoring services (Prometheus, Grafana, etc.):
 ```bash
   make start-monitor
 ```
 
-### Steps for a basic monitoring
+### 3.2 Monitoring Steps
+
 After deploy monitor, do the following steps:
 + Login to grafana ( admin : abc13579 )
 + Connections -> Add a new connection -> Find and enter "Prometheus" -> Add a new data source -> Enter "http://prometheus:9090" into "Prometheus server URL" -> Save and Test
 + Dashboards -> New -> Import -> Enter "1860" and "193" ID (for node-exporter and cadvisor) -> Select data source is "prometheus" -> Import -> You can see defaul dashboards -> Save
+### 3.3 Testing and Performance Results
 
-## Testing & Performance
-+ Refer to the testing folder for details.
++ Refer to the `testing` folder in `docker-deploy` branch for details.
+
+## 4. K8s Deployment - Quick Start
+### 4.1 Deployment Steps
+### 4.2 Monitoring Steps
+### 4.3 Testing and Performance Results
 
 ## Appendix
 
@@ -100,6 +113,5 @@ The tags I read this while doing this project. I make notes of them because I th
 + _ RESTful, gRPC, HTTP/1.1, HTTP/2, RPC, HTTPS, SSL/TLS.
 + _ token_based_authentication, JWT, Paseto, session_management, access_control.
 + _ unittest, performance_test, load_testing, k6.
-+ _ docker, docker_compose, dockerfile, containerization.
++ _ containerization, docker, dockerfile, docker_compose, kubernetes (k8s).
 + _ redis, kafka, message_queue, background_worker, asynchronous_communication, asynchronous_processing, caching, logging, monitoring, alerting, metrics collection.
-
