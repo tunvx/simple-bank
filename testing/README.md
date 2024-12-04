@@ -1,4 +1,4 @@
-# Testing for Simple Bank
+# Testing for Simple Bank - Docker Deployment
 
 
 ## 1. Load Testing Overview
@@ -15,22 +15,25 @@ The load testing is set up to assess the performance of the `transfer_money` ope
     ````
 
 ## 3. Running the Load Test
-1. Ensure you're in the testing directory
+1. Ensure the infrastructure (Docker deployment) is running:
+    + Make sure both the infrastructure and monitoring services have been started previously.
+
+2. Ensure you're in the testing directory
     ````bash
     cd testing
     ````
 
-2. Generate mock data (needed for the first time):
+3. Generate mock data (needed for the first time - **after start-infra**):
     ```bash
     # Generate 50000 customers, credential, accounts (see code)
     make mockdata
     ```
 
-3.  Generate a new test token (due to Expired token)
+4.  Generate a new test token (due to Expired token)
 + Before running the tests, generate a new test token by calling the test token endpoint (**after start-infra**) and replace the BEARER_TOKEN in test scripts with the newly generated token.  Use the following HTTP request to get a new token:
     + **URL:** http://127.0.0.1:8081/v1/generate_test_access_token
 
-4. **Run the load test with:**
+5. **Run the load test with:**
 
 + **Run Individual Tests:**
     ```bash
