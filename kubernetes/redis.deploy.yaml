@@ -1,12 +1,12 @@
-# ConfigMap for storing Redis configuration details
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: redis-config
-  labels:
-    app: redis
-data:
-  REDIS_PASSWORD: secret # Password for the Redis instance
+# # ConfigMap for storing Redis configuration details
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: redis-config
+#   labels:
+#     app: redis
+# data:
+#   REDIS_PASSWORD: secret # Password for the Redis instance  
 
 ---
 # PersistentVolume (PV) defines the storage resource in the cluster
@@ -20,9 +20,9 @@ metadata:
 spec:
   storageClassName: manual # Storage class to use for this PV
   capacity:
-    storage: 5Gi # Storage capacity for the PV
+    storage: 10Gi # Storage capacity for the PV
   accessModes:
-    - ReadWriteOnce # PV access mode (single pod access)
+    - ReadWriteMany # PV access mode (can be accessed by multiple pods)
   hostPath:
     path: /data/redis # Path on the host where the data is stored
 
@@ -37,10 +37,10 @@ metadata:
 spec:
   storageClassName: manual # Storage class to use for this PVC
   accessModes:
-    - ReadWriteOnce # PVC access mode (matching the PV)
+    - ReadWriteMany # PVC access mode (matching the PV)
   resources:
     requests:
-      storage: 5Gi # Requested storage for the PVC
+      storage: 10Gi # Requested storage for the PVC
 
 ---
 # Deployment for the Redis instance
@@ -65,12 +65,6 @@ spec:
           image: redis:7.4-alpine3.20 # Redis container image
           ports:
             - containerPort: 6379 # Container port to expose
-          env:
-            - name: REDIS_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  name: redis-config # Reference to ConfigMap for environment variable
-                  key: REDIS_PASSWORD
           volumeMounts:
             - mountPath: /data # Path in the container where data will be stored
               name: redis-volume
@@ -85,3 +79,4 @@ spec:
         - name: redis-volume
           persistentVolumeClaim:
             claimName: redis-pvc # Claim the PVC for the deployment
+      restartPolicy: Always

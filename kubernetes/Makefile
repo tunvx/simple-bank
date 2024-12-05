@@ -1,47 +1,121 @@
-rm-all:
+rm-infra:
 	kubectl delete deployments --all && \
 	kubectl delete services --all && \
 	kubectl delete pods --all && \
 	kubectl delete pvc --all && \
 	kubectl delete pv --all 
 
-rm-data:
+rm-persistent-volumes:
 	minikube ssh -- 'sudo rm -rf /data/*'
 
 postgres01:
-	kubectl apply -f postgres01.deploy.yaml && \
+# 	Creates the required directory and permissions for postgres01, 
+#   then deploys its Kubernetes resources.
+	minikube ssh "sudo mkdir -p /data/postgres01 && sudo chown -R 70:70 /data/postgres01"
+	kubectl apply -f postgres01.deploy.yaml
 	kubectl apply -f postgres01.service.yaml
 
+rm-postgres01:
+#   Deletes deployment, service, PVC, and PV for postgres01.
+	kubectl delete deployment postgres01 --ignore-not-found
+	kubectl delete svc postgres01 --ignore-not-found
+	kubectl delete pvc postgres01-pvc --ignore-not-found
+	kubectl delete pv postgres01-pv --ignore-not-found
+
+
 postgres02:
-	kubectl apply -f postgres02.deploy.yaml && \
+#   Creates the required directory and permissions for postgres02, 
+#   then deploys its Kubernetes resources.
+	minikube ssh "sudo mkdir -p /data/postgres02 && sudo chown -R 70:70 /data/postgres02"
+	kubectl apply -f postgres02.deploy.yaml
 	kubectl apply -f postgres02.service.yaml
 
+rm-postgres02:
+#   Deletes deployment, service, PVC, and PV for postgres02.
+	kubectl delete deployment postgres02 --ignore-not-found
+	kubectl delete svc postgres02 --ignore-not-found
+	kubectl delete pvc postgres02-pvc --ignore-not-found
+	kubectl delete pv postgres02-pv --ignore-not-found
+
+
 redis:
+#   Deploys the Redis service and its associated deployment.
 	kubectl apply -f redis.deploy.yaml && \
 	kubectl apply -f redis.service.yaml
 
+rm-redis:
+#   Deletes deployment, service, PVC, and PV for Redis.
+	kubectl delete deployment redis --ignore-not-found
+	kubectl delete svc redis --ignore-not-found
+	kubectl delete pvc redis-pvc --ignore-not-found
+	kubectl delete pv redis-pv --ignore-not-found
+
+
 manage-service:
+#   Deploys the manage-service and its associated Kubernetes resources.
 	kubectl apply -f manage-service.deploy.yaml && \
 	kubectl apply -f manage-service.service.yaml
 
+rm-manage-service:
+	# Deletes deployment and service for manage-service.
+	kubectl delete deployment manage-service --ignore-not-found
+	kubectl delete svc manage-service --ignore-not-found
+
+
 auth-service:
+#   Deploys the auth-service and its associated Kubernetes resources.
 	kubectl apply -f auth-service.deploy.yaml && \
 	kubectl apply -f auth-service.service.yaml
 
+rm-auth-service:
+#   Deletes deployment, service, PVC, and PV for auth-service.
+	kubectl delete deployment auth-service --ignore-not-found
+	kubectl delete svc auth-service --ignore-not-found
+	kubectl delete pvc auth-service-pvc --ignore-not-found
+	kubectl delete pv auth-service-pv --ignore-not-found
+
+
 transaction-service:
+#   Deploys the transaction-service and its associated Kubernetes resources.
 	kubectl apply -f transaction-service.deploy.yaml && \
 	kubectl apply -f transaction-service.service.yaml
 
+rm-transaction-service:
+#   Deletes deployment, service, PVC, and PV for transaction-service.
+	kubectl delete deployment transaction-service --ignore-not-found
+	kubectl delete svc transaction-service --ignore-not-found
+	kubectl delete pvc transaction-service-pvc --ignore-not-found
+	kubectl delete pv transaction-service-pv --ignore-not-found
+
+
 notification-service:
+#   Deploys the notification-service with its Kubernetes resources.
 	kubectl apply -f notification-service.deploy.yaml
 
-.PHONY: rm-all, postgres01, postgres02, redis, manage-service,  auth-service, notification-service
+rm-notification-service:
+#   Deletes deployment, service, PVC, and PV for notification-service.
+	kubectl delete deployment notification-service --ignore-not-found
+	kubectl delete svc notification-service --ignore-not-found
+	kubectl delete pvc notification-service-pvc --ignore-not-found
+	kubectl delete pv notification-service-pv --ignore-not-found
+
+ingress:
+	kubectl apply -f ingress.yaml
+
+rm-ingress:
+	kubectl get ingress
+	kubectl delete ingress --all
+
+.PHONY: rm-all, postgres01, postgres02, redis, manage-service, auth-service, notification-service, ingress, \
+rm-postgres01, rm-postgres02, rm-redis, rm-manage-service, rm-auth-service, rm-transaction-service, rm-notification-service, rm-ingress
+
 
 ### START MINIKUBE (FOR LOCAL)
 # minikube start --cpus=10 --memory=13600 --addons=metrics-server,ingress
 
 ### EXPOSE PORT TO LOCAL (FOR MAC)
 # kubectl get svc
+# kubectl get ingress
 # minikube addons enable ingress
 # minikube tunnel # run "minikube tunnel" and your ingress resources would be available at "127.0.0.1"
 # curl -X GET http://auth-service.banking.com/v1/generate_test_access_token
@@ -50,3 +124,8 @@ notification-service:
 # kubectl port-forward svc/postgres01 5432:5432
 # kubectl port-forward svc/postgres02 5433:5432
 # make ...
+
+### DESCRIBE POD & NODE
+# kubectl logs .pid
+# kubectl describe pod  .pid
+# kubectl describe nodes

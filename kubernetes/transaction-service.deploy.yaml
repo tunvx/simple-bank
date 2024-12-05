@@ -40,7 +40,7 @@ metadata:
   labels:
     app: transaction-service
 spec:
-  replicas: 2 # Number of pod replicas
+  replicas: 5 # Number of pod replicas
   selector:
     matchLabels:
       app: transaction-service
@@ -69,12 +69,13 @@ spec:
           args: ["/app/main"] # Command to execute the main application
           resources:
             requests:
-              cpu: "1" # Requested CPU for the container
-              memory: "1Gi" # Requested memory for the container
+              cpu: "0.5" # Requested CPU for the container
+              memory: "256Mi" # Requested memory for the container
             limits:
-              cpu: "1" # Limit of CPU for the container
-              memory: "1Gi" # Limit of memory for the container
+              cpu: "0.5" # Limit of CPU for the container
+              memory: "256Mi" # Limit of memory for the container
       volumes:
         - name: transaction-service-log
           persistentVolumeClaim:
             claimName: transaction-service-pvc # Claim the PVC for the deployment
+      restartPolicy: Always
