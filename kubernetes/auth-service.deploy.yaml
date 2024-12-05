@@ -70,11 +70,12 @@ spec:
           resources:
             requests:
               cpu: "0.5" # Requested CPU for the container
-              memory: "512Mi" # Requested memory for the container
+              memory: "256Mi" # Requested memory for the container
             limits:
               cpu: "0.5" # Limit of CPU for the container
-              memory: "512Mi" # Limit of memory for the container
+              memory: "256Mi" # Limit of memory for the container
       volumes:
         - name: auth-service-log
           persistentVolumeClaim:
             claimName: auth-service-pvc # Claim the PVC for the deployment
+      restartPolicy: Always

@@ -7,7 +7,7 @@ metadata:
     app: postgres02
 data:
   POSTGRES_DB: auth_db # Database name to be created
-  POSTGRES_USER: root # User for the PostgreSQL instance
+  POSTGRES_USER: postgres # User for the PostgreSQL instance
   POSTGRES_PASSWORD: secret # Password for the PostgreSQL user
 
 ---
@@ -22,7 +22,7 @@ metadata:
 spec:
   storageClassName: manual # Storage class to use for this PV
   capacity:
-    storage: 10Gi # Storage capacity for the PV
+    storage: 50Gi # Storage capacity for the PV
   accessModes:
     - ReadWriteMany # PV access mode (can be accessed by multiple pods)
   hostPath:
@@ -42,7 +42,7 @@ spec:
     - ReadWriteMany # PVC access mode (matching the PV)
   resources:
     requests:
-      storage: 10Gi # Requested storage for the PVC
+      storage: 50Gi # Requested storage for the PVC
 
 ---
 # Deployment for the PostgreSQL instance
@@ -71,19 +71,20 @@ spec:
             - configMapRef:
                 name: postgres02-secret # Reference to ConfigMap for environment variables
           volumeMounts:
-            - mountPath: /var/lib/postgresql/data # Path in the container where data will be stored
-              name: postgres02-volume
+            - name: postgres02-volume
+              mountPath: /var/lib/postgresql/data # Path in the container where data will be stored
           resources:
             requests:
               cpu: "1" # Requested CPU for the container
-              memory: "2Gi" # Requested memory for the container
+              memory: "1Gi" # Requested memory for the container
             limits:
               cpu: "1" # Limit of CPU for the container
-              memory: "2Gi" # Limit of memory for the container
+              memory: "1Gi" # Limit of memory for the container
           securityContext:
-            runAsUser: 70  # The defaul 'postgres' user UID
-            runAsGroup: 70  # The defaul 'postgres' user GID
+            runAsUser: 70 # The defaul 'postgres' user UID
+            runAsGroup: 70 # The defaul 'postgres' user GID
       volumes:
         - name: postgres02-volume
           persistentVolumeClaim:
             claimName: postgres02-pvc # Claim the PVC for the deployment
+      restartPolicy: Always
