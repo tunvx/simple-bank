@@ -93,7 +93,7 @@ func main() {
 	store := db.NewStore(connPool)
 
 	redisOpt := asynq.RedisClientOpt{
-		Addr: config.DockerRedisAddress,
+		Addr: config.InternalRedisAddress,
 	}
 
 	taskDistributor := redis.NewRedisTaskDistributor(redisOpt)

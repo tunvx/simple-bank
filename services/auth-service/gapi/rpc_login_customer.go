@@ -32,7 +32,7 @@ func (service *Service) LoginCustomer(ctx context.Context, req *pb.LoginCustomer
 		return nil, status.Errorf(codes.Internal, "failed to retrieve customer credential of user ( %s ) in database: %s", req.Username, err)
 	}
 
-	cusRsp, err := service.customerClient.IGetCustomerByID(ctx, &cuspb.IGetCustomerByIDRequest{
+	cusRsp, err := service.manageClient.IGetCustomerByID(ctx, &cuspb.IGetCustomerByIDRequest{
 		CustomerId: customerCredential.CustomerID,
 	})
 	if err != nil {
