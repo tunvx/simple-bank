@@ -15,10 +15,10 @@ import (
 
 type Service struct {
 	pb.UnimplementedAuthServiceServer
-	config         util.Config
-	store          db.Store
-	tokenMaker     token.Maker
-	customerClient manpb.ManageServiceClient
+	config       util.Config
+	store        db.Store
+	tokenMaker   token.Maker
+	manageClient manpb.ManageServiceClient
 }
 
 // NewService creates new a Grpc service.
@@ -34,7 +34,7 @@ func NewService(config util.Config, store db.Store) (*Service, error) {
 	// Dial the Management Service (Insecure for local dev environments)
 	// Using insecure credentials for local development
 	conn, err := grpc.NewClient(
-		config.DockerGrpcManageServiceAddress,
+		config.InternalManageServiceAddress,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		icallInterceptor,
 	)
@@ -43,10 +43,10 @@ func NewService(config util.Config, store db.Store) (*Service, error) {
 	}
 
 	server := &Service{
-		config:         config,
-		store:          store,
-		tokenMaker:     tokenMaker,
-		customerClient: manpb.NewManageServiceClient(conn),
+		config:       config,
+		store:        store,
+		tokenMaker:   tokenMaker,
+		manageClient: manpb.NewManageServiceClient(conn),
 	}
 
 	return server, nil

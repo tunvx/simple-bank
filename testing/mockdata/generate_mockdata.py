@@ -93,8 +93,8 @@ async def generate_50k_account(n, db_url):
 # Running the async tasks
 async def main():
     n = 50001
-    core_db_url = "postgresql://root:secret@localhost:5432/core_db?sslmode=disable"
-    auth_db_url = "postgresql://root:secret@localhost:5433/auth_db?sslmode=disable"
+    core_db_url = "postgresql://postgres:secret@localhost:5432/core_db?sslmode=disable"
+    auth_db_url = "postgresql://postgres:secret@localhost:5433/auth_db?sslmode=disable"
 
     await generate_50k_customers(n, core_db_url)
     await generate_50k_customer_credentials(n, core_db_url, auth_db_url)

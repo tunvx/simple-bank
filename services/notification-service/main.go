@@ -68,7 +68,7 @@ func main() {
 	cusStore := cusdb.NewStore(connPool)
 
 	redisOpt := asynq.RedisClientOpt{
-		Addr: config.DockerRedisAddress,
+		Addr: config.InternalRedisAddress,
 	}
 
 	waitGroup, ctx := errgroup.WithContext(ctx)

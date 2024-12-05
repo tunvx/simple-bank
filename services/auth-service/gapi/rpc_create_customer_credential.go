@@ -23,7 +23,7 @@ func (service *Service) CreateCustomerCredential(ctx context.Context, req *pb.Cr
 	}
 
 	// 2. Fetch the customer data for the response
-	cusRsp, err := service.customerClient.IGetCustomerByRid(ctx, &cuspb.IGetCustomerByRidRequest{
+	cusRsp, err := service.manageClient.IGetCustomerByRid(ctx, &cuspb.IGetCustomerByRidRequest{
 		CustomerRid: req.CustomerRid,
 	})
 	if err != nil {

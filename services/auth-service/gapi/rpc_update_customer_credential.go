@@ -30,7 +30,7 @@ func (service *Service) UpdateCustomerCredential(ctx context.Context, req *pb.Up
 	}
 
 	// 3. Fetch the customer data for the response
-	cusRsp, err := service.customerClient.IGetCustomerByRid(ctx, &cuspb.IGetCustomerByRidRequest{
+	cusRsp, err := service.manageClient.IGetCustomerByRid(ctx, &cuspb.IGetCustomerByRidRequest{
 		CustomerRid: req.CustomerRid,
 	})
 	if err != nil {

@@ -95,14 +95,14 @@ func main() {
 
 	// Redis connection pool configuration
 	redisOpt1 := redis.Options{
-		Addr:            config.DockerRedisAddress,
+		Addr:            config.InternalRedisAddress,
 		MaxActiveConns:  120,
 		ConnMaxIdleTime: time.Minute * 5,
 	}
 	cache := cache.NewRedisCache(&redisOpt1)
 
 	redisOpt2 := asynq.RedisClientOpt{
-		Addr: config.DockerRedisAddress,
+		Addr: config.InternalRedisAddress,
 	}
 
 	taskDistributor := worker.NewRedisTaskDistributor(redisOpt2)
