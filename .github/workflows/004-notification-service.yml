@@ -7,7 +7,7 @@ on:
     paths:
       - 'services/notification-service/**'
       - 'app.env'
-      - 'domolo/dockerfiles/Dockerfile.0004.notification'
+      - 'docker/dockerfiles/Dockerfile.0004.notification'
 
 env:
   DOCKER_REPOSITORY: tunvx/simple-bank-notification-service
@@ -45,10 +45,10 @@ jobs:
           push: true
           tags: ${{ env.DOCKER_REPOSITORY }}:v${{ env.BASE_TAG }}
           platforms: linux/amd64,linux/arm64
-          file: domolo/dockerfiles/Dockerfile.0004.notification
+          file: docker/dockerfiles/Dockerfile.0004.notification
 
       # Step 5: Build and Push
       # - name: Build and push Notification Service
       #   run: |
       #     docker buildx create --use
-      #     docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKER_REPOSITORY:v${{ env.BASE_TAG }} -f domolo/dockerfiles/Dockerfile.0004.notification . --push
+      #     docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKER_REPOSITORY:v${{ env.BASE_TAG }} -f docker/dockerfiles/Dockerfile.0004.notification . --push

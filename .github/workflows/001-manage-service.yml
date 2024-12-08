@@ -7,7 +7,7 @@ on:
     paths:
       - 'services/manage-service/**'
       - 'app.env'
-      - 'domolo/dockerfiles/Dockerfile.0001.manage'
+      - 'docker/dockerfiles/Dockerfile.0001.manage'
 
 env:
   DOCKER_REPOSITORY: tunvx/simple-bank-manage-service
@@ -45,10 +45,10 @@ jobs:
           push: true
           tags: ${{ env.DOCKER_REPOSITORY }}:v${{ env.BASE_TAG }}
           platforms: linux/amd64,linux/arm64
-          file: domolo/dockerfiles/Dockerfile.0001.manage
+          file: docker/dockerfiles/Dockerfile.0001.manage
 
       # Step 5: Build and Push
       # - name: Build and push Manage Service
       #   run: |
       #     docker buildx create --use
-      #     docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKER_REPOSITORY:v${{ env.BASE_TAG }} -f domolo/dockerfiles/Dockerfile.0001.manage . --push
+      #     docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKER_REPOSITORY:v${{ env.BASE_TAG }} -f docker/dockerfiles/Dockerfile.0001.manage . --push

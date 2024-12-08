@@ -7,7 +7,7 @@ on:
     paths:
       - 'services/auth-service/**'
       - 'app.env'
-      - 'domolo/dockerfiles/Dockerfile.0002.auth'
+      - 'docker/dockerfiles/Dockerfile.0002.auth'
 
 env:
   DOCKER_REPOSITORY: tunvx/simple-bank-auth-service
@@ -45,10 +45,10 @@ jobs:
           push: true
           tags: ${{ env.DOCKER_REPOSITORY }}:v${{ env.BASE_TAG }}
           platforms: linux/amd64,linux/arm64
-          file: domolo/dockerfiles/Dockerfile.0002.auth
+          file: docker/dockerfiles/Dockerfile.0002.auth
 
       # Step 5: Build and Push
       # - name: Build and push Auth Service
       #   run: |
       #     docker buildx create --use
-      #     docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKER_REPOSITORY:v${{ env.BASE_TAG }} -f domolo/dockerfiles/Dockerfile.0002.auth . --push
+      #     docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKER_REPOSITORY:v${{ env.BASE_TAG }} -f docker/dockerfiles/Dockerfile.0002.auth . --push
