@@ -1,0 +1,31 @@
+# Ingress for macOS, add to /etc/hosts
+127.0.0.1 auth-service.banking.com
+127.0.0.1 auth-grpc-service.banking.com
+127.0.0.1 manage-service.banking.com
+127.0.0.1 manage-grpc-service.banking.com
+127.0.0.1 transaction-service.banking.com
+127.0.0.1 transaction-grpc-service.banking.com
+127.0.0.1 alertmanager.monitor.com
+127.0.0.1 grafana.monitor.com
+
+# Add monitoring to helm
+cupid@Bard kubernetes % cd monitor
+cupid@Bard monitor %  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+"prometheus-community" already exists with the same configuration, skipping
+cupid@Bard monitor %  helm repo add stable https://charts.helm.sh/stable
+"stable" already exists with the same configuration, skipping
+cupid@Bard monitor %  helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "grafana" chart repository
+...Successfully got an update from the "prometheus-community" chart repository
+...Successfully got an update from the "stable" chart repository
+Update Complete. ⎈Happy Helming!⎈
+cupid@Bard monitor %  helm search repo prometheus |egrep "stack|CHART"
+NAME                                                    CHART VERSION   APP VERSION     DESCRIPTION                                       
+prometheus-community/kube-prometheus-stack              66.3.1          v0.78.2         kube-prometheus-stack collects Kubernetes manif...
+prometheus-community/prometheus-stackdriver-exp...      4.6.2           v0.16.0         Stackdriver exporter for Prometheus               
+grafana/loki-stack                                      2.10.2          v2.9.3          Loki: like Prometheus, but for logs.              
+stable/stackdriver-exporter                             1.3.2           0.6.0           DEPRECATED - Stackdriver exporter for Prometheus 
+cupid@Bard monitor % helm pull prometheus-community/kube-prometheus-stack --version 66.3.1
+cupid@Bard monitor % tar -xzf kube-prometheus-stack-66.3.1.tgz
+cupid@Bard monitor % cp kube-prometheus-stack/values.yaml values-prometheus.yaml 
