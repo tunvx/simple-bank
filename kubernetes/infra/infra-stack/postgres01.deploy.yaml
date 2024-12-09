@@ -74,11 +74,11 @@ spec:
               mountPath: /var/lib/postgresql/data # Path in the container where data will be stored
           resources:
             requests:
-              cpu: "2" # Requested CPU for the container
-              memory: "2Gi" # Requested memory for the container
+              cpu: "3" # Requested CPU for the container
+              memory: "5Gi" # Requested memory for the container
             limits:
-              cpu: "3" # Limit of CPU for the container
-              memory: "5Gi" # Limit of memory for the container
+              cpu: "4" # Limit of CPU for the container
+              memory: "8Gi" # Limit of memory for the container
           securityContext:
             runAsUser: 70 # The defaul 'postgres' user UID
             runAsGroup: 70 # The defaul 'postgres' user GID
