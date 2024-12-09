@@ -95,14 +95,16 @@ rm-auth-service:
 transaction-service:
 #   Deploys the transaction-service and its associated Kubernetes resources.
 	kubectl apply -f infra/infra-stack/transaction-service.deploy.yaml && \
-	kubectl apply -f infra/infra-stack/transaction-service.service.yaml
+	kubectl apply -f infra/infra-stack/transaction-service.service.yaml && \
+	kubectl apply -f infra/infra-stack/transaction-service.hpa.yaml
 
 rm-transaction-service:
-#   Deletes deployment, service, PVC, and PV for transaction-service.
+#   Deletes deployment, service, PVC, PV, and HPA for transaction-service.
 	kubectl delete deployment transaction-service --ignore-not-found
 	kubectl delete svc transaction-service --ignore-not-found
 	kubectl delete pvc transaction-service-pvc --ignore-not-found
 	kubectl delete pv transaction-service-pv --ignore-not-found
+	kubectl delete hpa transaction-service-hpa --ignore-not-found
 
 
 notification-service:

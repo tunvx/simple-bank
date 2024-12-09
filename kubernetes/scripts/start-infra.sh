@@ -28,6 +28,7 @@ kubectl apply -f infra/infra-stack/auth-service.service.yaml
 
 echo "Starting transaction-service..."
 kubectl apply -f infra/infra-stack/transaction-service.deploy.yaml
+kubectl apply -f infra/infra-stack/transaction-service.hpa.yaml
 kubectl apply -f infra/infra-stack/transaction-service.service.yaml
 
 echo "Starting notification-service..."

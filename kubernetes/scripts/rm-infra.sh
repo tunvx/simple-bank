@@ -18,6 +18,9 @@ kubectl delete pvc --all
 echo "Removing all persistent volumes (PVs)..."
 kubectl delete pv --all
 
+echo "Removing all Horizontal Pod Autoscalers (HPAs)..."
+kubectl delete hpa --all
+
 echo "Removing ingress...."
 kubectl get ingress
 kubectl delete ingress --all
