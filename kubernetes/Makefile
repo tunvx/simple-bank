@@ -1,19 +1,36 @@
-rm-infra:
-	kubectl delete deployments --all && \
-	kubectl delete services --all && \
-	kubectl delete pods --all && \
-	kubectl delete pvc --all && \
-	kubectl delete pv --all 
+.PHONY: infra, rm-infra, rm-persistent-volumes, monitor, rm-monitor, \
+postgres01, postgres02, redis, manage-service, auth-service, notification-service, ingress \
+rm-postgres01, rm-postgres02, rm-redis, rm-manage-service, rm-auth-service, rm-transaction-service, rm-notification-service, rm-ingress
+
+infra: FORCE
+	./scripts/start-infra.sh
+FORCE:
+
+rm-infra:	
+	./scripts/rm-infra.sh
 
 rm-persistent-volumes:
 	minikube ssh -- 'sudo rm -rf /data/*'
+
+monitor: FORCE
+	./scripts/start-monitor.sh
+FORCE:
+
+rm-monitor:
+	./scripts/rm-monitor.sh
+
+
+
+######################################################################################################
+######################################################################################################
+
 
 postgres01:
 # 	Creates the required directory and permissions for postgres01, 
 #   then deploys its Kubernetes resources.
 	minikube ssh "sudo mkdir -p /data/postgres01 && sudo chown -R 70:70 /data/postgres01"
-	kubectl apply -f postgres01.deploy.yaml
-	kubectl apply -f postgres01.service.yaml
+	kubectl apply -f infra/infra-stack/postgres01.deploy.yaml
+	kubectl apply -f infra/infra-stack/postgres01.service.yaml
 
 rm-postgres01:
 #   Deletes deployment, service, PVC, and PV for postgres01.
@@ -27,8 +44,8 @@ postgres02:
 #   Creates the required directory and permissions for postgres02, 
 #   then deploys its Kubernetes resources.
 	minikube ssh "sudo mkdir -p /data/postgres02 && sudo chown -R 70:70 /data/postgres02"
-	kubectl apply -f postgres02.deploy.yaml
-	kubectl apply -f postgres02.service.yaml
+	kubectl apply -f infra/infra-stack/postgres02.deploy.yaml
+	kubectl apply -f infra/infra-stack/postgres02.service.yaml
 
 rm-postgres02:
 #   Deletes deployment, service, PVC, and PV for postgres02.
@@ -40,8 +57,8 @@ rm-postgres02:
 
 redis:
 #   Deploys the Redis service and its associated deployment.
-	kubectl apply -f redis.deploy.yaml && \
-	kubectl apply -f redis.service.yaml
+	kubectl apply -f infra/infra-stack/redis.deploy.yaml && \
+	kubectl apply -f infra/infra-stack/redis.service.yaml
 
 rm-redis:
 #   Deletes deployment, service, PVC, and PV for Redis.
@@ -53,8 +70,8 @@ rm-redis:
 
 manage-service:
 #   Deploys the manage-service and its associated Kubernetes resources.
-	kubectl apply -f manage-service.deploy.yaml && \
-	kubectl apply -f manage-service.service.yaml
+	kubectl apply -f infra/infra-stack/manage-service.deploy.yaml && \
+	kubectl apply -f infra/infra-stack/manage-service.service.yaml
 
 rm-manage-service:
 	# Deletes deployment and service for manage-service.
@@ -64,8 +81,8 @@ rm-manage-service:
 
 auth-service:
 #   Deploys the auth-service and its associated Kubernetes resources.
-	kubectl apply -f auth-service.deploy.yaml && \
-	kubectl apply -f auth-service.service.yaml
+	kubectl apply -f infra/infra-stack/auth-service.deploy.yaml && \
+	kubectl apply -f infra/infra-stack/auth-service.service.yaml
 
 rm-auth-service:
 #   Deletes deployment, service, PVC, and PV for auth-service.
@@ -77,8 +94,8 @@ rm-auth-service:
 
 transaction-service:
 #   Deploys the transaction-service and its associated Kubernetes resources.
-	kubectl apply -f transaction-service.deploy.yaml && \
-	kubectl apply -f transaction-service.service.yaml
+	kubectl apply -f infra/infra-stack/transaction-service.deploy.yaml && \
+	kubectl apply -f infra/infra-stack/transaction-service.service.yaml
 
 rm-transaction-service:
 #   Deletes deployment, service, PVC, and PV for transaction-service.
@@ -90,7 +107,7 @@ rm-transaction-service:
 
 notification-service:
 #   Deploys the notification-service with its Kubernetes resources.
-	kubectl apply -f notification-service.deploy.yaml
+	kubectl apply -f infra/infra-stack/notification-service.deploy.yaml
 
 rm-notification-service:
 #   Deletes deployment, service, PVC, and PV for notification-service.
@@ -100,14 +117,11 @@ rm-notification-service:
 	kubectl delete pv notification-service-pv --ignore-not-found
 
 ingress:
-	kubectl apply -f ingress.yaml
+	kubectl apply -f infra/infra-stack/ingress.yaml
 
 rm-ingress:
 	kubectl get ingress
 	kubectl delete ingress --all
-
-.PHONY: rm-all, postgres01, postgres02, redis, manage-service, auth-service, notification-service, ingress, \
-rm-postgres01, rm-postgres02, rm-redis, rm-manage-service, rm-auth-service, rm-transaction-service, rm-notification-service, rm-ingress
 
 
 ### START MINIKUBE (FOR LOCAL)

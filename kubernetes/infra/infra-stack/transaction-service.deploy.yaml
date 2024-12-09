@@ -40,7 +40,7 @@ metadata:
   labels:
     app: transaction-service
 spec:
-  replicas: 5 # Number of pod replicas
+  replicas: 2 # Number of pod replicas
   selector:
     matchLabels:
       app: transaction-service
