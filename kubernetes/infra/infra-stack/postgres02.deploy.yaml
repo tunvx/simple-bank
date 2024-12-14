@@ -80,9 +80,9 @@ spec:
             limits:
               cpu: "1" # Limit of CPU for the container
               memory: "1Gi" # Limit of memory for the container
-          securityContext:
-            runAsUser: 70 # The defaul 'postgres' user UID
-            runAsGroup: 70 # The defaul 'postgres' user GID
+          # securityContext:
+          #   runAsUser: 70 # The defaul 'postgres' user UID
+          #   runAsGroup: 70 # The defaul 'postgres' user GID
       volumes:
         - name: postgres02-volume
           persistentVolumeClaim:
