@@ -1,34 +1,38 @@
-.PHONY: infra, rm-infra, rm-persistent-volumes, monitor, rm-monitor, \
+.PHONY: vm-persist-data, rm-persist-data, start-infra, stop-infra, start-monitor, stop-monitor \
 postgres01, postgres02, redis, manage-service, auth-service, notification-service, ingress \
 rm-postgres01, rm-postgres02, rm-redis, rm-manage-service, rm-auth-service, rm-transaction-service, rm-notification-service, rm-ingress
 
-infra: FORCE
+vm-persist-data:
+	./scripts/vm-persist-data.sh
+
+rm-persist-data:
+	orb run bash -c "sudo rm -rf /data/*"
+
+start-infra: FORCE
 	./scripts/start-infra.sh
 FORCE:
 
-rm-infra:	
-	./scripts/rm-infra.sh
+stop-infra:	
+	./scripts/stop-infra.sh
 
-rm-persistent-volumes:
-	minikube ssh -- 'sudo rm -rf /data/*'
-
-monitor: FORCE
+start-monitor: FORCE
 	./scripts/start-monitor.sh
 FORCE:
 
-rm-monitor:
-	./scripts/rm-monitor.sh
+stop-monitor:
+	./scripts/stop-monitor.sh
 
 
 
 ######################################################################################################
 ######################################################################################################
-
+### FOR ORBSTACK Env: orb run bash -c
+### FOR MINIKUBE Env: minikube ssh
 
 postgres01:
-# 	Creates the required directory and permissions for postgres01, 
-#   then deploys its Kubernetes resources.
-	minikube ssh "sudo mkdir -p /data/postgres01 && sudo chown -R 70:70 /data/postgres01"
+# 	Creates the required directory and permissions for postgres01, then deploys its Kubernetes resources.
+# 	minikube ssh "sudo mkdir -p /data/postgres01 && sudo chown -R 70:70 /data/postgres01 && sudo chmod 700 /data/postgres01"
+	orb run bash -c "sudo mkdir -p /data/postgres01 && sudo chown -R 70:70 /data/postgres01 && sudo chmod 700 /data/postgres01"
 	kubectl apply -f infra/infra-stack/postgres01.deploy.yaml
 	kubectl apply -f infra/infra-stack/postgres01.service.yaml
 
@@ -41,9 +45,9 @@ rm-postgres01:
 
 
 postgres02:
-#   Creates the required directory and permissions for postgres02, 
-#   then deploys its Kubernetes resources.
-	minikube ssh "sudo mkdir -p /data/postgres02 && sudo chown -R 70:70 /data/postgres02"
+#   Creates the required directory and permissions for postgres02, then deploys its Kubernetes resources.
+#   minikube ssh "sudo mkdir -p /data/postgres02 && sudo chown -R 70:70 /data/postgres02 && sudo chmod 700 /data/postgres02"
+	orb run bash -c "sudo mkdir -p /data/postgres02 && sudo chown -R 70:70 /data/postgres02 && sudo chmod 700 /data/postgres02"
 	kubectl apply -f infra/infra-stack/postgres02.deploy.yaml
 	kubectl apply -f infra/infra-stack/postgres02.service.yaml
 

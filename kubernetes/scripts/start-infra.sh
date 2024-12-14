@@ -2,20 +2,21 @@
 
 set -e  # Exit immediately if a command exits with a non-zero status.
 
-# Start Databases
 echo "Starting postgres01..."
-minikube ssh "sudo mkdir -p /data/postgres01 && sudo chown -R 70:70 /data/postgres01"
 kubectl apply -f infra/infra-stack/postgres01.deploy.yaml
 kubectl apply -f infra/infra-stack/postgres01.service.yaml
 
 echo "Starting postgres02..."
-minikube ssh "sudo mkdir -p /data/postgres02 && sudo chown -R 70:70 /data/postgres02"
 kubectl apply -f infra/infra-stack/postgres02.deploy.yaml
 kubectl apply -f infra/infra-stack/postgres02.service.yaml
 
 echo "Starting redis..."
 kubectl apply -f infra/infra-stack/redis.deploy.yaml
 kubectl apply -f infra/infra-stack/redis.service.yaml
+
+# Wait for 10 seconds to ensure DB services have enough time to initialize
+echo "Waiting for 15 seconds to allow database initialization..."
+sleep 15
 
 # Start API Services
 echo "Starting manage-service..."
