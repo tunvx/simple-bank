@@ -4,9 +4,10 @@ metadata:
   name: ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP" # Cho HTTP
-    nginx.ingress.kubernetes.io/grpc-backend: "true" # Cho gRPC
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP" # HTTP support
+    nginx.ingress.kubernetes.io/grpc-backend: "true" # gRPC support
 spec:
+  ingressClassName: nginx
   rules:
     - host: auth-service.banking.com
       http:
@@ -68,11 +69,3 @@ spec:
                 name: transaction-service
                 port:
                   number: 8090
-                  
-### CONFIG INGRESS FOR MAC: Add to etc/hosts
-# 127.0.0.1 auth-service.banking.com
-# 127.0.0.1 auth-grpc-service.banking.com
-# 127.0.0.1 manage-service.banking.com
-# 127.0.0.1 manage-grpc-service.banking.com
-# 127.0.0.1 transaction-service.banking.com
-# 127.0.0.1 transaction-grpc-service.banking.com
