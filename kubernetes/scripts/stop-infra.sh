@@ -25,4 +25,7 @@ echo "Removing ingress...."
 kubectl get ingress
 kubectl delete ingress --all
 
+echo "Remove nginx...."
+kubectl delete ns ingress-nginx
+
 echo "Infrastructure cleanup completed."

@@ -1,4 +1,4 @@
-.PHONY: vm-persist-data, rm-persist-data, start-infra, stop-infra, start-monitor, stop-monitor \
+.PHONY: vm-persist-data, rm-persist-data, start-infra, update-etc-hosts, stop-infra, start-monitor, stop-monitor, test-connection \
 postgres01, postgres02, redis, manage-service, auth-service, notification-service, ingress \
 rm-postgres01, rm-postgres02, rm-redis, rm-manage-service, rm-auth-service, rm-transaction-service, rm-notification-service, rm-ingress
 
@@ -12,6 +12,9 @@ start-infra: FORCE
 	./scripts/start-infra.sh
 FORCE:
 
+update-etc-hosts:
+	./scripts/update-etc-hosts.sh
+
 stop-infra:	
 	./scripts/stop-infra.sh
 
@@ -21,6 +24,9 @@ FORCE:
 
 stop-monitor:
 	./scripts/stop-monitor.sh
+
+test-connection:
+	curl -X GET http://auth-service.banking.com/v1/generate_test_access_token
 
 
 
@@ -136,8 +142,6 @@ rm-ingress:
 ### EXPOSE PORT TO LOCAL (FOR MAC)
 # kubectl get svc
 # kubectl get ingress
-# minikube addons enable ingress
-# minikube tunnel # run "minikube tunnel" and your ingress resources would be available at "127.0.0.1"
 # curl -X GET http://auth-service.banking.com/v1/generate_test_access_token
 
 ### MOCK DATA FOR TESTTING
