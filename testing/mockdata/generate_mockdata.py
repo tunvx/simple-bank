@@ -13,7 +13,7 @@ def hash_password(password: str) -> str:
     # Decode the hash to a string and return
     return hashed_password.decode('utf-8')
 
-async def generate_50k_customers(n, db_url):
+async def generate_50k_customers(n, db_url, shardId):
     # Connect to your PostgreSQL database
     conn = await asyncpg.connect(db_url)
 
@@ -22,11 +22,11 @@ async def generate_50k_customers(n, db_url):
 
     # Insert records one by one
     for id in range(1, n):
-        customer_rid = f"Rid-{str(id).zfill(8)}"
-        fullname = f"Cus-{str(id).zfill(8)}"
-        address = f"Add-{str(id).zfill(8)}"
-        phone_number = f"0000-{str(id).zfill(8)}"
-        email = f"example.{str(id).zfill(8)}@gmail.com"
+        customer_rid = f"Rid-{shardId}{str(id).zfill(8)}"
+        fullname = f"Cus-{shardId}{str(id).zfill(8)}"
+        address = f"Add-{shardId}{str(id).zfill(8)}"
+        phone_number = f"0{shardId}00-{str(id).zfill(8)}"
+        email = f"example{shardId}.{str(id).zfill(8)}@gmail.com"
         customer_tier = 'gold'
         customer_segment = 'individual'
         financial_status = 'good'
@@ -42,15 +42,15 @@ async def generate_50k_customers(n, db_url):
     print(f"{n-1} customer records have been inserted into the database.")
 
 
-async def generate_50k_customer_credentials(n, core_db_url, auth_db_url):
+async def generate_50k_customer_credentials(n, core_db_url, auth_db_url, shardId):
     core_conn = await asyncpg.connect(core_db_url)
     auth_conn = await asyncpg.connect(auth_db_url)
 
     hashed_password = hash_password("2024@Aug")
 
     for id in range(1, n):
-        customer_rid = f"Rid-{str(id).zfill(8)}"
-        username = f"user{str(id).zfill(8)}"
+        customer_rid = f"Rid-{shardId}{str(id).zfill(8)}"
+        username = f"user{shardId}{str(id).zfill(8)}"
 
         customer_id = await core_conn.fetchval("SELECT customer_id FROM customers WHERE customer_rid = $1", customer_rid)
         
@@ -66,15 +66,15 @@ async def generate_50k_customer_credentials(n, core_db_url, auth_db_url):
     await auth_conn.close()
     print(f"{n-1} customer credentials records have been inserted into the database.")
 
-async def generate_50k_account(n, db_url):
+async def generate_50k_account(n, db_url, shardId):
     conn = await asyncpg.connect(db_url)
 
     for id in range(1, n):
-        customer_rid = f"Rid-{str(id).zfill(8)}"
+        customer_rid = f"Rid-{shardId}{str(id).zfill(8)}"
         customer_id = await conn.fetchval("SELECT customer_id FROM customers WHERE customer_rid = $1", customer_rid)
 
         if customer_id:
-            account_number = f"{str(id).zfill(11)}"
+            account_number = f"{shardId}{str(id).zfill(10)}"
             current_balance = 500000000
             currency_type = "VND"
             description = "....."
@@ -92,13 +92,17 @@ async def generate_50k_account(n, db_url):
 
 # Running the async tasks
 async def main():
-    n = 50001
-    core_db_url = "postgresql://postgres:secret@localhost:5432/core_db?sslmode=disable"
-    auth_db_url = "postgresql://postgres:secret@localhost:5433/auth_db?sslmode=disable"
+    n = 51
+    core_db_shard_1_url = "postgresql://postgres:secret@127.0.0.1:5433/core_db?sslmode=disable"
+    core_db_shard_2_url = "postgresql://postgres:secret@127.0.0.1:5434/core_db?sslmode=disable"
+    auth_db_url = "postgresql://postgres:secret@127.0.0.1:5432/auth_db?sslmode=disable"
 
-    await generate_50k_customers(n, core_db_url)
-    await generate_50k_customer_credentials(n, core_db_url, auth_db_url)
-    await generate_50k_account(n, core_db_url)
+    await generate_50k_customers(n, core_db_shard_1_url, 1)
+    await generate_50k_customers(n, core_db_shard_2_url, 2)
+    await generate_50k_customer_credentials(n, core_db_shard_1_url, auth_db_url, 1)
+    await generate_50k_customer_credentials(n, core_db_shard_2_url, auth_db_url, 2)
+    await generate_50k_account(n, core_db_shard_1_url, 1)
+    await generate_50k_account(n, core_db_shard_2_url, 2)
 
 # Entry point
 if __name__ == "__main__":

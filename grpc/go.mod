@@ -1,6 +1,6 @@
 module github.com/tunvx/simplebank/grpc
 
-go 1.22.6
+go 1.24.0
 
 require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.23.0

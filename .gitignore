@@ -22,7 +22,7 @@ go.work
 go.work.sum
 
 # Mine
-.env
+# .env
 *.pdf
 *.ipynb
 *.DS_Store
