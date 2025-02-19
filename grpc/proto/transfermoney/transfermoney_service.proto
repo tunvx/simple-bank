@@ -1,0 +1,122 @@
+syntax = "proto3";
+
+package transfermoney;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+import "transfermoney/rpc_check_account.proto";
+import "transfermoney/rpc_fast_internal_transfer.proto";
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/transfermoney";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Core Banking";
+    version: "1.1";
+    contact: {
+      name: "Nguyen Van Tu";
+      url: "https://github.com/tunvx";
+      email: "tunv.todo@gmail.com";
+    };
+  };
+};
+
+// Empty message for request and response
+message Empty {}
+
+message OkayResponse {
+    string ok = 1;
+}
+
+service TransfermoneyService {
+    rpc CheckAccount (CheckAccountRequest) returns (CheckAccountResponse) {
+        option (google.api.http) = {
+            post: "/v1/check_account"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to validate account status and currency",
+            summary: "Check Account"
+        };
+    };
+    
+    rpc FastInternalTransfer (FastInternalTransferRequest) returns (FastInternalTransferResponse) {
+        option (google.api.http) = {
+            post: "/v1/fast_internal_transfer"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to perform fast internal transfer money";
+            summary: "Fast internal transfer";
+        };
+    };
+
+// ==================================================================================================================
+// ==================================================================================================================
+// ==================================================================================================================
+    rpc TestGetEmpty (Empty) returns (OkayResponse) {
+        option (google.api.http) = {
+            get: "/v1/test/get_empty"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "This API is used for testing basic server connectivity and framework overhead.",
+            summary: "Test Server Connectivity"
+        };
+    };
+
+    rpc TestPostEmpty (Empty) returns (OkayResponse) {
+        option (google.api.http) = {
+            post: "/v1/test/post_empty"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "This API is used for testing basic server connectivity and framework overhead.",
+            summary: "Test Server Connectivity"
+        };
+    };
+
+    rpc TestCheckAccountWithNoProcessing (CheckAccountRequest) returns (OkayResponse) {
+        option (google.api.http) = {
+            post: "/v1/test/check_account_without_processing"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "This API is used to test client network handling and request parsing for fast transfers",
+            summary: "Check Account: Network and Transfer Request Parsing"
+        };
+    };
+
+    rpc TestFastInternalTransferWithNoProcessing (FastInternalTransferRequest) returns (OkayResponse) {
+        option (google.api.http) = {
+            post: "/v1/test/fast_internal_transfer_without_processing"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "This API is used to test client network handling and request parsing for fast transfers",
+            summary: "Test Fast Internal Transfer: Network and Transfer Request Parsing"
+        };
+    };
+
+    rpc TestCheckAccountJustProcessAuth (CheckAccountRequest) returns (OkayResponse) {
+        option (google.api.http) = {
+            post: "/v1/test/check_account_process_auth"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "This API is used to test client network handling and request parsing for fast transfers",
+            summary: "Check Account: Network and Transfer Request Parsing"
+        };
+    };
+
+    rpc TestFastInternalTransferJustProcessAuth (FastInternalTransferRequest) returns (OkayResponse) {
+        option (google.api.http) = {
+            post: "/v1/test/fast_internal_transfer_process_auth"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "This API is used to test client network handling and request parsing for fast transfers",
+            summary: "Test Fast Internal Transfer: Network and Transfer Request Parsing"
+        };
+    };
+} 

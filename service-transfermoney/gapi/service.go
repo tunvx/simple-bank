@@ -5,14 +5,14 @@ import (
 
 	"github.com/tunvx/simplebank/common/token"
 	"github.com/tunvx/simplebank/common/util"
-	pb "github.com/tunvx/simplebank/grpc/pb/transactions"
+	pb "github.com/tunvx/simplebank/grpc/pb/transfermoney"
 	db "github.com/tunvx/simplebank/management/db/sqlc"
 	worker "github.com/tunvx/simplebank/notification/redis"
 	"github.com/tunvx/simplebank/transfermoney/cache"
 )
 
 type Service struct {
-	pb.UnimplementedTransactionServiceServer
+	pb.UnimplementedTransfermoneyServiceServer
 	config          util.Config
 	stores          []db.Store
 	cache           cache.Cache

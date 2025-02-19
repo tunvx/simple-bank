@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+package management;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+import "management/customer/rpc_create_customer.proto";
+import "management/customer/rpc_verify_email.proto";
+import "management/customer/rpc_get_customer.proto";
+
+import "management/account/rpc_create_account.proto";
+import "management/account/rpc_get_account.proto";
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/management";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Core Banking";
+    version: "1.1";
+    contact: {
+      name: "Nguyen Van Tu";
+      url: "https://github.com/tunvx";
+      email: "tunv.todo@gmail.com";
+    };
+  };
+};
+
+service ManagementService {
+    rpc CreateCustomer (customer.CreateCustomerRequest) returns (customer.CreateCustomerResponse) {
+        option (google.api.http) = {
+            post: "/v1/create_customer"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to create a new customer";
+            summary: "Create new customer";
+        };
+    };
+
+    rpc VerifyEmail (customer.VerifyEmailRequest) returns (customer.VerifyEmailResponse) {
+        option (google.api.http) = {
+            get: "/v1/verify_email"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to verify user's email address";
+            summary: "Verify email";
+        };
+    };
+
+    rpc GetCustomerByRid (customer.GetCustomerByRidRequest) returns (customer.GetCustomerByRidResponse) {
+        option (google.api.http) = {
+            get: "/v1/get_customer/rid/{customer_rid}" 
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to get customer by RID",
+            summary: "Get Customer (RID)"
+        };
+    };
+
+    rpc IGetCustomerByID (customer.IGetCustomerByIDRequest) returns (customer.IGetCustomerByIDResponse) {
+        // Do not add options for HTTP
+    };
+
+    rpc IGetCustomerByRid (customer.IGetCustomerByRidRequest) returns (customer.IGetCustomerByRidResponse) {
+        // Do not add options for HTTP
+    };
+
+    rpc CreateAccount (account.CreateAccountRequest) returns (account.CreateAccountResponse) {
+        option (google.api.http) = {
+            post: "/v1/create_account"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to create a customer's account";
+            summary: "Create account";
+        };
+    };
+
+    rpc GetAccountByAccNumber (account.GetAccountByAccNumberRequest) returns (account.GetAccountByAccNumberResponse) {
+        option (google.api.http) = {
+            get: "/v1/get_account/account/{acc_number}" 
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to get Account by Acc Number",
+            summary: "Get Account"
+        };
+    };
+
+    rpc IGetAccountByAccNumber (account.IGetAccountByAccNumberRequest) returns (account.IGetAccountByAccNumberResponse) {
+        // Do not add options for HTTP
+    };
+} 

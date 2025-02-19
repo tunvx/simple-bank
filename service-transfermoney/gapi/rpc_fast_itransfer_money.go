@@ -6,7 +6,7 @@ import (
 	"github.com/rs/zerolog/log"
 	errga "github.com/tunvx/simplebank/common/errs/gapi"
 	"github.com/tunvx/simplebank/common/util"
-	pb "github.com/tunvx/simplebank/grpc/pb/transactions"
+	pb "github.com/tunvx/simplebank/grpc/pb/transfermoney"
 	db "github.com/tunvx/simplebank/management/db/sqlc"
 	"github.com/tunvx/simplebank/transfermoney/gapi/val"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"

@@ -1,0 +1,51 @@
+# Config for auth.banking.local
+server {
+  listen 80;
+  server_name auth.banking.local;
+
+  # Defaul Docker DNS
+  resolver 127.0.0.11;
+
+  location / {
+    proxy_pass http://auth-service;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+}
+
+# Config for management.banking.local
+server {
+  listen 80;
+  server_name management.banking.local;
+
+  # Defaul Docker DNS
+  resolver 127.0.0.11;
+
+  location / {
+    proxy_pass http://management-service;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+}
+
+# Config for transfermoney.banking.local
+server {
+  listen 80;
+  server_name transfermoney.banking.local;
+
+  # Defaul Docker DNS
+  resolver 127.0.0.11;
+
+  location / {
+    proxy_pass http://transfermoney-service;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+}
+

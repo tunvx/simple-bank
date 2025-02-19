@@ -6,7 +6,7 @@ import (
 	"github.com/rs/zerolog/log"
 	errdb "github.com/tunvx/simplebank/common/errs/db"
 	"github.com/tunvx/simplebank/common/util"
-	pb "github.com/tunvx/simplebank/grpc/pb/transactions"
+	pb "github.com/tunvx/simplebank/grpc/pb/transfermoney"
 	db "github.com/tunvx/simplebank/management/db/sqlc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

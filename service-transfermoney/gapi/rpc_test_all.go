@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/tunvx/simplebank/common/util"
-	pb "github.com/tunvx/simplebank/grpc/pb/transactions"
+	pb "github.com/tunvx/simplebank/grpc/pb/transfermoney"
 )
 
 const okayResponse = "Ok"

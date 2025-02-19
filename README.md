@@ -85,29 +85,36 @@ If multiple retry attempts fail, the transaction remains **PENDING**
   git clone https://github.com/tunvx/simple-bank
 ```
 
-2. Navigate to the project directory:
+2. Try to build docker images of services:
 ```bash
   cd simple-bank
+  make build
 ```
 
-3. Switch to the docker-deploy branch:
+3. Add the following records to your host file:
 ```bash
-  git checkout docker-deploy
+  ### CONFIG INGRESS FOR MAC: Add to etc/hosts
+  127.0.0.1 auth.banking.local
+  127.0.0.1 management.banking.local
+  127.0.0.1 transfermoney.banking.local
 ```
 
-4. Navigate to the `domolo` directory (short for docker + monitoring + logging):
+4. Start core banking services (database, Redis, Kafka, etc.):
 ```bash
-  cd domolo
+  make rm
+  make network
+  make volume
+  make start
 ```
 
-5. Start core banking services (database, Redis, Kafka, etc.):
+5. Then, try to test service via your browser by URL:
 ```bash
-  make start-infra
+  http://auth.banking.local/v1/generate_test_access_token
 ```
 
 6. Start the monitoring services (Prometheus, Grafana, etc.):
 ```bash
-  make start-monitor
+  make monitor
 ```
 
 ### Docker Monitoring Steps
@@ -123,10 +130,10 @@ After deploy monitor, do the following steps:
 |-----|-----------|-------------------|----------------|-----------------------|------------------|------------------|------------------|------------------|------------------|
 | 1   | Raw       | Empty GET         | 3              | -                     | *                | -                | -                | -                | -                |
 | 2   | Raw       | Empty POST        | 3              | -                     | *                | -                | -                | -                | -                |
-| 3   | gRPC      | Empty GET         | 3              | 6,128,749             | 34,047           | 2.9              | 0.167            | 59.04            | 4.56             |
-| 4   | gRPC      | Empty POST        | 3              | 5,344,435             | 29,690           | 3.32             | 0.194            | 34.86            | 6.4              |
-| 5   | gRPC      | Check Account     | 3              | 3,251,939             | 18,065           | 5.49             | 0.329            | 127.54           | 11.77            |
-| 6   | gRPC      | Transfer Money    | 3              | 1,278,048             | 7,099            | 14.0             | 2.07             | 588.27           | 22.95            |
+| 3   | gRPC      | Empty GET         | 3              | 6,128,749             | **34,047**       | 2.9              | 0.167            | 59.04            | 4.56             |
+| 4   | gRPC      | Empty POST        | 3              | 5,344,435             | **29,690**       | 3.32             | 0.194            | 34.86            | 6.4              |
+| 5   | gRPC      | Check Account     | 3              | 3,251,939             | **18,065**       | 5.49             | 0.329            | 127.54           | 11.77            |
+| 6   | gRPC      | Transfer Money    | 3              | 1,278,048             | **7,099**        | 14.0             | 2.07             | 588.27           | 22.95            |
 
 
 Refer to the testing folder for details (experiment and analyze results):

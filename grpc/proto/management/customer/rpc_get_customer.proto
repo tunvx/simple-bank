@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package customer;
+
+import "management/customer/customer.proto";
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/management/customer";
+
+message GetCustomerByRidRequest {
+    string customer_rid = 1;
+}
+
+message GetCustomerByRidResponse {
+    Customer customer = 1;
+} 
+
+message IGetCustomerByRidRequest {
+    string customer_rid = 1;
+}
+
+message IGetCustomerByRidResponse {
+    ICustomer customer = 1;
+} 
+
+message IGetCustomerByIDRequest {
+    int64 customer_id = 1;
+}
+
+message IGetCustomerByIDResponse {
+    Customer customer = 1;
+} 
+
+
+

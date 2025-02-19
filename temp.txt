@@ -1,0 +1,24 @@
+server {
+  server_name banking.local;
+
+  # Defaul Docker DNS
+  resolver 127.0.0.11;
+
+  location /auth/ {
+    proxy_pass http://auth-service;
+  }
+
+  location /management/ {
+    proxy_pass http://management-service;
+  }
+
+  location /transfermoney/ {
+    proxy_pass http://transfermoney-service;
+  }
+}
+
+### Exec and list databases
+docker exec -it core-database-02 psql -U postgres -d core_db -c "\l"
+
+### Exec and list relations of database
+docker exec -it core-database-01 psql -U postgres -d core_db -c "\dt"

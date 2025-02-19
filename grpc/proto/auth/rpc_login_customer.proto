@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package auth;
 
-import "manage/customer/customer.proto";
+import "management/customer/customer.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/tunvx/simplebank/grpc/pb/auth";

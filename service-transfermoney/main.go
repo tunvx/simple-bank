@@ -25,7 +25,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/tunvx/simplebank/common/logger"
 	"github.com/tunvx/simplebank/common/util"
-	pb "github.com/tunvx/simplebank/grpc/pb/transactions"
+	pb "github.com/tunvx/simplebank/grpc/pb/transfermoney"
 	db "github.com/tunvx/simplebank/management/db/sqlc"
 	worker "github.com/tunvx/simplebank/notification/redis"
 	"github.com/tunvx/simplebank/transfermoney/cache"
@@ -118,7 +118,7 @@ func main() {
 func establishShardedSQLStore(listShardDatabaseURL []string, numShard int) ([]db.Store, error) {
 	// Check if the length of listShardDatabaseURL matches numShard
 	if len(listShardDatabaseURL) != numShard {
-		log.Fatal().Msgf("The length of listShardDatabaseURL (%d) does not match numShard (%d)", len(listShardDatabaseURL), numShard)
+		log.Fatal().Msgf("The length of listShardDatabaseURL [ %d ] does not match numShard [ %d ]", len(listShardDatabaseURL), numShard)
 	}
 
 	var stores []db.Store
@@ -130,7 +130,7 @@ func establishShardedSQLStore(listShardDatabaseURL []string, numShard int) ([]db
 		// *************************************************************
 		connPoolConfig, err := pgxpool.ParseConfig(shardDatabaseURL)
 		if err != nil {
-			log.Error().Err(err).Msg("unable to parse database config")
+			log.Error().Err(err).Msgf("unable to parse database config, error: %v", err)
 			continue
 		}
 
@@ -142,8 +142,10 @@ func establishShardedSQLStore(listShardDatabaseURL []string, numShard int) ([]db
 		// Create pool with custom configuration
 		connPool, err := pgxpool.NewWithConfig(context.Background(), connPoolConfig)
 		if err != nil {
-			log.Error().Err(err).Msgf("cannot connect to shard %d: %v", shardID, err)
+			log.Error().Err(err).Msgf("cannot connect to shard [ %d ], error: %v", err)
 			continue
+		} else {
+			log.Info().Msgf("successfully created pool connection to shard [ %d ]", shardID)
 		}
 
 		// Create a new store to interact with the database
@@ -178,7 +180,7 @@ func runGrpcServer(
 	grpcServer := grpc.NewServer(grpcLogger)
 
 	// Register the transactionService to the gRPC server
-	pb.RegisterTransactionServiceServer(grpcServer, tranService)
+	pb.RegisterTransfermoneyServiceServer(grpcServer, tranService)
 
 	// Enable reflection for gRPC, useful for debugging or using CLI tools like grpcurl
 	reflection.Register(grpcServer)
@@ -243,7 +245,7 @@ func runGatewayServer(
 	// Create a new gRPC Gateway multiplexer to route HTTP requests
 	grpcMux := runtime.NewServeMux(jsonOption)
 
-	err = pb.RegisterTransactionServiceHandlerServer(ctx, grpcMux, tranService)
+	err = pb.RegisterTransfermoneyServiceHandlerServer(ctx, grpcMux, tranService)
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot register handler server")
 	}

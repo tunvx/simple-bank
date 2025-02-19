@@ -1,44 +1,44 @@
 proto:
 	rm -rf pb/auth/*.go
-	rm -rf pb/manage/*.go
-	rm -rf pb/manage/customer/*.go
-	rm -rf pb/manage/account/*.go
-	rm -rf pb/transactions/*.go
+	rm -rf pb/management/*.go
+	rm -rf pb/management/customer/*.go
+	rm -rf pb/management/account/*.go
+	rm -rf pb/transfermoney/*.go
 	rm -rf doc/swagger/*.swagger.json
 
 	# Compile customer .proto files
 	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
 	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
 	--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
-	--openapiv2_out=doc/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=core_banking \
-	proto/manage/customer/*.proto
+	--openapiv2_out=doc/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=management \
+	proto/management/customer/*.proto
 
 	# Compile account .proto files
 	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
 	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
 	--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
-	--openapiv2_out=doc/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=core_banking \
-	proto/manage/account/*.proto
+	--openapiv2_out=doc/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=management \
+	proto/management/account/*.proto
 
-	# Compile manage .proto files
+	# Compile management .proto files
 	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
 	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
 	--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
-	--openapiv2_out=doc/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=core_banking \
-	proto/manage/*.proto
+	--openapiv2_out=doc/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=management \
+	proto/management/*.proto
 
 	# Compile auth .proto files
 	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
 	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
 	--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
-	--openapiv2_out=doc/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=core_banking \
+	--openapiv2_out=doc/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=auth \
 	proto/auth/*.proto
 
-	# Compile transactions .proto files
+	# Compile transfermoney .proto files
 	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
 	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
 	--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
-	--openapiv2_out=doc/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=core_banking \
-	proto/transactions/*.proto
+	--openapiv2_out=doc/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=transfermoney \
+	proto/transfermoney/*.proto
 
 .PHONY: proto
