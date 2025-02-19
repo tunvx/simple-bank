@@ -1,8 +1,8 @@
 package gapi
 
 import (
-	accpb "github.com/tunvx/simplebank/grpc/pb/manage/account"
-	tranpb "github.com/tunvx/simplebank/grpc/pb/transactions"
+	accpb "github.com/tunvx/simplebank/grpc/pb/management/account"
+	tranpb "github.com/tunvx/simplebank/grpc/pb/transfermoney"
 	db "github.com/tunvx/simplebank/management/db/sqlc"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )

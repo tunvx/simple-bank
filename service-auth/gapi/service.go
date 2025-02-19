@@ -8,7 +8,7 @@ import (
 	"github.com/tunvx/simplebank/common/token"
 	"github.com/tunvx/simplebank/common/util"
 	pb "github.com/tunvx/simplebank/grpc/pb/auth"
-	manpb "github.com/tunvx/simplebank/grpc/pb/manage"
+	manpb "github.com/tunvx/simplebank/grpc/pb/management"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -18,7 +18,7 @@ type Service struct {
 	config       util.Config
 	store        db.Store
 	tokenMaker   token.Maker
-	manageClient manpb.ManageServiceClient
+	manageClient manpb.ManagementServiceClient
 }
 
 // NewService creates new a Grpc service.
@@ -46,7 +46,7 @@ func NewService(config util.Config, store db.Store) (*Service, error) {
 		config:       config,
 		store:        store,
 		tokenMaker:   tokenMaker,
-		manageClient: manpb.NewManageServiceClient(conn),
+		manageClient: manpb.NewManagementServiceClient(conn),
 	}
 
 	return server, nil

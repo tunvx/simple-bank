@@ -7,7 +7,7 @@ import (
 	"github.com/hibiken/asynq"
 	errdb "github.com/tunvx/simplebank/common/errs/db"
 	errga "github.com/tunvx/simplebank/common/errs/gapi"
-	cuspb "github.com/tunvx/simplebank/grpc/pb/manage/customer"
+	cuspb "github.com/tunvx/simplebank/grpc/pb/management/customer"
 	db "github.com/tunvx/simplebank/management/db/sqlc"
 	"github.com/tunvx/simplebank/management/gapi/val"
 	"github.com/tunvx/simplebank/notification/redis"

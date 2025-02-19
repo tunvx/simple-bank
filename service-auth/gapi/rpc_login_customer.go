@@ -9,7 +9,7 @@ import (
 	errga "github.com/tunvx/simplebank/common/errs/gapi"
 	"github.com/tunvx/simplebank/common/util"
 	pb "github.com/tunvx/simplebank/grpc/pb/auth"
-	cuspb "github.com/tunvx/simplebank/grpc/pb/manage/customer"
+	cuspb "github.com/tunvx/simplebank/grpc/pb/management/customer"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

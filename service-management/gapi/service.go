@@ -5,13 +5,13 @@ import (
 
 	"github.com/tunvx/simplebank/common/token"
 	"github.com/tunvx/simplebank/common/util"
-	pb "github.com/tunvx/simplebank/grpc/pb/manage"
+	pb "github.com/tunvx/simplebank/grpc/pb/management"
 	db "github.com/tunvx/simplebank/management/db/sqlc"
 	"github.com/tunvx/simplebank/notification/redis"
 )
 
 type Service struct {
-	pb.UnimplementedManageServiceServer
+	pb.UnimplementedManagementServiceServer
 	config          util.Config
 	stores          []db.Store
 	tokenMaker      token.Maker

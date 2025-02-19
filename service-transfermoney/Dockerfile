@@ -1,21 +1,21 @@
 # Build stage
-FROM golang:1.22-alpine3.20 AS builder
+FROM golang:1.24-alpine3.21 AS builder
 WORKDIR /app
 COPY . .
-RUN cd services/transaction-service && go mod download
-RUN cd services/transaction-service && go build -o main main.go
+RUN cd service-transfermoney && go mod download
+RUN cd service-transfermoney && go build -o main main.go
 
 # Run stage
-FROM alpine:3.20
+FROM alpine:3.21
 WORKDIR /app
-COPY --from=builder /app/services/transaction-service/main .
-COPY app.env .
+COPY --from=builder /app/service-transfermoney/main .
+COPY config.env .
 COPY start.sh .
 COPY wait-for.sh .
 
 # Ensure wait-for.sh has execute permissions
 RUN chmod +x ./wait-for.sh ./start.sh
 
-EXPOSE 8081 8091
-CMD [ "services/transaction-service/main" ]
+EXPOSE 80 443
+CMD [ "service-transfermoney/main" ]
 ENTRYPOINT [ "/app/start.sh" ]

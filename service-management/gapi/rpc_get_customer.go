@@ -6,7 +6,7 @@ import (
 	errdb "github.com/tunvx/simplebank/common/errs/db"
 	errga "github.com/tunvx/simplebank/common/errs/gapi"
 	"github.com/tunvx/simplebank/common/util"
-	cuspb "github.com/tunvx/simplebank/grpc/pb/manage/customer"
+	cuspb "github.com/tunvx/simplebank/grpc/pb/management/customer"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

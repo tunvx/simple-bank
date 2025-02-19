@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package account;
+
+import "management/account/account.proto";
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/management/account";
+
+message GetAccountByAccNumberRequest {
+    string acc_number = 1;
+}
+
+message GetAccountByAccNumberResponse {
+    Account account = 1;
+} 
+
+message IGetAccountByAccNumberRequest {
+    string acc_number = 1;
+}
+
+message IGetAccountByAccNumberResponse {
+    IAccount account = 1;
+}
+
+
+
+
+
+
+

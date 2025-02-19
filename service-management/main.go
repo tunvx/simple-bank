@@ -24,7 +24,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/tunvx/simplebank/common/logger"
 	"github.com/tunvx/simplebank/common/util"
-	pb "github.com/tunvx/simplebank/grpc/pb/manage"
+	pb "github.com/tunvx/simplebank/grpc/pb/management"
 	db "github.com/tunvx/simplebank/management/db/sqlc"
 	"github.com/tunvx/simplebank/management/gapi"
 	"github.com/tunvx/simplebank/notification/redis"
@@ -69,6 +69,9 @@ func main() {
 		log.Fatal().Msgf("Unknown environment: %v", config.Environment)
 	}
 
+	// Run database migrations
+	runDBMigration(config.SourceSchemaURL, config.ListDBSourceCoreDB, config.NumCoreDBShard)
+
 	ctx, stop := signal.NotifyContext(context.Background(), interruptSignals...)
 	defer stop()
 
@@ -84,9 +87,6 @@ func main() {
 			}
 		}
 	}()
-
-	// Run database migrations
-	runDBMigration(config.SourceSchemaURL, config.ListDBSourceCoreDB, config.NumCoreDBShard)
 
 	redisOpt := asynq.RedisClientOpt{
 		Addr: config.InternalRedisAddress,
@@ -111,7 +111,7 @@ func main() {
 func establishShardedSQLStore(listShardDatabaseURL []string, numShard int) ([]db.Store, error) {
 	// Check if the length of listShardDatabaseURL matches numShard
 	if len(listShardDatabaseURL) != numShard {
-		log.Fatal().Msgf("The length of listShardDatabaseURL (%d) does not match numShard (%d)", len(listShardDatabaseURL), numShard)
+		log.Fatal().Msgf("The length of listShardDatabaseURL [ %d ] does not match numShard [ %d ]", len(listShardDatabaseURL), numShard)
 	}
 
 	var stores []db.Store
@@ -123,7 +123,7 @@ func establishShardedSQLStore(listShardDatabaseURL []string, numShard int) ([]db
 		// *************************************************************
 		connPoolConfig, err := pgxpool.ParseConfig(shardDatabaseURL)
 		if err != nil {
-			log.Error().Err(err).Msg("unable to parse database config")
+			log.Error().Err(err).Msgf("unable to parse database config, error: %v", err)
 			continue
 		}
 
@@ -135,8 +135,10 @@ func establishShardedSQLStore(listShardDatabaseURL []string, numShard int) ([]db
 		// Create pool with custom configuration
 		connPool, err := pgxpool.NewWithConfig(context.Background(), connPoolConfig)
 		if err != nil {
-			log.Error().Err(err).Msgf("cannot connect to shard %d: %v", shardID, err)
+			log.Error().Err(err).Msgf("cannot connect to shard [ %d ], error: %v", err)
 			continue
+		} else {
+			log.Info().Msgf("successfully created pool connection to shard [ %d ]", shardID)
 		}
 
 		// Create a new store to interact with the database
@@ -155,7 +157,7 @@ func establishShardedSQLStore(listShardDatabaseURL []string, numShard int) ([]db
 func runDBMigration(sourceSchemaURL string, listShardDatabaseURL []string, numShard int) {
 	// Check if the length of listShardDatabaseURL matches numShard
 	if len(listShardDatabaseURL) != numShard {
-		log.Fatal().Msgf("The length of listShardDatabaseURL (%d) does not match numShard (%d)", len(listShardDatabaseURL), numShard)
+		log.Fatal().Msgf("The length of listShardDatabaseURL [ %d ] does not match numShard [ %d ]", len(listShardDatabaseURL), numShard)
 	}
 
 	// Loop over each shard and apply migration
@@ -165,8 +167,10 @@ func runDBMigration(sourceSchemaURL string, listShardDatabaseURL []string, numSh
 
 		conn, err := sql.Open("postgres", shardDatabaseURL)
 		if err != nil {
-			log.Error().Err(err).Msgf("cannot connect to shard %d, err: %v", shardID, err)
+			log.Error().Err(err).Msgf("cannot connect to shard [ %d ], error: %v", shardID, err)
 			continue // Skip the current shard and continue with the next one
+		} else {
+			log.Info().Msgf("Successfully connected to shard [ %d ]", shardID)
 		}
 		defer conn.Close()
 
@@ -195,15 +199,15 @@ func runDBMigration(sourceSchemaURL string, listShardDatabaseURL []string, numSh
 
 		_, err = conn.Exec(createInitSchemaSQL)
 		if err != nil {
-			log.Error().Err(err).Msgf("failed to create ID generator function for shard %d: %v", shardID, err)
+			log.Error().Err(err).Msgf("failed to create ID generator function for shard [ %d ], error: %v", shardID, err)
 			continue // Skip the current shard and continue with the next one
 		}
-		log.Info().Msgf("ID generator function created successfully for shard %d", shardID)
+		log.Info().Msgf("ID generator function created successfully for shard [ %d ]", shardID)
 
 		// Init migration
 		migration, err := migrate.New(sourceSchemaURL, shardDatabaseURL)
 		if err != nil {
-			log.Error().Err(err).Msgf("cannot create migrate instance for shard %d: %v", shardID, err)
+			log.Error().Err(err).Msgf("cannot create migrate instance for shard [ %d ], error: %v", shardID, err)
 			continue // Skip the current shard and continue with the next one
 		}
 		defer migration.Close()
@@ -211,12 +215,12 @@ func runDBMigration(sourceSchemaURL string, listShardDatabaseURL []string, numSh
 		// Apply (run) the migration
 		err = migration.Up()
 		if err == migrate.ErrNoChange {
-			log.Info().Msgf("no migration changes detected for shard %d", shardID)
+			log.Info().Msgf("no migration changes detected for shard [ %d ]", shardID)
 		} else if err != nil {
-			log.Error().Err(err).Msgf("failed to run migrate up for shard %d: %v", shardID, err)
+			log.Error().Err(err).Msgf("failed to run migrate up for shard [ %d ], error: %v", shardID, err)
 			continue // Skip the current shard and continue with the next one
 		} else {
-			log.Info().Msgf("db migrated successfully for shard %d", shardID)
+			log.Info().Msgf("db migrated successfully for shard [ %d ]", shardID)
 		}
 	}
 }
@@ -240,7 +244,7 @@ func runGrpcServer(
 	grpcServer := grpc.NewServer(grpcLogger)
 
 	// Register the manageService to the gRPC server
-	pb.RegisterManageServiceServer(grpcServer, manageService)
+	pb.RegisterManagementServiceServer(grpcServer, manageService)
 
 	// Enable reflection for gRPC, useful for debugging or using CLI tools like grpcurl
 	reflection.Register(grpcServer)
@@ -304,7 +308,7 @@ func runGatewayServer(
 	// Create a new gRPC Gateway multiplexer to route HTTP requests
 	grpcMux := runtime.NewServeMux(jsonOption)
 
-	err = pb.RegisterManageServiceHandlerServer(ctx, grpcMux, manageService)
+	err = pb.RegisterManagementServiceHandlerServer(ctx, grpcMux, manageService)
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot register handler server")
 	}

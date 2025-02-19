@@ -5,7 +5,7 @@ import (
 
 	errga "github.com/tunvx/simplebank/common/errs/gapi"
 	"github.com/tunvx/simplebank/common/util"
-	cuspb "github.com/tunvx/simplebank/grpc/pb/manage/customer"
+	cuspb "github.com/tunvx/simplebank/grpc/pb/management/customer"
 	db "github.com/tunvx/simplebank/management/db/sqlc"
 	"github.com/tunvx/simplebank/management/gapi/val"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"

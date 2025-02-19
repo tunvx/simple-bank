@@ -17,6 +17,7 @@ volumes:
   transaction-service-logs:
   notification-service-logs:
 
+  
 services:
   core-database-01:
     container_name: core-database-01
@@ -128,78 +129,48 @@ services:
   #         cpus: '1'
   #         memory: 1g
 
-  # manage-service:
-  #   container_name: manage-service
-  #   build:
-  #     context: ../ 
-  #     dockerfile: ./domolo/dockerfiles/Dockerfile.0001.manage
-  #   depends_on:
-  #     - redis
-  #     - postgres01
-  #   ports:
-  #     - "8080:8080"
-  #     - "8090:8090"
-  #   networks:
-  #     - bank-network
-  #   volumes:
-  #     - manage-service-logs:/var/log
-  #   entrypoint: [ "/app/wait-for.sh", "redis:6379", "postgres01:5432", "--", "/app/start.sh" ]
-  #   command: [ "/app/main" ]
+  reverse-proxy:
+    container_name: reverse-proxy
+    image: nginx:1.27.2
+    restart: unless-stopped
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+      - ./nginx/configuration/custom_proxy_settings.conf:/etc/nginx/conf.d/custom_proxy_settings.conf
+    ports:
+      - "80:80"
+    networks:
+      - bank-network
 
-  # auth-service:
-  #   container_name: auth-service
-  #   build:
-  #     context: ../ 
-  #     dockerfile: ./domolo/dockerfiles/Dockerfile.0002.auth
-  #   depends_on:
-  #     - redis
-  #     - postgres02
-  #   ports:
-  #     - "8081:8081"
-  #     - "8091:8091"
-  #   networks:
-  #     - bank-network
-  #   volumes:
-  #     - auth-service-logs:/var/log
-  #   entrypoint: [ "/app/wait-for.sh", "redis:6379", "postgres02:5432", "--", "/app/start.sh" ]
-  #   command: [ "/app/main" ]
+  auth-service:
+    container_name: auth-service
+    image: auth-service
+    restart: unless-stopped
+    depends_on:
+      auth-database:
+        condition: service_healthy
+    networks:
+      - bank-network
 
-  # transaction-service:
-  #   container_name: transaction-service
-  #   build:
-  #     context: ../ 
-  #     dockerfile: ./domolo/dockerfiles/Dockerfile.0003.transaction
-  #   depends_on:
-  #     - redis
-  #     - postgres01
-  #     - manage-service
-  #   ports:
-  #     - "8082:8082"
-  #     - "8092:8092"
-  #   networks:
-  #     - bank-network
-  #   volumes:
-  #     - transaction-service-logs:/var/log
-  #   entrypoint: [ "/app/wait-for.sh", "redis:6379", "postgres01:5432", "--", "/app/start.sh" ]
-  #   command: [ "/app/main" ]
-  #   deploy:
-  #     # replicas: 2
-  #     resources:
-  #       limits:
-  #         cpus: '4'
-  #         memory: 2g
-    
+  management-service:
+    container_name: management-service
+    image: management-service
+    restart: unless-stopped
+    depends_on:
+      core-database-01:
+        condition: service_healthy
+      core-database-02:
+        condition: service_healthy
+    networks:
+      - bank-network
 
-  # notification-service:
-  #   container_name: notification-service
-  #   build:
-  #     context: ../ 
-  #     dockerfile: ./domolo/dockerfiles/Dockerfile.0004.notification
-  #   depends_on:
-  #     - redis
-  #   networks:
-  #     - bank-network
-  #   volumes:
-  #     - notification-service-logs:/var/log
-  #   entrypoint: [ "/app/wait-for.sh", "redis:6379", "--", "/app/start.sh" ]
-  #   command: [ "/app/main" ]
+  transfermoney-service:
+    container_name: transfermoney-service
+    image: transfermoney-service
+    restart: unless-stopped
+    depends_on:
+      core-database-01:
+        condition: service_healthy
+      core-database-02:
+        condition: service_healthy
+    networks:
+      - bank-network

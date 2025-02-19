@@ -6,7 +6,7 @@ import (
 	errdb "github.com/tunvx/simplebank/common/errs/db"
 	errga "github.com/tunvx/simplebank/common/errs/gapi"
 	"github.com/tunvx/simplebank/common/util"
-	accpb "github.com/tunvx/simplebank/grpc/pb/manage/account"
+	accpb "github.com/tunvx/simplebank/grpc/pb/management/account"
 	db "github.com/tunvx/simplebank/management/db/sqlc"
 	"github.com/tunvx/simplebank/management/gapi/val"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
