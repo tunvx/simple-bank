@@ -8,9 +8,7 @@ CREATE TABLE verify_emails (
   expired_at timestamptz NOT NULL DEFAULT (now() + interval '15 minutes')
 );
 
--- Add Foreign Key Constraint to customer_sessions
 ALTER TABLE verify_emails 
-ADD CONSTRAINT emails_customers_customer_id_fkey 
-FOREIGN KEY (customer_id) REFERENCES customers (customer_id);
+ADD FOREIGN KEY (customer_id) REFERENCES customers (customer_id);
 
 ALTER TABLE customers ADD COLUMN is_email_verified bool NOT NULL DEFAULT false;

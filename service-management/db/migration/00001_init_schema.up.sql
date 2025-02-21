@@ -6,7 +6,6 @@ CREATE TYPE TransactionStatus AS ENUM (
   'failed'      -- Transaction has failed
 );
 
-
 -- 2. Types of transactions in the banking system
 CREATE TYPE TransactionType AS ENUM (
   'internal_send',      -- Internal transfer money
@@ -32,38 +31,39 @@ CREATE TYPE AccountStatus AS ENUM (
 
 -- 5. Customer tiers based on value and priority
 CREATE TYPE CustomerTier AS ENUM (
-  'regular',   
-  'bronze',     
-  'silver',     
-  'gold',       
-  'platinum',   
-  'diamond'     
+  'standard',    -- Khách hàng tiêu chuẩn (thấp nhất)
+  'bronze',      -- Hạng đồng
+  'silver',      -- Hạng bạc
+  'gold',        -- Hạng vàng
+  'platinum',    -- Hạng bạch kim
+  'diamond',     -- Hạng kim cương (cao nhất)
+  'vip'          -- Khách hàng VIP đặc biệt
 );
 
 -- 6. Customer segments in the banking system
 CREATE TYPE CustomerSegment AS ENUM (
-  'individual',          
-  'small_enterprise',    
-  'medium_enterprise',   
-  'large_enterprise',   
-  'institutional'        
+  'retail',           -- Cá nhân (khách hàng cá nhân, hộ gia đình)
+  'small_business',   -- Doanh nghiệp nhỏ
+  'corporate',        -- Doanh nghiệp lớn (công ty vừa và lớn)
+  'institutional',    -- Tổ chức tài chính (quỹ, tổ chức lớn)
+  'government'        -- Cơ quan chính phủ, nhà nước
 );
 
 -- 7. Financial status of customer
 CREATE TYPE FinancialStatus AS ENUM (
-  'excellent',   -- Excellent, with a string credit history and no bad debts
-  'very_good',   -- Very good, with stable assers and income, minimal debt
-  'good',        -- Good, with stable credit history, but may have some debt
-  'fair',        -- Fair, with some credit issues or debt
-  'poor',        -- Poor, with bad debts or unstable income
-  'very_poor'    -- Very poor, with severe financial difficulties or high bad debt
+  'excellent',    -- Xuất sắc (tài sản ổn định, không nợ xấu)
+  'very_good',    -- Rất tốt (tài sản ổn định, ít nợ)
+  'good',         -- Tốt (tín dụng ổn định, có thể có một ít nợ)
+  'average',      -- Trung bình (một số vấn đề tín dụng nhỏ)
+  'low_risk',     -- Rủi ro thấp (có thể có nợ nhưng kiểm soát được)
+  'high_risk',    -- Rủi ro cao (nợ xấu hoặc thu nhập không ổn định)
+  'defaulted'     -- Mất khả năng thanh toán (nợ xấu nghiêm trọng)
 );
-
 
 
 -- Bảng khách hàng của ngân hàng
 CREATE TABLE customers (
-  customer_id bigint PRIMARY KEY DEFAULT shard_id_generator.generate_id(),
+  customer_id bigint PRIMARY KEY,
   customer_rid varchar(15) UNIQUE NOT NULL,
   fullname varchar NOT NULL,
   date_of_birth date NOT NULL,
@@ -77,8 +77,7 @@ CREATE TABLE customers (
 
 -- Bảng tài khoản của khách hàng
 CREATE TABLE accounts (
-  account_id bigint PRIMARY KEY DEFAULT shard_id_generator.generate_id(),
-  account_number varchar(15) UNIQUE NOT NULL,
+  account_id bigint PRIMARY KEY,
   customer_id bigint NOT NULL,
   current_balance bigint NOT NULL,
   currency_type CurrencyType NOT NULL,
@@ -111,6 +110,8 @@ CREATE INDEX ON accounts (account_status);
 
 CREATE INDEX ON money_transfer_transactions (account_id);
 
-ALTER TABLE accounts ADD FOREIGN KEY (customer_id) REFERENCES customers (customer_id);
+ALTER TABLE accounts 
+ADD FOREIGN KEY (customer_id) REFERENCES customers (customer_id);
 
-ALTER TABLE money_transfer_transactions ADD FOREIGN KEY (account_id) REFERENCES accounts (account_id);
+ALTER TABLE money_transfer_transactions 
+ADD FOREIGN KEY (account_id) REFERENCES accounts (account_id);

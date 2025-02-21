@@ -64,8 +64,8 @@ func main() {
 		log.Fatal().Msg("Unknown environment: " + config.Environment)
 	}
 
-	ctx, stop := signal.NotifyContext(context.Background(), interruptSignals...)
-	defer stop()
+	// Run database migrations
+	runDBMigration(config.SourceSchemaURL, config.DBSourceAuthDB)
 
 	// Create a new database connection pool
 	connPool, err := pgxpool.New(context.Background(), config.DBSourceAuthDB)
@@ -74,7 +74,8 @@ func main() {
 	}
 	defer connPool.Close()
 
-	runDBMigration(config.SourceSchemaURL, config.DBSourceAuthDB)
+	ctx, stop := signal.NotifyContext(context.Background(), interruptSignals...)
+	defer stop()
 
 	// Create a new store to interact with the database
 	store := db.NewStore(connPool)
@@ -93,9 +94,9 @@ func main() {
 }
 
 // runDBMigration applies the database migrations to ensure the database schema is up-to-date
-func runDBMigration(migrationURL string, dbSource string) {
+func runDBMigration(sourceSchemaURL string, dbSource string) {
 	// Create a new migration instance
-	migration, err := migrate.New(migrationURL, dbSource)
+	migration, err := migrate.New(sourceSchemaURL, dbSource)
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot create new migrate instance")
 	}

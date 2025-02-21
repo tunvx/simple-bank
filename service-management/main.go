@@ -72,9 +72,6 @@ func main() {
 	// Run database migrations
 	runDBMigration(config.SourceSchemaURL, config.ListDBSourceCoreDB, config.NumCoreDBShard)
 
-	ctx, stop := signal.NotifyContext(context.Background(), interruptSignals...)
-	defer stop()
-
 	// Establish SQL Store for all shards
 	stores, err := establishShardedSQLStore(config.ListDBSourceCoreDB, config.NumCoreDBShard)
 	if err != nil {
@@ -95,6 +92,9 @@ func main() {
 	taskDistributor := redis.NewRedisTaskDistributor(redisOpt)
 	log.Info().Msgf("start Task:Distributor at :: %s", redisOpt.Addr)
 
+	ctx, stop := signal.NotifyContext(context.Background(), interruptSignals...)
+	defer stop()
+	
 	waitGroup, ctx := errgroup.WithContext(ctx)
 
 	runGrpcServer(ctx, waitGroup, config, stores, taskDistributor)
