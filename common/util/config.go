@@ -27,6 +27,7 @@ type Config struct {
 	DBDriver        string `mapstructure:"DB_DRIVER"`
 	SourceSchemaURL string `mapstructure:"SOURCE_SCHEMA_URL"`
 
+	DBSourceOriginalDB string `mapstructure:"DB_SOURCE_ORIGINAL_DB"`
 	DBSourceAuthDB string `mapstructure:"DB_SOURCE_AUTH_DB"`
 
 	// Added this for dynamically populated shard URLs
@@ -85,6 +86,5 @@ func LoadConfig(path string) (config Config, err error) {
 			config.ListDBSourceCoreDB = append(config.ListDBSourceCoreDB, url)
 		}
 	}
-
 	return
 }

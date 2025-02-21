@@ -3,6 +3,8 @@ networks:
     external: true  # If the network does not exist, it must be created manually first
 
 volumes:
+  original-database-volume:
+    external: true  
   auth-database-volume:
     external: true  
   core-database-01-volume:
@@ -19,6 +21,50 @@ volumes:
 
   
 services:
+  original-database:
+    container_name: original-database
+    image: postgres:17.2-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=${PG_USER:-postgres}
+      - POSTGRES_PASSWORD=${PG_PASSWORD:-secret}
+      - POSTGRES_DB=${PG_DATABASE_ORIGINAL_DB:-original_db}
+    ports:
+      - "${PG_PORT_ORIGINAL_DB}:5432"
+    networks:
+      - bank-network
+    volumes:
+      - original-database-volume:/var/lib/postgresql/data
+    command: >
+      postgres -c max_connections=200
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -p 5432 -U ${PG_USER:-postgres} -d ${PG_DATABASE_ORIGINAL_DB:-original_db} || exit 1"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+  
+  auth-database:
+    container_name: auth-database
+    image: postgres:17.2-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=${PG_USER:-postgres}
+      - POSTGRES_PASSWORD=${PG_PASSWORD:-secret}
+      - POSTGRES_DB=${PG_DATABASE_AUTH_DB:-auth_db}
+    ports:
+      - "${PG_PORT_AUTH_DB}:5432"
+    networks:
+      - bank-network
+    volumes:
+      - auth-database-volume:/var/lib/postgresql/data
+    command: >
+      postgres -c max_connections=200
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -p 5432 -U ${PG_USER:-postgres} -d ${PG_DATABASE_AUTH_DB:-auth_db} || exit 1"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+
   core-database-01:
     container_name: core-database-01
     image: postgres:17.2-alpine
@@ -59,29 +105,6 @@ services:
       postgres -c max_connections=200
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -p 5432 -U ${PG_USER:-postgres} -d ${PG_DATABASE_CORE_DB:-core_db} || exit 1"]
-      interval: 60s
-      timeout: 5s
-      retries: 3
-
-
-  auth-database:
-    container_name: auth-database
-    image: postgres:17.2-alpine
-    restart: always
-    environment:
-      - POSTGRES_USER=${PG_USER:-postgres}
-      - POSTGRES_PASSWORD=${PG_PASSWORD:-secret}
-      - POSTGRES_DB=${PG_DATABASE_AUTH_DB:-auth_db}
-    ports:
-      - "${PG_PORT_AUTH_DB}:5432"
-    networks:
-      - bank-network
-    volumes:
-      - auth-database-volume:/var/lib/postgresql/data
-    command: >
-      postgres -c max_connections=200
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -p 5432 -U ${PG_USER:-postgres} -d ${PG_DATABASE_AUTH_DB:-auth_db} || exit 1"]
       interval: 60s
       timeout: 5s
       retries: 3
@@ -129,48 +152,48 @@ services:
   #         cpus: '1'
   #         memory: 1g
 
-  reverse-proxy:
-    container_name: reverse-proxy
-    image: nginx:1.27.2
-    restart: unless-stopped
-    volumes:
-      - ./nginx/templates:/etc/nginx/templates
-      - ./nginx/configuration/custom_proxy_settings.conf:/etc/nginx/conf.d/custom_proxy_settings.conf
-    ports:
-      - "80:80"
-    networks:
-      - bank-network
+  # reverse-proxy:
+  #   container_name: reverse-proxy
+  #   image: nginx:1.27.2
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./nginx/templates:/etc/nginx/templates
+  #     - ./nginx/configuration/custom_proxy_settings.conf:/etc/nginx/conf.d/custom_proxy_settings.conf
+  #   ports:
+  #     - "80:80"
+  #   networks:
+  #     - bank-network
 
-  auth-service:
-    container_name: auth-service
-    image: auth-service
-    restart: unless-stopped
-    depends_on:
-      auth-database:
-        condition: service_healthy
-    networks:
-      - bank-network
+  # auth-service:
+  #   container_name: auth-service
+  #   image: auth-service
+  #   restart: unless-stopped
+  #   depends_on:
+  #     auth-database:
+  #       condition: service_healthy
+  #   networks:
+  #     - bank-network
 
-  management-service:
-    container_name: management-service
-    image: management-service
-    restart: unless-stopped
-    depends_on:
-      core-database-01:
-        condition: service_healthy
-      core-database-02:
-        condition: service_healthy
-    networks:
-      - bank-network
+  # management-service:
+  #   container_name: management-service
+  #   image: management-service
+  #   restart: unless-stopped
+  #   depends_on:
+  #     core-database-01:
+  #       condition: service_healthy
+  #     core-database-02:
+  #       condition: service_healthy
+  #   networks:
+  #     - bank-network
 
-  transfermoney-service:
-    container_name: transfermoney-service
-    image: transfermoney-service
-    restart: unless-stopped
-    depends_on:
-      core-database-01:
-        condition: service_healthy
-      core-database-02:
-        condition: service_healthy
-    networks:
-      - bank-network
+  # transfermoney-service:
+  #   container_name: transfermoney-service
+  #   image: transfermoney-service
+  #   restart: unless-stopped
+  #   depends_on:
+  #     core-database-01:
+  #       condition: service_healthy
+  #     core-database-02:
+  #       condition: service_healthy
+  #   networks:
+  #     - bank-network

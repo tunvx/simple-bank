@@ -11,5 +11,4 @@ CREATE TABLE customer_sessions (
 
 -- Add Foreign Key Constraint to customer_sessions
 ALTER TABLE customer_sessions 
-ADD CONSTRAINT credentials_sessions_customer_id_fkey 
-FOREIGN KEY (customer_id) REFERENCES customer_credentials (customer_id) ON DELETE CASCADE;
+ADD FOREIGN KEY (customer_id) REFERENCES customer_credentials (customer_id);

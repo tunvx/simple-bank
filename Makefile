@@ -23,19 +23,17 @@ rm-build:
 	docker image rm notification-service
 
 config:
-	rm -rf service-auth/config.env
-	rm -rf service-management/config.env
-	rm -rf service-transfermoney/config.env
-	rm -rf service-notification/config.env
-	cp config.env service-auth
-	cp config.env service-management
-	cp config.env service-transfermoney
-	cp config.env service-notification
+	cp config.dev.env service-lookup/config.env
+	cp config.dev.env service-auth/config.env
+	cp config.dev.env service-management/config.env
+	cp config.dev.env service-transfermoney/config.env
+	cp config.dev.env service-notification/config.env
 
 network:
 	docker network create bank-network
 
 volume:
+	docker volume create original-database-volume
 	docker volume create auth-database-volume
 	docker volume create core-database-01-volume
 	docker volume create core-database-02-volume
@@ -49,6 +47,7 @@ stop:
 
 rm: 
 	docker network rm bank-network
+	docker volume rm original-database-volume
 	docker volume rm auth-database-volume
 	docker volume rm core-database-01-volume
 	docker volume rm core-database-02-volume
