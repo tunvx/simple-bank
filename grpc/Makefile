@@ -1,44 +1,67 @@
 proto:
 	rm -rf pb/auth/*.go
-	rm -rf pb/management/*.go
-	rm -rf pb/management/customer/*.go
-	rm -rf pb/management/account/*.go
-	rm -rf pb/transfermoney/*.go
-	rm -rf doc/swagger/*.swagger.json
+	rm -rf pb/cusman/*.go
+	rm -rf pb/cusman/customer/*.go
+	rm -rf pb/cusman/account/*.go
+	rm -rf pb/moneytransfer/*.go
+
+	rm -rf doc/auth/swagger/*.swagger.json
+	rm -rf doc/cusman/swagger/*.swagger.json
+	rm -rf doc/moneytransfer/swagger/*.swagger.json
+	rm -rf doc/shardman/swagger/*.swagger.json
 
 	# Compile customer .proto files
 	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
 	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
 	--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
-	--openapiv2_out=doc/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=management \
-	proto/management/customer/*.proto
+	--openapiv2_out=doc/cusman/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=cusman \
+	proto/cusman/customer/*.proto
 
 	# Compile account .proto files
 	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
 	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
 	--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
-	--openapiv2_out=doc/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=management \
-	proto/management/account/*.proto
+	--openapiv2_out=doc/cusman/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=cusman \
+	proto/cusman/account/*.proto
 
-	# Compile management .proto files
+	# Compile cusman .proto files
 	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
 	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
 	--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
-	--openapiv2_out=doc/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=management \
-	proto/management/*.proto
+	--openapiv2_out=doc/cusman/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=cusman \
+	proto/cusman/*.proto
 
 	# Compile auth .proto files
 	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
 	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
 	--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
-	--openapiv2_out=doc/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=auth \
+	--openapiv2_out=doc/auth/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=auth \
 	proto/auth/*.proto
 
-	# Compile transfermoney .proto files
+	# Compile moneytransfer .proto files
 	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
 	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
 	--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
-	--openapiv2_out=doc/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=transfermoney \
-	proto/transfermoney/*.proto
+	--openapiv2_out=doc/moneytransfer/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=moneytransfer \
+	proto/moneytransfer/*.proto
 
-.PHONY: proto
+	# Compile shardman .proto files
+	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
+	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
+	--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
+	--openapiv2_out=doc/shardman/swagger  --openapiv2_opt=allow_merge=true,merge_file_name=shardman \
+	proto/shardman/*.proto
+
+swagger-ui:
+	cp -r doc/swagger doc/auth
+	cp -r doc/swagger doc/cusman
+	cp -r doc/swagger doc/moneytransfer
+	cp -r doc/swagger doc/shardman
+
+statik:
+	statik -src=./doc/auth/swagger -dest=./doc/auth -f
+	statik -src=./doc/cusman/swagger -dest=./doc/cusman -f
+	statik -src=./doc/moneytransfer/swagger -dest=./doc/moneytransfer -f
+	statik -src=./doc/shardman/swagger -dest=./doc/shardman -f
+
+.PHONY: proto swagger-ui

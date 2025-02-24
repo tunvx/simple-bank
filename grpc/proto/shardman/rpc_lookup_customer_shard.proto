@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package shardman;
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/shardman";
+
+message LookupCustomerShardRequest {
+    string customer_rid = 1;
+}
+
+message LookupCustomerShardResponse {
+    int64 customer_id = 1;
+    int32 shard_id = 2;
+}

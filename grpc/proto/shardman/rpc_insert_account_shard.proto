@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package shardman;
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/shardman";
+
+message InsertAccountShardRequest {
+    int64 account_id = 1;
+    int64 customer_id = 2;
+    int32 shard_id = 3;
+}
+
+message InsertAccountShardResponse {
+    bool is_inserted = 1;
+}

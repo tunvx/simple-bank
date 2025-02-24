@@ -1,0 +1,372 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Core Banking",
+    "version": "1.1",
+    "contact": {
+      "name": "Nguyen Van Tu",
+      "url": "https://github.com/tunvx",
+      "email": "tunv.todo@gmail.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "CustomerManagementService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/accounts": {
+      "post": {
+        "summary": "Create Account",
+        "description": "Create a new customer account",
+        "operationId": "CustomerManagementService_CreateAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/accountCreateAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/accountCreateAccountRequest"
+            }
+          }
+        ],
+        "tags": [
+          "CustomerManagementService"
+        ]
+      }
+    },
+    "/v1/accounts/{accountId}": {
+      "get": {
+        "summary": "Get Account",
+        "description": "Retrieve an account using the account id (account number)",
+        "operationId": "CustomerManagementService_GetAccountByID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/accountGetAccountByIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "CustomerManagementService"
+        ]
+      }
+    },
+    "/v1/customers": {
+      "post": {
+        "summary": "Create Customer",
+        "description": "Create a new bank customer",
+        "operationId": "CustomerManagementService_CreateCustomer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/customerCreateCustomerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/customerCreateCustomerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "CustomerManagementService"
+        ]
+      }
+    },
+    "/v1/customers/rid/{customerRid}": {
+      "get": {
+        "summary": "Get Customer by RID",
+        "description": "Retrieve a customer by RID",
+        "operationId": "CustomerManagementService_GetCustomerByRID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/customerGetCustomerByRidResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "customerRid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "CustomerManagementService"
+        ]
+      }
+    },
+    "/v1/customers/verify_email": {
+      "get": {
+        "summary": "Verify Email",
+        "description": "Verify the email address of a customer",
+        "operationId": "CustomerManagementService_VerifyCustomerEmail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/customerVerifyEmailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "emailId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "secretCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "CustomerManagementService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "accountAccount": {
+      "type": "object",
+      "properties": {
+        "accountId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "currentBalance": {
+          "type": "string",
+          "format": "int64"
+        },
+        "currencyType": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string"
+        },
+        "accountStatus": {
+          "type": "string"
+        }
+      }
+    },
+    "accountCreateAccountRequest": {
+      "type": "object",
+      "properties": {
+        "accountId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "currencyType": {
+          "type": "string"
+        }
+      }
+    },
+    "accountCreateAccountResponse": {
+      "type": "object",
+      "properties": {
+        "account": {
+          "$ref": "#/definitions/accountAccount"
+        }
+      }
+    },
+    "accountGetAccountByIDResponse": {
+      "type": "object",
+      "properties": {
+        "account": {
+          "$ref": "#/definitions/accountAccount"
+        }
+      }
+    },
+    "customerCreateCustomerRequest": {
+      "type": "object",
+      "properties": {
+        "customerRid": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "dateOfBirth": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "customerTier": {
+          "type": "string"
+        },
+        "customerSegment": {
+          "type": "string"
+        },
+        "financialStatus": {
+          "type": "string"
+        }
+      }
+    },
+    "customerCreateCustomerResponse": {
+      "type": "object",
+      "properties": {
+        "customer": {
+          "$ref": "#/definitions/customerCustomer"
+        }
+      }
+    },
+    "customerCustomer": {
+      "type": "object",
+      "properties": {
+        "customerId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "customerRid": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "dateOfBirth": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "customerTier": {
+          "type": "string"
+        },
+        "customerSegment": {
+          "type": "string"
+        },
+        "financialStatus": {
+          "type": "string"
+        }
+      }
+    },
+    "customerGetCustomerByRidResponse": {
+      "type": "object",
+      "properties": {
+        "customer": {
+          "$ref": "#/definitions/customerCustomer"
+        }
+      }
+    },
+    "customerVerifyEmailResponse": {
+      "type": "object",
+      "properties": {
+        "isVerified": {
+          "type": "boolean"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

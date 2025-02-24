@@ -20,8 +20,8 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	AuthService_CreateCustomerCredential_FullMethodName = "/auth.AuthService/CreateCustomerCredential"
-	AuthService_LoginCustomer_FullMethodName            = "/auth.AuthService/LoginCustomer"
 	AuthService_UpdateCustomerCredential_FullMethodName = "/auth.AuthService/UpdateCustomerCredential"
+	AuthService_LoginCustomer_FullMethodName            = "/auth.AuthService/LoginCustomer"
 	AuthService_GenerateTestAccessToken_FullMethodName  = "/auth.AuthService/GenerateTestAccessToken"
 )
 
@@ -30,8 +30,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthServiceClient interface {
 	CreateCustomerCredential(ctx context.Context, in *CreateCustomerCredentialRequest, opts ...grpc.CallOption) (*CreateCustomerCredentialResponse, error)
-	LoginCustomer(ctx context.Context, in *LoginCustomerRequest, opts ...grpc.CallOption) (*LoginCustomerResponse, error)
 	UpdateCustomerCredential(ctx context.Context, in *UpdateCustomerCredentialRequest, opts ...grpc.CallOption) (*UpdateCustomerCredentialResponse, error)
+	LoginCustomer(ctx context.Context, in *LoginCustomerRequest, opts ...grpc.CallOption) (*LoginCustomerResponse, error)
 	GenerateTestAccessToken(ctx context.Context, in *GenerateTestAccessTokenRequest, opts ...grpc.CallOption) (*GenerateTestAccessTokenResponse, error)
 }
 
@@ -53,20 +53,20 @@ func (c *authServiceClient) CreateCustomerCredential(ctx context.Context, in *Cr
 	return out, nil
 }
 
-func (c *authServiceClient) LoginCustomer(ctx context.Context, in *LoginCustomerRequest, opts ...grpc.CallOption) (*LoginCustomerResponse, error) {
+func (c *authServiceClient) UpdateCustomerCredential(ctx context.Context, in *UpdateCustomerCredentialRequest, opts ...grpc.CallOption) (*UpdateCustomerCredentialResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(LoginCustomerResponse)
-	err := c.cc.Invoke(ctx, AuthService_LoginCustomer_FullMethodName, in, out, cOpts...)
+	out := new(UpdateCustomerCredentialResponse)
+	err := c.cc.Invoke(ctx, AuthService_UpdateCustomerCredential_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *authServiceClient) UpdateCustomerCredential(ctx context.Context, in *UpdateCustomerCredentialRequest, opts ...grpc.CallOption) (*UpdateCustomerCredentialResponse, error) {
+func (c *authServiceClient) LoginCustomer(ctx context.Context, in *LoginCustomerRequest, opts ...grpc.CallOption) (*LoginCustomerResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UpdateCustomerCredentialResponse)
-	err := c.cc.Invoke(ctx, AuthService_UpdateCustomerCredential_FullMethodName, in, out, cOpts...)
+	out := new(LoginCustomerResponse)
+	err := c.cc.Invoke(ctx, AuthService_LoginCustomer_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -88,8 +88,8 @@ func (c *authServiceClient) GenerateTestAccessToken(ctx context.Context, in *Gen
 // for forward compatibility.
 type AuthServiceServer interface {
 	CreateCustomerCredential(context.Context, *CreateCustomerCredentialRequest) (*CreateCustomerCredentialResponse, error)
-	LoginCustomer(context.Context, *LoginCustomerRequest) (*LoginCustomerResponse, error)
 	UpdateCustomerCredential(context.Context, *UpdateCustomerCredentialRequest) (*UpdateCustomerCredentialResponse, error)
+	LoginCustomer(context.Context, *LoginCustomerRequest) (*LoginCustomerResponse, error)
 	GenerateTestAccessToken(context.Context, *GenerateTestAccessTokenRequest) (*GenerateTestAccessTokenResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
@@ -104,11 +104,11 @@ type UnimplementedAuthServiceServer struct{}
 func (UnimplementedAuthServiceServer) CreateCustomerCredential(context.Context, *CreateCustomerCredentialRequest) (*CreateCustomerCredentialResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCustomerCredential not implemented")
 }
-func (UnimplementedAuthServiceServer) LoginCustomer(context.Context, *LoginCustomerRequest) (*LoginCustomerResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LoginCustomer not implemented")
-}
 func (UnimplementedAuthServiceServer) UpdateCustomerCredential(context.Context, *UpdateCustomerCredentialRequest) (*UpdateCustomerCredentialResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateCustomerCredential not implemented")
+}
+func (UnimplementedAuthServiceServer) LoginCustomer(context.Context, *LoginCustomerRequest) (*LoginCustomerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginCustomer not implemented")
 }
 func (UnimplementedAuthServiceServer) GenerateTestAccessToken(context.Context, *GenerateTestAccessTokenRequest) (*GenerateTestAccessTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateTestAccessToken not implemented")
@@ -152,24 +152,6 @@ func _AuthService_CreateCustomerCredential_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AuthService_LoginCustomer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginCustomerRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).LoginCustomer(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_LoginCustomer_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).LoginCustomer(ctx, req.(*LoginCustomerRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _AuthService_UpdateCustomerCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateCustomerCredentialRequest)
 	if err := dec(in); err != nil {
@@ -184,6 +166,24 @@ func _AuthService_UpdateCustomerCredential_Handler(srv interface{}, ctx context.
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthServiceServer).UpdateCustomerCredential(ctx, req.(*UpdateCustomerCredentialRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_LoginCustomer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginCustomerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).LoginCustomer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_LoginCustomer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).LoginCustomer(ctx, req.(*LoginCustomerRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -218,12 +218,12 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthService_CreateCustomerCredential_Handler,
 		},
 		{
-			MethodName: "LoginCustomer",
-			Handler:    _AuthService_LoginCustomer_Handler,
-		},
-		{
 			MethodName: "UpdateCustomerCredential",
 			Handler:    _AuthService_UpdateCustomerCredential_Handler,
+		},
+		{
+			MethodName: "LoginCustomer",
+			Handler:    _AuthService_LoginCustomer_Handler,
 		},
 		{
 			MethodName: "GenerateTestAccessToken",

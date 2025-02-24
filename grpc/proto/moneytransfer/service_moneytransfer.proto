@@ -1,0 +1,153 @@
+syntax = "proto3";
+
+package moneytransfer;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+import "moneytransfer/rpc_check_account.proto";
+import "moneytransfer/rpc_receive_money.proto";
+import "moneytransfer/rpc_transfer_money.proto";
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/moneytransfer";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Core Banking";
+    version: "1.1";
+    contact: {
+      name: "Nguyen Van Tu";
+      url: "https://github.com/tunvx";
+      email: "tunv.todo@gmail.com";
+    };
+  };
+};
+
+// Empty message for request and response
+message Empty {}
+
+message OkayResponse {
+    string ok = 1;
+}
+
+service MoneyTransferService {
+    // Kiểm tra tài khoản
+    rpc CheckAccount (CheckAccountRequest) returns (CheckAccountResponse) {
+        option (google.api.http) = {
+            post: "/v1/accounts/check"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Validate account status and currency.";
+            summary: "Check Account";
+        };
+    };
+
+    // Nhận tiền (Receive Money)
+    rpc ReceiveMoney (ReceiveMoneyRequest) returns (ReceiveMoneyResponse) {
+        option (google.api.http) = {
+            post: "/v1/accounts/receive"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Perform an money receiving.";
+            summary: "Receive Money";
+        };
+    };
+
+    // Chuyển khoản nội bộ (Internal Transfer)  
+    rpc InternalTransferMoney (InternalTransferMoneyRequest) returns (InternalTransferMoneyResponse) {
+        option (google.api.http) = {
+            post: "/v1/accounts/transfers/internal"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Perform an money transfer within the bank.";
+            summary: "Internal Money Transfer";
+        };
+    };
+
+    // Chuyển khoản liên ngân hàng (External Transfer)
+    rpc ExternalTransferMoney (ExternalTransferMoneyRequest) returns (ExternalTransferMoneyResponse) {
+        option (google.api.http) = {
+            post: "/v1/accounts/transfers/external"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Perform an money transfer to another bank.";
+            summary: "External Money Transfer";
+        };
+    };
+
+// ==================================================================================================================
+// ==================================================================================================================
+// ==================================================================================================================
+
+    // Kiểm tra kết nối máy chủ (Health Check)
+    rpc HealthCheckGET (Empty) returns (OkayResponse) {
+        option (google.api.http) = {
+            get: "/v1/test/health_check_get"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Basic server connectivity test using a GET request.";
+            summary: "Health Check (GET)";
+        };
+    };
+
+    rpc HealthCheckPOST (Empty) returns (OkayResponse) {
+        option (google.api.http) = {
+            post: "/v1/test/health_check_post"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Basic server connectivity test using a POST request.";
+            summary: "Health Check (POST)";
+        };
+    };
+
+    // Kiểm thử API CheckAccount
+    rpc MockCheckAccount (CheckAccountRequest) returns (OkayResponse) {
+        option (google.api.http) = {
+            post: "/v1/test/mock_check_account"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Simulates account validation without processing.";
+            summary: "Mock Check Account";
+        };
+    };
+
+    rpc MockCheckAccountJustAuth (CheckAccountRequest) returns (OkayResponse) {
+        option (google.api.http) = {
+            post: "/v1/test/mock_check_account_just_auth"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Simulates account validation with authentication processing.";
+            summary: "Mock Check Account with Auth";
+        };
+    };
+
+    // Kiểm thử API Internal Transfer
+    rpc MockInternalTransferMoney (InternalTransferMoneyRequest) returns (OkayResponse) {
+        option (google.api.http) = {
+            post: "/v1/test/mock_internal_transfer"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Simulates an internal transfer request without processing.";
+            summary: "Mock Internal Transfer";
+        };
+    };
+
+    rpc MockInternalTransferMoneyJustAuth (InternalTransferMoneyRequest) returns (OkayResponse) {
+        option (google.api.http) = {
+            post: "/v1/test/mock_internal_transfer_just_auth"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Simulates an internal transfer request with authentication processing.";
+            summary: "Mock Internal Transfer with Auth";
+        };
+    };
+} 

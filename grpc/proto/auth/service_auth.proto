@@ -27,7 +27,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 service AuthService {
     rpc CreateCustomerCredential (CreateCustomerCredentialRequest) returns (CreateCustomerCredentialResponse) {
         option (google.api.http) = {
-            post: "/v1/create_customer_credential"
+            post: "/v1/customers/credentials"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -36,20 +36,9 @@ service AuthService {
         };
     }; 
 
-    rpc LoginCustomer (LoginCustomerRequest) returns (LoginCustomerResponse) {
-        option (google.api.http) = {
-            post: "/v1/login_customer"
-            body: "*"
-        };
-        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-            description: "Use this API to login user and get access token";
-            summary: "Login user";
-        };
-    };
-
     rpc UpdateCustomerCredential (UpdateCustomerCredentialRequest) returns (UpdateCustomerCredentialResponse) {
         option (google.api.http) = {
-            patch: "/v1/update_customer_credential"
+            patch: "/v1/customers/credentials"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -57,6 +46,17 @@ service AuthService {
             summary: "Update customer credential";
         };
     }; 
+
+    rpc LoginCustomer (LoginCustomerRequest) returns (LoginCustomerResponse) {
+        option (google.api.http) = {
+            post: "/v1/customers/login"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to login user and get access token";
+            summary: "Login customer";
+        };
+    };
 
     rpc GenerateTestAccessToken (GenerateTestAccessTokenRequest) returns (GenerateTestAccessTokenResponse) {
         option (google.api.http) = {
