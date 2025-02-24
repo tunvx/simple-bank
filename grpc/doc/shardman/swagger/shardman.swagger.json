@@ -1,0 +1,331 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Core Banking",
+    "version": "1.1",
+    "contact": {
+      "name": "Nguyen Van Tu",
+      "url": "https://github.com/tunvx",
+      "email": "tunv.todo@gmail.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "ShardmanService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/shards/accounts": {
+      "post": {
+        "summary": "Insert account shard",
+        "description": "Use this API to insert account shard",
+        "operationId": "ShardmanService_InsertAccountShard",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/shardmanInsertAccountShardResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/shardmanInsertAccountShardRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ShardmanService"
+        ]
+      }
+    },
+    "/v1/shards/accounts/lookup-pair": {
+      "post": {
+        "summary": "Get Account Shard Pair",
+        "description": "Use this API to look up account shard_id Pair by account_id Pair",
+        "operationId": "ShardmanService_LookupAccountShardPair",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/shardmanLookupAccountShardPairResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/shardmanLookupAccountShardPairRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ShardmanService"
+        ]
+      }
+    },
+    "/v1/shards/accounts/lookup/{accountId}": {
+      "get": {
+        "summary": "Get Account Shard",
+        "description": "Use this API to look up account shard_id by account_id",
+        "operationId": "ShardmanService_LookupAccountShard",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/shardmanLookupAccountShardResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "ShardmanService"
+        ]
+      }
+    },
+    "/v1/shards/customers": {
+      "post": {
+        "summary": "Insert customer shard",
+        "description": "Use this API to insert customer shard",
+        "operationId": "ShardmanService_InsertCustomerShard",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/shardmanInsertCustomerShardResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/shardmanInsertCustomerShardRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ShardmanService"
+        ]
+      }
+    },
+    "/v1/shards/customers/lookup/{customerRid}": {
+      "get": {
+        "summary": "Get Customer Shard",
+        "description": "Use this API to look up customter shard_id by customer_rid",
+        "operationId": "ShardmanService_LookupCustomerShard",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/shardmanLookupCustomerShardResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "customerRid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ShardmanService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "shardmanInsertAccountShardRequest": {
+      "type": "object",
+      "properties": {
+        "accountId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "customerId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "shardId": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "shardmanInsertAccountShardResponse": {
+      "type": "object",
+      "properties": {
+        "isInserted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "shardmanInsertCustomerShardRequest": {
+      "type": "object",
+      "properties": {
+        "customerRid": {
+          "type": "string"
+        },
+        "shardId": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "shardmanInsertCustomerShardResponse": {
+      "type": "object",
+      "properties": {
+        "isInserted": {
+          "type": "boolean"
+        },
+        "customerId": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "shardmanLookupAccountShardPairRequest": {
+      "type": "object",
+      "properties": {
+        "account1Id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "account2Id": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "shardmanLookupAccountShardPairResponse": {
+      "type": "object",
+      "properties": {
+        "account1Id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "account1Shard": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "account2Id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "account2Shard": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "shardmanLookupAccountShardResponse": {
+      "type": "object",
+      "properties": {
+        "accountId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "shardId": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "shardmanLookupCustomerShardResponse": {
+      "type": "object",
+      "properties": {
+        "customerId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "shardId": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    }
+  }
+}

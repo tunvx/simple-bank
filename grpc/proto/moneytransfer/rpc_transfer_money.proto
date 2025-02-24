@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package moneytransfer;
+
+import "cusman/account/account.proto";
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/moneytransfer";
+
+// Internal Transfer 
+message InternalTransferMoneyRequest {
+    int64  amount = 1;
+    string currency_type = 2;
+    int64  source_acc_id = 3;       // Source account ID
+    int64  beneficiary_acc_id = 4;  // Beneficiary account ID
+    string beneficiary_name = 5;        // Beneficiary name
+    string message = 6;
+}
+
+message InternalTransferMoneyResponse {
+    bool is_successful = 1;
+    account.Account source_account = 2;
+    account.Account beneficiary_account = 3; // Just for development phase
+}
+
+
+// External Transfer
+message ExternalTransferMoneyRequest {
+    int64  amount = 1;
+    string currency_type = 2;
+    int64  source_acc_id = 3;       // Source account ID
+    int64  beneficiary_acc_id = 4;  // Beneficiary account ID
+    string beneficiary_bank_code = 5;   // Beneficiary Bank Code
+    string beneficiary_name = 6;        // Beneficiary name
+    string message = 7;
+}
+
+message ExternalTransferMoneyResponse {
+    bool is_successful = 1;
+    account.Account source_account = 2;
+}

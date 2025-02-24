@@ -28,7 +28,7 @@ type Config struct {
 	SourceSchemaURL string `mapstructure:"SOURCE_SCHEMA_URL"`
 
 	DBSourceOriginalDB string `mapstructure:"DB_SOURCE_ORIGINAL_DB"`
-	DBSourceAuthDB string `mapstructure:"DB_SOURCE_AUTH_DB"`
+	DBSourceAuthDB     string `mapstructure:"DB_SOURCE_AUTH_DB"`
 
 	// Added this for dynamically populated shard URLs
 	ListDBSourceCoreDB []string `mapstructure:"-"`
@@ -45,6 +45,8 @@ type Config struct {
 	InternalManageServiceAddress string `mapstructure:"INTERNAL_MANAGE_SERVICE_ADDRESS"`
 
 	// 7. Bind Address for External Connections
+	HTTPShardManServiceAddress    string `mapstructure:"HTTP_SHARDMAN_SERVICE_ADDRESS"`
+	GRPCShardManServiceAddress    string `mapstructure:"GRPC_SHARDMAN_SERVICE_ADDRESS"`
 	HTTPManageServiceAddress      string `mapstructure:"HTTP_MANAGE_SERVICE_ADDRESS"`
 	GRPCManageServiceAddress      string `mapstructure:"GRPC_MANAGE_SERVICE_ADDRESS"`
 	HTTPAuthServiceAddress        string `mapstructure:"HTTP_AUTH_SERVICE_ADDRESS"`

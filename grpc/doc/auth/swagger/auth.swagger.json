@@ -1,0 +1,286 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Core Banking",
+    "version": "1.1",
+    "contact": {
+      "name": "Nguyen Van Tu",
+      "url": "https://github.com/tunvx",
+      "email": "tunv.todo@gmail.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "AuthService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/customers/credentials": {
+      "post": {
+        "summary": "Create customer credential",
+        "description": "Use this API to create a customer credential",
+        "operationId": "AuthService_CreateCustomerCredential",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authCreateCustomerCredentialResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/authCreateCustomerCredentialRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      },
+      "patch": {
+        "summary": "Update customer credential",
+        "description": "Use this API to update the customer credential",
+        "operationId": "AuthService_UpdateCustomerCredential",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authUpdateCustomerCredentialResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/authUpdateCustomerCredentialRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/v1/customers/login": {
+      "post": {
+        "summary": "Login customer",
+        "description": "Use this API to login user and get access token",
+        "operationId": "AuthService_LoginCustomer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authLoginCustomerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/authLoginCustomerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/v1/generate_test_access_token": {
+      "get": {
+        "summary": "Generate banker role access token",
+        "description": "Use this API to generate an access token with banker role for testing purposes",
+        "operationId": "AuthService_GenerateTestAccessToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authGenerateTestAccessTokenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "AuthService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "authCreateCustomerCredentialRequest": {
+      "type": "object",
+      "properties": {
+        "customerId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "shardId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "authCreateCustomerCredentialResponse": {
+      "type": "object",
+      "properties": {
+        "isCreated": {
+          "type": "boolean"
+        }
+      }
+    },
+    "authGenerateTestAccessTokenResponse": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string"
+        },
+        "accessTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "authLoginCustomerRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "authLoginCustomerResponse": {
+      "type": "object",
+      "properties": {
+        "customerId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "shardId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sessionId": {
+          "type": "string"
+        },
+        "accessToken": {
+          "type": "string"
+        },
+        "refreshToken": {
+          "type": "string"
+        },
+        "accessTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "refreshTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "authUpdateCustomerCredentialRequest": {
+      "type": "object",
+      "properties": {
+        "customerId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "shardId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "authUpdateCustomerCredentialResponse": {
+      "type": "object",
+      "properties": {
+        "isUpdated": {
+          "type": "boolean"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

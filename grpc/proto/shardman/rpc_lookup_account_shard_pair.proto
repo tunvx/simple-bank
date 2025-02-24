@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package shardman;
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/shardman";
+
+message LookupAccountShardPairRequest {
+    int64 account1_id = 1;
+    int64 account2_id = 2;
+}
+
+message LookupAccountShardPairResponse {
+    int64 account1_id = 1;
+    int32 account1_shard = 2;
+    int64 account2_id = 3;
+    int32 account2_shard = 4;
+}

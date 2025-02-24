@@ -23,11 +23,11 @@ rm-build:
 	docker image rm notification-service
 
 config:
-	cp config.dev.env service-lookup/config.env
-	cp config.dev.env service-auth/config.env
-	cp config.dev.env service-management/config.env
-	cp config.dev.env service-transfermoney/config.env
-	cp config.dev.env service-notification/config.env
+	cp config.dev.env vnb-auth-service/config.env
+	cp config.dev.env vnb-cusman-service/config.env
+	cp config.dev.env vnb-moneytransfer-service/config.env
+	cp config.dev.env vnb-notification-service/config.env
+	cp config.dev.env vnb-shardman-service/config.env
 
 network:
 	docker network create bank-network

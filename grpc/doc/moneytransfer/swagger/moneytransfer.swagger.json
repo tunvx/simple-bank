@@ -1,0 +1,583 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Core Banking",
+    "version": "1.1",
+    "contact": {
+      "name": "Nguyen Van Tu",
+      "url": "https://github.com/tunvx",
+      "email": "tunv.todo@gmail.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "MoneyTransferService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/accounts/check": {
+      "post": {
+        "summary": "Check Account",
+        "description": "Validate account status and currency.",
+        "operationId": "MoneyTransferService_CheckAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/moneytransferCheckAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/moneytransferCheckAccountRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MoneyTransferService"
+        ]
+      }
+    },
+    "/v1/accounts/receive": {
+      "post": {
+        "summary": "Receive Money",
+        "description": "Perform an money receiving.",
+        "operationId": "MoneyTransferService_ReceiveMoney",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/moneytransferReceiveMoneyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/moneytransferReceiveMoneyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MoneyTransferService"
+        ]
+      }
+    },
+    "/v1/accounts/transfers/external": {
+      "post": {
+        "summary": "External Money Transfer",
+        "description": "Perform an money transfer to another bank.",
+        "operationId": "MoneyTransferService_ExternalTransferMoney",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/moneytransferExternalTransferMoneyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/moneytransferExternalTransferMoneyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MoneyTransferService"
+        ]
+      }
+    },
+    "/v1/accounts/transfers/internal": {
+      "post": {
+        "summary": "Internal Money Transfer",
+        "description": "Perform an money transfer within the bank.",
+        "operationId": "MoneyTransferService_InternalTransferMoney",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/moneytransferInternalTransferMoneyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/moneytransferInternalTransferMoneyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MoneyTransferService"
+        ]
+      }
+    },
+    "/v1/test/health_check_get": {
+      "get": {
+        "summary": "Health Check (GET)",
+        "description": "Basic server connectivity test using a GET request.",
+        "operationId": "MoneyTransferService_HealthCheckGET",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/moneytransferOkayResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "MoneyTransferService"
+        ]
+      }
+    },
+    "/v1/test/health_check_post": {
+      "post": {
+        "summary": "Health Check (POST)",
+        "description": "Basic server connectivity test using a POST request.",
+        "operationId": "MoneyTransferService_HealthCheckPOST",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/moneytransferOkayResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/moneytransferEmpty"
+            }
+          }
+        ],
+        "tags": [
+          "MoneyTransferService"
+        ]
+      }
+    },
+    "/v1/test/mock_check_account": {
+      "post": {
+        "summary": "Mock Check Account",
+        "description": "Simulates account validation without processing.",
+        "operationId": "MoneyTransferService_MockCheckAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/moneytransferOkayResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/moneytransferCheckAccountRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MoneyTransferService"
+        ]
+      }
+    },
+    "/v1/test/mock_check_account_just_auth": {
+      "post": {
+        "summary": "Mock Check Account with Auth",
+        "description": "Simulates account validation with authentication processing.",
+        "operationId": "MoneyTransferService_MockCheckAccountJustAuth",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/moneytransferOkayResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/moneytransferCheckAccountRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MoneyTransferService"
+        ]
+      }
+    },
+    "/v1/test/mock_internal_transfer": {
+      "post": {
+        "summary": "Mock Internal Transfer",
+        "description": "Simulates an internal transfer request without processing.",
+        "operationId": "MoneyTransferService_MockInternalTransferMoney",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/moneytransferOkayResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/moneytransferInternalTransferMoneyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MoneyTransferService"
+        ]
+      }
+    },
+    "/v1/test/mock_internal_transfer_just_auth": {
+      "post": {
+        "summary": "Mock Internal Transfer with Auth",
+        "description": "Simulates an internal transfer request with authentication processing.",
+        "operationId": "MoneyTransferService_MockInternalTransferMoneyJustAuth",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/moneytransferOkayResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/moneytransferInternalTransferMoneyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MoneyTransferService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "accountAccount": {
+      "type": "object",
+      "properties": {
+        "accountId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "currentBalance": {
+          "type": "string",
+          "format": "int64"
+        },
+        "currencyType": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string"
+        },
+        "accountStatus": {
+          "type": "string"
+        }
+      }
+    },
+    "moneytransferCheckAccountRequest": {
+      "type": "object",
+      "properties": {
+        "accountId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "currencyType": {
+          "type": "string"
+        }
+      }
+    },
+    "moneytransferCheckAccountResponse": {
+      "type": "object",
+      "properties": {
+        "accountId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "currencyType": {
+          "type": "string"
+        },
+        "isValid": {
+          "type": "boolean"
+        },
+        "accountHolderName": {
+          "type": "string"
+        }
+      }
+    },
+    "moneytransferEmpty": {
+      "type": "object",
+      "title": "Empty message for request and response"
+    },
+    "moneytransferExternalTransferMoneyRequest": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "string",
+          "format": "int64"
+        },
+        "currencyType": {
+          "type": "string"
+        },
+        "sourceAccId": {
+          "type": "string",
+          "format": "int64",
+          "title": "Source account ID"
+        },
+        "beneficiaryAccId": {
+          "type": "string",
+          "format": "int64",
+          "title": "Beneficiary account ID"
+        },
+        "beneficiaryBankCode": {
+          "type": "string",
+          "title": "Beneficiary Bank Code"
+        },
+        "beneficiaryName": {
+          "type": "string",
+          "title": "Beneficiary name"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "External Transfer"
+    },
+    "moneytransferExternalTransferMoneyResponse": {
+      "type": "object",
+      "properties": {
+        "isSuccessful": {
+          "type": "boolean"
+        },
+        "sourceAccount": {
+          "$ref": "#/definitions/accountAccount"
+        }
+      }
+    },
+    "moneytransferInternalTransferMoneyRequest": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "string",
+          "format": "int64"
+        },
+        "currencyType": {
+          "type": "string"
+        },
+        "sourceAccId": {
+          "type": "string",
+          "format": "int64",
+          "title": "Source account ID"
+        },
+        "beneficiaryAccId": {
+          "type": "string",
+          "format": "int64",
+          "title": "Beneficiary account ID"
+        },
+        "beneficiaryName": {
+          "type": "string",
+          "title": "Beneficiary name"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "Internal Transfer"
+    },
+    "moneytransferInternalTransferMoneyResponse": {
+      "type": "object",
+      "properties": {
+        "isSuccessful": {
+          "type": "boolean"
+        },
+        "sourceAccount": {
+          "$ref": "#/definitions/accountAccount"
+        },
+        "beneficiaryAccount": {
+          "$ref": "#/definitions/accountAccount",
+          "title": "Just for development phase"
+        }
+      }
+    },
+    "moneytransferOkayResponse": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "string"
+        }
+      }
+    },
+    "moneytransferReceiveMoneyRequest": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "string",
+          "format": "int64"
+        },
+        "currencyType": {
+          "type": "string"
+        },
+        "beneficiaryAccId": {
+          "type": "string",
+          "format": "int64",
+          "title": "Beneficiary account ID"
+        },
+        "referenceNumber": {
+          "type": "string",
+          "title": "Provided by the sending transaction"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "Receiving transaction (Add money to account)"
+    },
+    "moneytransferReceiveMoneyResponse": {
+      "type": "object",
+      "properties": {
+        "isSuccessed": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "beneficiaryAccount": {
+          "$ref": "#/definitions/accountAccount",
+          "title": "Just for development phase"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

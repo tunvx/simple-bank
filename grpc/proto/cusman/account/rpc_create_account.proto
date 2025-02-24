@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package account;
+
+import "cusman/account/account.proto";
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/cusman/account";
+
+message CreateAccountRequest {
+    int64 account_id = 1;
+    string currency_type = 2;
+}
+
+message CreateAccountResponse {
+    Account account = 1;
+}

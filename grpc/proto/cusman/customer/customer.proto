@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package customer;
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/cusman/customer";
+
+message Customer {
+    int64  customer_id = 1;
+    string customer_rid = 2;
+    string full_name = 3;   
+    string date_of_birth = 4;
+    string address = 5;
+    string phone_number = 6;
+    string email = 7;
+    string customer_tier = 8;
+    string customer_segment = 9;
+    string financial_status = 10;
+}

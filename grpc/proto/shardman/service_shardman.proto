@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package shardman;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+import "shardman/rpc_insert_account_shard.proto";
+import "shardman/rpc_insert_customer_shard.proto";
+import "shardman/rpc_lookup_account_shard_pair.proto";
+import "shardman/rpc_lookup_account_shard.proto";
+import "shardman/rpc_lookup_customer_shard.proto";
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/shardman";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Core Banking";
+    version: "1.1";
+    contact: {
+      name: "Nguyen Van Tu";
+      url: "https://github.com/tunvx";
+      email: "tunv.todo@gmail.com";
+    };
+  };
+};
+
+service ShardmanService {
+    rpc InsertAccountShard (InsertAccountShardRequest) returns (InsertAccountShardResponse) {
+        option (google.api.http) = {
+            post: "/v1/shards/accounts"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to insert account shard";
+            summary: "Insert account shard";
+        };
+    }; 
+
+    rpc InsertCustomerShard (InsertCustomerShardRequest) returns (InsertCustomerShardResponse) {
+        option (google.api.http) = {
+            post: "/v1/shards/customers"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to insert customer shard";
+            summary: "Insert customer shard";
+        };
+    }; 
+
+    rpc LookupAccountShardPair (LookupAccountShardPairRequest) returns (LookupAccountShardPairResponse) {
+        option (google.api.http) = {
+            post: "/v1/shards/accounts/lookup-pair"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to look up account shard_id Pair by account_id Pair",
+            summary: "Get Account Shard Pair"
+        };
+    }; 
+
+    rpc LookupAccountShard (LookupAccountShardRequest) returns (LookupAccountShardResponse) {
+        option (google.api.http) = {
+            get: "/v1/shards/accounts/lookup/{account_id}" 
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to look up account shard_id by account_id",
+            summary: "Get Account Shard"
+        };
+    };
+
+    rpc LookupCustomerShard (LookupCustomerShardRequest) returns (LookupCustomerShardResponse) {
+        option (google.api.http) = {
+            get: "/v1/shards/customers/lookup/{customer_rid}" 
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to look up customter shard_id by customer_rid",
+            summary: "Get Customer Shard"
+        };
+    };
+} 

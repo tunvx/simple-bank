@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package cusman;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+import "cusman/customer/rpc_create_customer.proto";
+import "cusman/customer/rpc_verify_email.proto";
+import "cusman/customer/rpc_get_customer.proto";
+
+import "cusman/account/rpc_create_account.proto";
+import "cusman/account/rpc_get_account.proto";
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/cusman";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Core Banking";
+    version: "1.1";
+    contact: {
+      name: "Nguyen Van Tu";
+      url: "https://github.com/tunvx";
+      email: "tunv.todo@gmail.com";
+    };
+  };
+};
+
+service CustomerManagementService {
+    rpc CreateCustomer (customer.CreateCustomerRequest) returns (customer.CreateCustomerResponse) {
+        option (google.api.http) = {
+            post: "/v1/customers"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Create a new bank customer";
+            summary: "Create Customer";
+        };
+    };
+
+    rpc VerifyCustomerEmail (customer.VerifyEmailRequest) returns (customer.VerifyEmailResponse) {
+        option (google.api.http) = {
+            get: "/v1/customers/verify_email"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Verify the email address of a customer";
+            summary: "Verify Email";
+        };
+    };
+
+    rpc GetCustomerByRID (customer.GetCustomerByRidRequest) returns (customer.GetCustomerByRidResponse) {
+        option (google.api.http) = {
+            get: "/v1/customers/rid/{customer_rid}" 
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Retrieve a customer by RID";
+            summary: "Get Customer by RID";
+        };
+    };
+
+    rpc CreateAccount (account.CreateAccountRequest) returns (account.CreateAccountResponse) {
+        option (google.api.http) = {
+            post: "/v1/accounts"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Create a new customer account";
+            summary: "Create Account";
+        };
+    };
+
+    rpc GetAccountByID (account.GetAccountByIDRequest) returns (account.GetAccountByIDResponse) {
+        option (google.api.http) = {
+            get: "/v1/accounts/{account_id}" 
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Retrieve an account using the account id (account number)";
+            summary: "Get Account";
+        };
+    };
+}

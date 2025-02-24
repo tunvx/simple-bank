@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package moneytransfer;
+
+import "cusman/account/account.proto";
+
+option go_package = "github.com/tunvx/simplebank/grpc/pb/moneytransfer";
+
+// Receiving transaction (Add money to account)
+message ReceiveMoneyRequest {
+    int64  amount = 1;
+    string currency_type = 2;
+    int64  beneficiary_acc_id = 3;  // Beneficiary account ID
+    string reference_number = 4;    // Provided by the sending transaction
+    string message = 5;
+}
+
+message ReceiveMoneyResponse {
+    bool    is_successed = 1;
+    string  message = 2;
+    account.Account beneficiary_account = 3; // Just for development phase
+
+}
