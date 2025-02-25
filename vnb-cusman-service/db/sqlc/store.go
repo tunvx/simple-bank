@@ -10,12 +10,14 @@ import (
 type Store interface {
 	Querier
 
+	// Management transactions
 	CreateCustomerTx(ctx context.Context, arg CreateCustomerTxParams) (CreateCustomerTxResult, error)
 	VerifyEmailTx(ctx context.Context, arg VerifyEmailTxParams) (VerifyEmailTxResult, error)
 
-	// CreateCompleteTransaction creates a complete transaction by deducting money from account A
-	// and crediting money to account B. This operation is final and no further actions are required.
-	CreateCompleteTx(ctx context.Context, arg CreateCompleteTxParams) (CreateCompleteTxResult, error)
+	// Money transfer transactions
+	CreateTxReceiveMoney(ctx context.Context, arg CreateTxReceiveMoneyParams) (CreateTxReceiveMoneyResult, error)
+	CreateTxTransferMoney(ctx context.Context, arg CreateTxTransferMoneyParams) (CreateTxTransferMoneyResult, error)
+	CreateCompleteTxInShard(ctx context.Context, arg CreateCompleteTxInShardParams) (CreateCompleteTxInShardResult, error)
 }
 
 // SQLStore provides all functions to execute SQL queries and transactions

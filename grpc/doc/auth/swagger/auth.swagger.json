@@ -150,13 +150,8 @@
     "authCreateCustomerCredentialRequest": {
       "type": "object",
       "properties": {
-        "customerId": {
-          "type": "string",
-          "format": "int64"
-        },
-        "shardId": {
-          "type": "integer",
-          "format": "int32"
+        "customerRid": {
+          "type": "string"
         },
         "username": {
           "type": "string"
@@ -230,13 +225,10 @@
     "authUpdateCustomerCredentialRequest": {
       "type": "object",
       "properties": {
-        "customerId": {
-          "type": "string",
-          "format": "int64"
-        },
         "shardId": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "int64 customer_id (get from auth token) \nand customer can update other fields"
         },
         "username": {
           "type": "string"

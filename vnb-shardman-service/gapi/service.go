@@ -10,7 +10,7 @@ import (
 )
 
 type Service struct {
-	pb.UnimplementedShardmanServiceServer
+	pb.UnimplementedShardManagementServiceServer
 	config     util.Config
 	store      db.Store
 	tokenMaker token.Maker

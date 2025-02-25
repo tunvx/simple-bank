@@ -135,7 +135,7 @@ func runGrpcServer(
 	grpcServer := grpc.NewServer(grpcLogger)
 
 	// Register the ShardManService to the gRPC server
-	pb.RegisterShardmanServiceServer(grpcServer, shardmanService)
+	pb.RegisterShardManagementServiceServer(grpcServer, shardmanService)
 
 	// Enable reflection for gRPC, useful for debugging or using CLI tools like grpcurl
 	reflection.Register(grpcServer)
@@ -199,7 +199,7 @@ func runGatewayServer(
 	// Create a new gRPC Gateway multiplexer to route HTTP requests
 	grpcMux := runtime.NewServeMux(jsonOption)
 
-	err = pb.RegisterShardmanServiceHandlerServer(ctx, grpcMux, shardmanService)
+	err = pb.RegisterShardManagementServiceHandlerServer(ctx, grpcMux, shardmanService)
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot register handler server")
 	}
@@ -213,8 +213,8 @@ func runGatewayServer(
 		log.Fatal().Err(err).Msg("cannot create statik fs")
 	}
 
-	swaggerHandler := http.StripPrefix("/swagger/", http.FileServer(statikFS))
-	mux.Handle("/swagger/", swaggerHandler)
+	swaggerHandler := http.StripPrefix("/docs/", http.FileServer(statikFS))
+	mux.Handle("/docs/", swaggerHandler)
 
 	loggingHandler := logger.HttpLogger(mux)
 	httpServer := &http.Server{

@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
+	"github.com/google/uuid"
 	"github.com/tunvx/simplebank/common/util"
 )
 
@@ -34,4 +36,25 @@ func main() {
 		printShardID(id)
 		fmt.Println() // Xuống dòng để dễ đọc
 	}
+
+	str := "00012345678900"
+
+	// Chuyển thành int64
+	num, _ := strconv.ParseInt(str, 10, 64)
+	fmt.Println(num) // Output: 12345
+
+	originalUUID := uuid.New()
+	fmt.Println("Original UUID:", originalUUID)
+
+	hexString, _ := util.ConvertUUIDToString(originalUUID)
+	fmt.Println("Hex String:", hexString)
+
+	decodedUUID, err := util.ConvertStringToUUID(hexString)
+	if err != nil {
+		fmt.Println("Error decoding UUID:", err)
+		return
+	}
+
+	fmt.Println("Decoded UUID:", decodedUUID)
+	fmt.Println("Match:", originalUUID == decodedUUID)
 }

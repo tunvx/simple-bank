@@ -8,17 +8,17 @@ import (
 	"github.com/tunvx/simplebank/common/token"
 	"github.com/tunvx/simplebank/common/util"
 	pb "github.com/tunvx/simplebank/grpc/pb/auth"
-	manpb "github.com/tunvx/simplebank/grpc/pb/cusman"
+	shardmanpb "github.com/tunvx/simplebank/grpc/pb/shardman"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 type Service struct {
 	pb.UnimplementedAuthServiceServer
-	config       util.Config
-	store        db.Store
-	tokenMaker   token.Maker
-	manageClient manpb.CustomerManagementServiceClient
+	config         util.Config
+	store          db.Store
+	tokenMaker     token.Maker
+	shardmanClient shardmanpb.ShardManagementServiceClient
 }
 
 // NewService creates new a Grpc service.
@@ -34,7 +34,7 @@ func NewService(config util.Config, store db.Store) (*Service, error) {
 	// Dial the Management Service (Insecure for local dev environments)
 	// Using insecure credentials for local development
 	conn, err := grpc.NewClient(
-		config.InternalManageServiceAddress,
+		config.GRPCShardManServiceAddress,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		icallInterceptor,
 	)
@@ -43,10 +43,10 @@ func NewService(config util.Config, store db.Store) (*Service, error) {
 	}
 
 	server := &Service{
-		config:       config,
-		store:        store,
-		tokenMaker:   tokenMaker,
-		manageClient: manpb.NewCustomerManagementServiceClient(conn),
+		config:         config,
+		store:          store,
+		tokenMaker:     tokenMaker,
+		shardmanClient: shardmanpb.NewShardManagementServiceClient(conn),
 	}
 
 	return server, nil

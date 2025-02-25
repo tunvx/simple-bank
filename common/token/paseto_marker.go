@@ -41,8 +41,8 @@ func NewPasetoMaker(publicKeyBase64 string, privateKeyBase64 string) (Maker, err
 }
 
 // CreateToken creates a new token for a specific username and duration
-func (maker *PasetoMaker) CreateToken(userID int64, role string, duration time.Duration) (string, *Payload, error) {
-	payload, err := NewPayload(userID, role, duration)
+func (maker *PasetoMaker) CreateToken(userID int64, shardID int32, role string, duration time.Duration) (string, *Payload, error) {
+	payload, err := NewPayload(userID, shardID, role, duration)
 	if err != nil {
 		return "", payload, err
 	}

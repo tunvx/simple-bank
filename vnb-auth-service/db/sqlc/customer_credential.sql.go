@@ -14,24 +14,32 @@ import (
 const createCustomerCredential = `-- name: CreateCustomerCredential :one
 INSERT INTO customer_credentials (
   customer_id,
+  shard_id,
   username,
   hashed_password
 ) VALUES (
-  $1, $2, $3
-) RETURNING customer_id, username, hashed_password, created_at, username_changed_at, password_changed_at
+  $1, $2, $3, $4
+) RETURNING customer_id, shard_id, username, hashed_password, created_at, username_changed_at, password_changed_at
 `
 
 type CreateCustomerCredentialParams struct {
 	CustomerID     int64  `json:"customer_id"`
+	ShardID        int32  `json:"shard_id"`
 	Username       string `json:"username"`
 	HashedPassword string `json:"hashed_password"`
 }
 
 func (q *Queries) CreateCustomerCredential(ctx context.Context, arg CreateCustomerCredentialParams) (CustomerCredential, error) {
-	row := q.db.QueryRow(ctx, createCustomerCredential, arg.CustomerID, arg.Username, arg.HashedPassword)
+	row := q.db.QueryRow(ctx, createCustomerCredential,
+		arg.CustomerID,
+		arg.ShardID,
+		arg.Username,
+		arg.HashedPassword,
+	)
 	var i CustomerCredential
 	err := row.Scan(
 		&i.CustomerID,
+		&i.ShardID,
 		&i.Username,
 		&i.HashedPassword,
 		&i.CreatedAt,
@@ -42,7 +50,7 @@ func (q *Queries) CreateCustomerCredential(ctx context.Context, arg CreateCustom
 }
 
 const getCustomerCredential = `-- name: GetCustomerCredential :one
-SELECT customer_id, username, hashed_password, created_at, username_changed_at, password_changed_at FROM customer_credentials
+SELECT customer_id, shard_id, username, hashed_password, created_at, username_changed_at, password_changed_at FROM customer_credentials
 WHERE username = $1 LIMIT 1
 `
 
@@ -51,6 +59,7 @@ func (q *Queries) GetCustomerCredential(ctx context.Context, username string) (C
 	var i CustomerCredential
 	err := row.Scan(
 		&i.CustomerID,
+		&i.ShardID,
 		&i.Username,
 		&i.HashedPassword,
 		&i.CreatedAt,
@@ -72,23 +81,35 @@ SET
   password_changed_at = CASE
     WHEN $2 IS NOT NULL THEN now()
     ELSE password_changed_at
+  END,
+  shard_id = COALESCE($3, shard_id),
+  shard_id_changed_at = CASE
+    WHEN $3 IS NOT NULL THEN now()
+    ELSE shard_id_changed_at
   END
 WHERE
-  customer_id = $3
-RETURNING customer_id, username, hashed_password, created_at, username_changed_at, password_changed_at
+  customer_id = $4
+RETURNING customer_id, shard_id, username, hashed_password, created_at, username_changed_at, password_changed_at
 `
 
 type UpdateCustomerCredentialParams struct {
 	Username       pgtype.Text `json:"username"`
 	HashedPassword pgtype.Text `json:"hashed_password"`
+	ShardID        pgtype.Int4 `json:"shard_id"`
 	CustomerID     int64       `json:"customer_id"`
 }
 
 func (q *Queries) UpdateCustomerCredential(ctx context.Context, arg UpdateCustomerCredentialParams) (CustomerCredential, error) {
-	row := q.db.QueryRow(ctx, updateCustomerCredential, arg.Username, arg.HashedPassword, arg.CustomerID)
+	row := q.db.QueryRow(ctx, updateCustomerCredential,
+		arg.Username,
+		arg.HashedPassword,
+		arg.ShardID,
+		arg.CustomerID,
+	)
 	var i CustomerCredential
 	err := row.Scan(
 		&i.CustomerID,
+		&i.ShardID,
 		&i.Username,
 		&i.HashedPassword,
 		&i.CreatedAt,

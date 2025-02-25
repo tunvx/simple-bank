@@ -7,7 +7,7 @@ import "cusman/account/account.proto";
 option go_package = "github.com/tunvx/simplebank/grpc/pb/cusman/account";
 
 message GetAccountByIDRequest {
-    string account_id = 1;
+    string account_number = 1;
 }
 
 message GetAccountByIDResponse {

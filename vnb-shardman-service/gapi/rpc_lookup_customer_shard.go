@@ -2,6 +2,7 @@ package gapi
 
 import (
 	"context"
+	"fmt"
 
 	errdb "github.com/tunvx/simplebank/common/errs/db"
 
@@ -14,7 +15,7 @@ func (service *Service) LookupCustomerShard(ctx context.Context, req *pb.LookupC
 	// 1. Validate params
 
 	// 2. Retrieve customer shard map
-	record, err := service.store.GetShardByCustomeRid(ctx, req.GetCustomerRid())
+	row, err := service.store.GetShardByCustomeRid(ctx, req.GetCustomerRid())
 	if err != nil {
 		if errdb.ErrorCode(err) == errdb.RecordNotFound {
 			return nil, status.Errorf(codes.NotFound, "customer shard map for customer rid ( %s ) not found in database: ", req.GetCustomerRid())
@@ -22,10 +23,12 @@ func (service *Service) LookupCustomerShard(ctx context.Context, req *pb.LookupC
 		return nil, status.Errorf(codes.Internal, "failed to retrieve customer shard map of customer rid ( %s ) in database: %s", req.GetCustomerRid(), err)
 	}
 
+	fmt.Println(row)
+
 	// 3. Prepare and return the response
 	rsp := &pb.LookupCustomerShardResponse{
-		CustomerId: record.CustomerID,
-		ShardId:    record.ShardID,
+		CustomerId: row.CustomerID,
+		ShardId:    row.ShardID,
 	}
 	return rsp, nil
 }

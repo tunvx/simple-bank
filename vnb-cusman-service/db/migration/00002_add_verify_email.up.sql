@@ -1,7 +1,7 @@
 CREATE TABLE verify_emails (
-  id bigint PRIMARY KEY DEFAULT shard_id_generator.generate_id(),
+  id uuid PRIMARY KEY,
   customer_id bigint NOT NULL,
-  email varchar NOT NULL,
+  email_address varchar NOT NULL,
   secret_code varchar NOT NULL,
   is_used bool NOT NULL DEFAULT false,
   created_at timestamptz NOT NULL DEFAULT (now()),

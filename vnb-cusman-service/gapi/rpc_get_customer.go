@@ -6,83 +6,58 @@ import (
 	errdb "github.com/tunvx/simplebank/common/errs/db"
 	errga "github.com/tunvx/simplebank/common/errs/gapi"
 	"github.com/tunvx/simplebank/common/util"
-	cuspb "github.com/tunvx/simplebank/grpc/pb/cusman/customer"
+	pb "github.com/tunvx/simplebank/grpc/pb/cusman/customer"
+	"github.com/tunvx/simplebank/grpc/pb/shardman"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (service *Service) IGetCustomerByID(ctx context.Context, req *cuspb.IGetCustomerByIDRequest) (*cuspb.IGetCustomerByIDResponse, error) {
+func (service *Service) GetCustomerByID(ctx context.Context, req *pb.GetCustomerByIDRequest) (*pb.GetCustomerByIDResponse, error) {
 	// 1. Authorize the user
-	authPayload, err := service.authorizeUser(ctx, []string{util.BankerRole, util.CustomerRole, util.IServiceRole})
+	authPayload, err := service.authorizeUser(ctx, []string{util.CustomerRole})
 	if err != nil {
 		return nil, errga.UnauthenticatedError(err)
 	}
-	if authPayload.Role == util.CustomerRole && authPayload.UserID != req.CustomerId {
-		return nil, status.Errorf(codes.PermissionDenied, "no authorized to access this resource")
-	}
 
-	userID := authPayload.UserID
-	shardID := util.ExtractShardID(userID)
+	customerId := authPayload.UserID
+	shardId := authPayload.ShardID - 1
 
 	// 2. Retrieval customer record
-	customer, err := service.stores[shardID].GetCustomerByID(ctx, req.CustomerId)
+	customer, err := service.stores[shardId-1].GetCustomerByID(ctx, customerId)
 	if err != nil {
 		if errdb.ErrorCode(err) == errdb.RecordNotFound {
-			return nil, status.Errorf(codes.NotFound, "iget customer by id not found")
+			return nil, status.Errorf(codes.NotFound, "customer ( %d ) not found", customerId)
 		}
-		return nil, status.Errorf(codes.Internal, "failed to ifind customer by id")
+		return nil, status.Errorf(codes.Internal, "failed to find customer ( %d ): %s", customerId, err)
 	}
 
-	// 3. Return response
-	rsp := &cuspb.IGetCustomerByIDResponse{
+	// 4. Return response
+	rsp := &pb.GetCustomerByIDResponse{
 		Customer: convertCustomer(customer),
 	}
 	return rsp, nil
 }
 
-func (service *Service) IGetCustomerByRid(ctx context.Context, req *cuspb.IGetCustomerByRidRequest) (*cuspb.IGetCustomerByRidResponse, error) {
+func (service *Service) GetCustomerByRid(ctx context.Context, req *pb.GetCustomerByRidRequest) (*pb.GetCustomerByRidResponse, error) {
 	// 1. Authorize the user
 	authPayload, err := service.authorizeUser(ctx, []string{util.BankerRole, util.IServiceRole})
 	if err != nil {
 		return nil, errga.UnauthenticatedError(err)
 	}
 
-	userID := authPayload.UserID
-	shardID := util.ExtractShardID(userID)
-
-	// 2. Retrieval customer record
-	customer, err := service.stores[shardID].GetCustomerByRid(ctx, req.CustomerRid)
+	// 2. Get customer shard info
+	record, err := service.shardmanClient.LookupCustomerShard(ctx, &shardman.LookupCustomerShardRequest{
+		CustomerRid: req.GetCustomerRid(),
+	})
 	if err != nil {
-		if errdb.ErrorCode(err) == errdb.RecordNotFound {
-			return nil, status.Errorf(codes.NotFound, "iget customer by rid not found")
-		}
-		return nil, status.Errorf(codes.Internal, "failed to ifind customer by rid")
+		return nil, status.Errorf(codes.Internal, "failed to find customer ( %s ): %s", req.GetCustomerRid(), err)
 	}
 
-	// 3. Block Customer users from accessing other people's information
-	if authPayload.Role == util.CustomerRole && customer.CustomerRid != req.CustomerRid {
-		return nil, status.Errorf(codes.PermissionDenied, "no authorized to access this resource")
-	}
+	customerId := record.GetCustomerId()
+	shardId := record.GetShardId() - 1
 
-	// 4. Return response
-	rsp := &cuspb.IGetCustomerByRidResponse{
-		Customer: convertICustomer(customer),
-	}
-	return rsp, nil
-}
-
-func (service *Service) GetCustomerByRid(ctx context.Context, req *cuspb.GetCustomerByRidRequest) (*cuspb.GetCustomerByRidResponse, error) {
-	// 1. Authorize the user
-	authPayload, err := service.authorizeUser(ctx, []string{util.BankerRole, util.IServiceRole})
-	if err != nil {
-		return nil, errga.UnauthenticatedError(err)
-	}
-
-	userID := authPayload.UserID
-	shardID := util.ExtractShardID(userID)
-
-	// 2. Retrieval customer record
-	customer, err := service.stores[shardID].GetCustomerByRid(ctx, req.CustomerRid)
+	// 3. Retrieval customer record
+	customer, err := service.stores[shardId].GetCustomerByID(ctx, customerId)
 	if err != nil {
 		if errdb.ErrorCode(err) == errdb.RecordNotFound {
 			return nil, status.Errorf(codes.NotFound, "customer ( %s ) not found", req.GetCustomerRid())
@@ -90,13 +65,13 @@ func (service *Service) GetCustomerByRid(ctx context.Context, req *cuspb.GetCust
 		return nil, status.Errorf(codes.Internal, "failed to find customer ( %s ): %s", req.GetCustomerRid(), err)
 	}
 
-	// 3. Block Customer users from accessing other people's information
+	// 4. Block Customer users from accessing other people's information
 	if authPayload.Role == util.CustomerRole && customer.CustomerRid != req.CustomerRid {
 		return nil, status.Errorf(codes.PermissionDenied, "no authorized to access this resource")
 	}
 
-	// 4. Return response
-	rsp := &cuspb.GetCustomerByRidResponse{
+	// 5. Return response
+	rsp := &pb.GetCustomerByRidResponse{
 		Customer: convertCustomer(customer),
 	}
 	return rsp, nil

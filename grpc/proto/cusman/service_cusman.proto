@@ -38,9 +38,9 @@ service CustomerManagementService {
         };
     };
 
-    rpc VerifyCustomerEmail (customer.VerifyEmailRequest) returns (customer.VerifyEmailResponse) {
+    rpc VerifyEmail (customer.VerifyEmailRequest) returns (customer.VerifyEmailResponse) {
         option (google.api.http) = {
-            get: "/v1/customers/verify_email"
+            get: "/v1/customers/verify_email/{email_id}/{shard_id}/{secret_code}"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             description: "Verify the email address of a customer";
@@ -48,13 +48,23 @@ service CustomerManagementService {
         };
     };
 
-    rpc GetCustomerByRID (customer.GetCustomerByRidRequest) returns (customer.GetCustomerByRidResponse) {
+    rpc GetCustomerByID (customer.GetCustomerByIDRequest) returns (customer.GetCustomerByIDResponse) {
         option (google.api.http) = {
-            get: "/v1/customers/rid/{customer_rid}" 
+            get: "/v1/customers" 
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-            description: "Retrieve a customer by RID";
-            summary: "Get Customer by RID";
+            description: "Customer retrieves their infomation [from auth_token]";
+            summary: "Get customer by ID [from auth_token]";
+        };
+    };
+
+    rpc GetCustomerByRid (customer.GetCustomerByRidRequest) returns (customer.GetCustomerByRidResponse) {
+        option (google.api.http) = {
+            get: "/v1/customers/{customer_rid}" 
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Retrieve a customer by RID [limited role]";
+            summary: "Get customer by RID [limited role]";
         };
     };
 
@@ -71,7 +81,7 @@ service CustomerManagementService {
 
     rpc GetAccountByID (account.GetAccountByIDRequest) returns (account.GetAccountByIDResponse) {
         option (google.api.http) = {
-            get: "/v1/accounts/{account_id}" 
+            get: "/v1/accounts/{account_number}" 
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             description: "Retrieve an account using the account id (account number)";

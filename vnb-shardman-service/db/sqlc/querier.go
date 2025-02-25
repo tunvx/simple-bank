@@ -9,10 +9,11 @@ import (
 )
 
 type Querier interface {
-	GetShardByAccountID(ctx context.Context, accountID int64) (AccountShardMap, error)
+	GetShardByAccountID(ctx context.Context, accountID int64) (int32, error)
 	GetShardByCustomeRid(ctx context.Context, customerRid string) (CustomerShardMap, error)
 	InsertAccountShardMap(ctx context.Context, arg InsertAccountShardMapParams) (AccountShardMap, error)
 	InsertCustomerShardMap(ctx context.Context, arg InsertCustomerShardMapParams) (CustomerShardMap, error)
+	UpdateCustomerShardMap(ctx context.Context, arg UpdateCustomerShardMapParams) (CustomerShardMap, error)
 }
 
 var _ Querier = (*Queries)(nil)

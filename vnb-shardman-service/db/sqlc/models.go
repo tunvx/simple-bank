@@ -7,7 +7,6 @@ package db
 type AccountShardMap struct {
 	AccountID  int64 `json:"account_id"`
 	CustomerID int64 `json:"customer_id"`
-	ShardID    int32 `json:"shard_id"`
 }
 
 type CustomerShardMap struct {

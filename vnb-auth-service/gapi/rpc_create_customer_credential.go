@@ -2,14 +2,15 @@ package gapi
 
 import (
 	"context"
+	"fmt"
 
 	db "github.com/tunvx/simplebank/authsrv/db/sqlc"
-	"github.com/tunvx/simplebank/authsrv/gapi/val"
+	"github.com/tunvx/simplebank/authsrv/val"
 	errdb "github.com/tunvx/simplebank/common/errs/db"
 	errga "github.com/tunvx/simplebank/common/errs/gapi"
 	"github.com/tunvx/simplebank/common/util"
 	pb "github.com/tunvx/simplebank/grpc/pb/auth"
-	cuspb "github.com/tunvx/simplebank/grpc/pb/cusman/customer"
+	"github.com/tunvx/simplebank/grpc/pb/shardman"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -22,13 +23,15 @@ func (service *Service) CreateCustomerCredential(ctx context.Context, req *pb.Cr
 		return nil, errga.InvalidArgumentError(violations)
 	}
 
-	// 2. Fetch the customer data for the response
-	cusRsp, err := service.manageClient.IGetCustomerByRid(ctx, &cuspb.IGetCustomerByRidRequest{
-		CustomerRid: req.CustomerRid,
+	// 2. Get relative info of customer
+	cusShard, err := service.shardmanClient.LookupCustomerShard(ctx, &shardman.LookupCustomerShardRequest{
+		CustomerRid: req.GetCustomerRid(),
 	})
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "failed to lool up customer shard for customer ( %s ) into database: %s", req.GetCustomerRid(), err)
 	}
+
+	fmt.Println("Customer Shard: ", cusShard)
 
 	// 3. Hash the password
 	hashedPassword, err := util.HashPassword(req.Password)
@@ -38,8 +41,9 @@ func (service *Service) CreateCustomerCredential(ctx context.Context, req *pb.Cr
 
 	// 4. Execute the creation of customer credential in the database
 	arg := db.CreateCustomerCredentialParams{
-		CustomerID:     cusRsp.Customer.CustomerId,
-		Username:       req.Username,
+		CustomerID:     cusShard.GetCustomerId(),
+		ShardID:        cusShard.GetShardId(),
+		Username:       req.GetUsername(),
 		HashedPassword: hashedPassword,
 	}
 	_, err = service.store.CreateCustomerCredential(ctx, arg)
@@ -58,10 +62,7 @@ func (service *Service) CreateCustomerCredential(ctx context.Context, req *pb.Cr
 }
 
 func validateCreateCustomerCredentialRequest(req *pb.CreateCustomerCredentialRequest) (violations []*errdetails.BadRequest_FieldViolation) {
-	// Validate Customer Real ID
-	if err := val.ValidateCustomerRID(req.GetCustomerRid()); err != nil {
-		violations = append(violations, errga.FieldViolation("customer_rid", err))
-	}
+	// >>> Customer Rid
 
 	// Validate User Name
 	if err := val.ValidateUsername(req.GetUsername()); err != nil {

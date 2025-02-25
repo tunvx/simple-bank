@@ -39,13 +39,13 @@ volume:
 	docker volume create core-database-02-volume
 	docker volume create redis-volume
 
-start:
+infra:
 	docker compose --env-file .env -f docker-compose.yml up -d 
 
-stop:
+stop-infra:
 	docker compose --env-file .env -f docker-compose.yml down
 
-rm: 
+clear-infra:
 	docker network rm bank-network
 	docker volume rm original-database-volume
 	docker volume rm auth-database-volume
@@ -53,7 +53,8 @@ rm:
 	docker volume rm core-database-02-volume
 	docker volume rm redis-volume
 
-.PHONY: config network volume start stop rm build build-auth build-management build-transfermoney build-notification
+.PHONY: config network volume infra stop-infra clear-infra \ 
+		build build-auth build-management build-transfermoney build-notification
 
 ### See network config of any machine
 # docker exec -it auth-service ss -tulnp

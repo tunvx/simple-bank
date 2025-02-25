@@ -14,7 +14,7 @@ CREATE TYPE TransactionType AS ENUM (
   'external_receive',   -- External receive money
   'repay_loan',         -- Repay for your loan
   'deposit_savings',    -- Deposis from your savings
-  'other'               -- Other transactions
+  'others'               -- Other transactions
 );
 
 -- 3. Supported currency types in the banking system
@@ -66,12 +66,14 @@ CREATE TABLE customers (
   customer_rid varchar(15) UNIQUE NOT NULL,
   full_name varchar NOT NULL,
   date_of_birth date NOT NULL,
-  address varchar NOT NULL,
+  permanent_address text NOT NULL,
   phone_number varchar(15) UNIQUE NOT NULL,
-  email varchar UNIQUE NOT NULL,
+  email_address varchar UNIQUE NOT NULL,
   customer_tier CustomerTier NOT NULL,
   customer_segment CustomerSegment NOT NULL,
-  financial_status FinancialStatus NOT NULL
+  financial_status FinancialStatus NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
 );
 
 CREATE INDEX ON customers (customer_segment);

@@ -7,7 +7,6 @@ import "cusman/customer/customer.proto";
 option go_package = "github.com/tunvx/simplebank/grpc/pb/cusman/customer";
 
 message GetCustomerByIDRequest {
-    int64 customer_id = 1;
 }
 
 message GetCustomerByIDResponse {

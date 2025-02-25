@@ -1,10 +1,11 @@
 -- name: CreateCustomerCredential :one
 INSERT INTO customer_credentials (
   customer_id,
+  shard_id,
   username,
   hashed_password
 ) VALUES (
-  $1, $2, $3
+  $1, $2, $3, $4
 ) RETURNING *;
 
 -- name: GetCustomerCredential :one
@@ -23,6 +24,11 @@ SET
   password_changed_at = CASE
     WHEN sqlc.narg(hashed_password) IS NOT NULL THEN now()
     ELSE password_changed_at
+  END,
+  shard_id = COALESCE(sqlc.narg(shard_id), shard_id),
+  shard_id_changed_at = CASE
+    WHEN sqlc.narg(shard_id) IS NOT NULL THEN now()
+    ELSE shard_id_changed_at
   END
 WHERE
   customer_id = sqlc.arg(customer_id)

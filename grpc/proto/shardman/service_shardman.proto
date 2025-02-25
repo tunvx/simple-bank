@@ -25,7 +25,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   };
 };
 
-service ShardmanService {
+service ShardManagementService {
     rpc InsertAccountShard (InsertAccountShardRequest) returns (InsertAccountShardResponse) {
         option (google.api.http) = {
             post: "/v1/shards/accounts"

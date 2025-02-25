@@ -9,7 +9,7 @@ import (
 
 func convertAccount(account db.Account) *accpb.Account {
 	return &accpb.Account{
-		AccountNumber:  account.AccountNumber,
+		AccountId:  account.AccountID,
 		CurrentBalance: account.CurrentBalance,
 		CurrencyType:   string(account.CurrencyType),
 		CreatedAt:      timestamppb.New(account.CreatedAt),
@@ -18,7 +18,7 @@ func convertAccount(account db.Account) *accpb.Account {
 	}
 }
 
-func convertMoneyTransferTx(transaction db.MoneyTransferTransaction) *tranpb.MoneyTransferTx {
+func convertMoneyTransferTx(transaction db.AccountTransaction) *tranpb.MoneyTransferTx {
 	return &tranpb.MoneyTransferTx{
 		TransactionId:     transaction.TransactionID,
 		Amount:            transaction.Amount,

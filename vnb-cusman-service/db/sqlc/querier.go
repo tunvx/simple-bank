@@ -6,31 +6,30 @@ package db
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 type Querier interface {
 	AddAccountBalance(ctx context.Context, arg AddAccountBalanceParams) (Account, error)
+	CheckAccountByID(ctx context.Context, accountID int64) (CheckAccountByIDRow, error)
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (Account, error)
+	CreateAccountTransaction(ctx context.Context, arg CreateAccountTransactionParams) (AccountTransaction, error)
 	CreateCustomer(ctx context.Context, arg CreateCustomerParams) (Customer, error)
-	CreateMoneyTransferTransaction(ctx context.Context, arg CreateMoneyTransferTransactionParams) (MoneyTransferTransaction, error)
 	CreateVerifyEmail(ctx context.Context, arg CreateVerifyEmailParams) (VerifyEmail, error)
-	GetAccountByAccNumber(ctx context.Context, accountNumber string) (Account, error)
+	GetAccountByID(ctx context.Context, accountID int64) (Account, error)
 	// The methods below are directly related to transactions (multiple queries), so will be implemented query with id
 	// Especially directly related to the locking mechanism, locking in order in the database
 	// ...
 	GetAccountForUpdate(ctx context.Context, accountID int64) (Account, error)
-	GetAccountIDByAccNumber(ctx context.Context, accountNumber string) (int64, error)
+	GetAccountTransaction(ctx context.Context, transactionID uuid.UUID) (AccountTransaction, error)
 	GetCustomerByID(ctx context.Context, customerID int64) (Customer, error)
 	GetCustomerByRid(ctx context.Context, customerRid string) (Customer, error)
-	GetCustomerIDByAccNumber(ctx context.Context, accountNumber string) (int64, error)
-	GetCustomerIdByRid(ctx context.Context, customerRid string) (int64, error)
-	GetCustomerNameByID(ctx context.Context, customerID int64) (string, error)
-	GetMoneyTransferTransaction(ctx context.Context, transactionID int64) (MoneyTransferTransaction, error)
-	ListAccountByCustomerID(ctx context.Context, arg ListAccountByCustomerIDParams) ([]Account, error)
-	ListMoneyTransferTransactionByAccountID(ctx context.Context, arg ListMoneyTransferTransactionByAccountIDParams) ([]MoneyTransferTransaction, error)
+	ListAccountByCustomerID(ctx context.Context, customerID int64) ([]Account, error)
+	ListAccountTransactions(ctx context.Context, arg ListAccountTransactionsParams) ([]AccountTransaction, error)
 	UpdateAccountBalance(ctx context.Context, arg UpdateAccountBalanceParams) (Account, error)
+	UpdateAccountTransaction(ctx context.Context, arg UpdateAccountTransactionParams) (AccountTransaction, error)
 	UpdateCustomer(ctx context.Context, arg UpdateCustomerParams) (Customer, error)
-	UpdateMoneyTransferTransactionStatus(ctx context.Context, arg UpdateMoneyTransferTransactionStatusParams) (MoneyTransferTransaction, error)
 	UpdateVerifyEmail(ctx context.Context, arg UpdateVerifyEmailParams) (VerifyEmail, error)
 }
 

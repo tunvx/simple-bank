@@ -8,4 +8,10 @@ INSERT INTO customer_shard_map (
 
 -- name: GetShardByCustomeRid :one
 SELECT * FROM customer_shard_map
-WHERE customer_rid = $1 LIMIT 1;
+WHERE customer_rid = $1;
+
+-- name: UpdateCustomerShardMap :one
+UPDATE customer_shard_map
+SET shard_id = $2
+WHERE customer_id = $1
+RETURNING *;

@@ -7,31 +7,40 @@ package db
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 const createVerifyEmail = `-- name: CreateVerifyEmail :one
 INSERT INTO verify_emails (
+    id,
     customer_id,
-    email,
+    email_address,
     secret_code
 ) VALUES (
-    $1, $2, $3
-) RETURNING id, customer_id, email, secret_code, is_used, created_at, expired_at
+    $1, $2, $3, $4
+) RETURNING id, customer_id, email_address, secret_code, is_used, created_at, expired_at
 `
 
 type CreateVerifyEmailParams struct {
-	CustomerID int64  `json:"customer_id"`
-	Email      string `json:"email"`
-	SecretCode string `json:"secret_code"`
+	ID           uuid.UUID `json:"id"`
+	CustomerID   int64     `json:"customer_id"`
+	EmailAddress string    `json:"email_address"`
+	SecretCode   string    `json:"secret_code"`
 }
 
 func (q *Queries) CreateVerifyEmail(ctx context.Context, arg CreateVerifyEmailParams) (VerifyEmail, error) {
-	row := q.db.QueryRow(ctx, createVerifyEmail, arg.CustomerID, arg.Email, arg.SecretCode)
+	row := q.db.QueryRow(ctx, createVerifyEmail,
+		arg.ID,
+		arg.CustomerID,
+		arg.EmailAddress,
+		arg.SecretCode,
+	)
 	var i VerifyEmail
 	err := row.Scan(
 		&i.ID,
 		&i.CustomerID,
-		&i.Email,
+		&i.EmailAddress,
 		&i.SecretCode,
 		&i.IsUsed,
 		&i.CreatedAt,
@@ -49,12 +58,12 @@ WHERE
     AND secret_code = $2
     AND is_used = FALSE
     AND expired_at > now()
-RETURNING id, customer_id, email, secret_code, is_used, created_at, expired_at
+RETURNING id, customer_id, email_address, secret_code, is_used, created_at, expired_at
 `
 
 type UpdateVerifyEmailParams struct {
-	ID         int64  `json:"id"`
-	SecretCode string `json:"secret_code"`
+	ID         uuid.UUID `json:"id"`
+	SecretCode string    `json:"secret_code"`
 }
 
 func (q *Queries) UpdateVerifyEmail(ctx context.Context, arg UpdateVerifyEmailParams) (VerifyEmail, error) {
@@ -63,7 +72,7 @@ func (q *Queries) UpdateVerifyEmail(ctx context.Context, arg UpdateVerifyEmailPa
 	err := row.Scan(
 		&i.ID,
 		&i.CustomerID,
-		&i.Email,
+		&i.EmailAddress,
 		&i.SecretCode,
 		&i.IsUsed,
 		&i.CreatedAt,

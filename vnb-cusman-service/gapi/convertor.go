@@ -7,29 +7,16 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func convertICustomer(customer db.Customer) *cuspb.ICustomer {
-	return &cuspb.ICustomer{
-		CustomerId:      customer.CustomerID,
-		CustomerRid:     customer.CustomerRid,
-		Fullname:        customer.Fullname,
-		DateOfBirth:     customer.DateOfBirth.String(),
-		Address:         customer.Address,
-		PhoneNumber:     customer.PhoneNumber,
-		Email:           customer.Email,
-		CustomerTier:    string(customer.CustomerTier),
-		CustomerSegment: string(customer.CustomerSegment),
-		FinancialStatus: string(customer.FinancialStatus),
-	}
-}
+
 
 func convertCustomer(customer db.Customer) *cuspb.Customer {
 	return &cuspb.Customer{
 		CustomerRid:     customer.CustomerRid,
-		Fullname:        customer.Fullname,
+		FullName:        customer.FullName,
 		DateOfBirth:     customer.DateOfBirth.String(),
-		Address:         customer.Address,
+		PermanentAddress:         customer.PermanentAddress,
 		PhoneNumber:     customer.PhoneNumber,
-		Email:           customer.Email,
+		EmailAddress:           customer.EmailAddress,
 		CustomerTier:    string(customer.CustomerTier),
 		CustomerSegment: string(customer.CustomerSegment),
 		FinancialStatus: string(customer.FinancialStatus),
@@ -38,7 +25,7 @@ func convertCustomer(customer db.Customer) *cuspb.Customer {
 
 func convertAccount(account db.Account) *accpb.Account {
 	return &accpb.Account{
-		AccountNumber:  account.AccountNumber,
+		AccountId:  account.AccountID,
 		CurrentBalance: account.CurrentBalance,
 		CurrencyType:   string(account.CurrencyType),
 		CreatedAt:      timestamppb.New(account.CreatedAt),

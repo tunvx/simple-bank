@@ -3,9 +3,9 @@ module github.com/tunvx/simplebank/authsrv
 go 1.24.0
 
 replace (
-	github.com/tunvx/simplebank/grpc => ../grpc
 	github.com/tunvx/simplebank/common => ../common
 	github.com/tunvx/simplebank/cusmansrv => ../vnb-cusmansrv-service
+	github.com/tunvx/simplebank/grpc => ../grpc
 )
 
 require (
@@ -14,6 +14,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.23.0
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/natefinch/lumberjack v2.0.0+incompatible
+	github.com/rakyll/statik v0.1.7
 	github.com/rs/zerolog v1.33.0
 	github.com/tunvx/simplebank/common v0.0.0-00010101000000-000000000000
 	github.com/tunvx/simplebank/grpc v0.0.0-00010101000000-000000000000

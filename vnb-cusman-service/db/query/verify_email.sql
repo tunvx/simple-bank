@@ -1,10 +1,11 @@
 -- name: CreateVerifyEmail :one
 INSERT INTO verify_emails (
+    id,
     customer_id,
-    email,
+    email_address,
     secret_code
 ) VALUES (
-    $1, $2, $3
+    $1, $2, $3, $4
 ) RETURNING *;
 
 -- name: UpdateVerifyEmail :one

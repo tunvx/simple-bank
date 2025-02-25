@@ -13,7 +13,7 @@ import (
 func (service *Service) GenerateTestAccessToken(ctx context.Context, req *pb.GenerateTestAccessTokenRequest) (*pb.GenerateTestAccessTokenResponse, error) {
 	// 4. Create tokens
 	accessToken, accessPayload, err := service.tokenMaker.CreateToken(
-		1,
+		1,1,
 		util.BankerRole,
 		service.config.AccessTokenDuration,
 	)

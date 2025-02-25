@@ -9,9 +9,9 @@ message Customer {
     string customer_rid = 2;
     string full_name = 3;   
     string date_of_birth = 4;
-    string address = 5;
+    string permanent_address = 5;
     string phone_number = 6;
-    string email = 7;
+    string email_address = 7;
     string customer_tier = 8;
     string customer_segment = 9;
     string financial_status = 10;
