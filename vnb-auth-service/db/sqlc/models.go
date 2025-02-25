@@ -12,6 +12,7 @@ import (
 
 type CustomerCredential struct {
 	CustomerID        int64     `json:"customer_id"`
+	ShardID           int32     `json:"shard_id"`
 	Username          string    `json:"username"`
 	HashedPassword    string    `json:"hashed_password"`
 	CreatedAt         time.Time `json:"created_at"`

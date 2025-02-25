@@ -18,13 +18,14 @@ func TestPasetoMaker(t *testing.T) {
 	require.NoError(t, err)
 
 	agentID := util.RandomInt64ID()
+	shardID := int32(1)
 	role := util.CustomerRole
 	duration := time.Minute
 
 	issuedAt := time.Now()
 	expiredAt := issuedAt.Add(duration)
 
-	token, payload, err := maker.CreateToken(agentID, role, duration)
+	token, payload, err := maker.CreateToken(agentID, shardID, role, duration)
 	require.NoError(t, err)
 	require.NotEmpty(t, token)
 	require.NotEmpty(t, payload)
@@ -34,6 +35,7 @@ func TestPasetoMaker(t *testing.T) {
 	require.NotEmpty(t, token)
 
 	require.Equal(t, agentID, payload.UserID)
+	require.Equal(t, shardID, payload.ShardID)
 	require.Equal(t, role, payload.Role)
 	require.WithinDuration(t, issuedAt, payload.IssuedAt, time.Second)
 	require.WithinDuration(t, expiredAt, payload.ExpiredAt, time.Second)
@@ -41,13 +43,14 @@ func TestPasetoMaker(t *testing.T) {
 
 func TestExpiredPasetoToken(t *testing.T) {
 	agentID := util.RandomInt64ID()
+	shardID := int32(1)
 	role := util.CustomerRole
 	duration := time.Minute
 
 	maker, err := NewPasetoMaker(publicKeyBase64, privateKeyBase64)
 	require.NoError(t, err)
 
-	token, payload, err := maker.CreateToken(agentID, role, -duration)
+	token, payload, err := maker.CreateToken(agentID, shardID, role, -duration)
 	require.NoError(t, err)
 	require.NotEmpty(t, token)
 	require.NotEmpty(t, payload)

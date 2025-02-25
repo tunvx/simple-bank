@@ -16,12 +16,14 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/natefinch/lumberjack"
+	"github.com/rakyll/statik/fs"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	db "github.com/tunvx/simplebank/authsrv/db/sqlc"
 	"github.com/tunvx/simplebank/authsrv/gapi"
 	"github.com/tunvx/simplebank/common/logger"
 	"github.com/tunvx/simplebank/common/util"
+	_ "github.com/tunvx/simplebank/grpc/doc/auth/statik"
 	pb "github.com/tunvx/simplebank/grpc/pb/auth"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
@@ -206,9 +208,13 @@ func runGatewayServer(
 	mux := http.NewServeMux()
 	mux.Handle("/", grpcMux)
 
-	// Serve Swagger documentation for the API at /swagger/
-	fs := http.FileServer(http.Dir("./doc/swagger"))
-	mux.Handle("/swagger/", http.StripPrefix("/swagger/", fs))
+	statikFS, err := fs.New()
+	if err != nil {
+		log.Fatal().Err(err).Msg("cannot create statik fs")
+	}
+
+	swaggerHandler := http.StripPrefix("/docs/", http.FileServer(statikFS))
+	mux.Handle("/docs/", swaggerHandler)
 
 	loggingHandler := logger.HttpLogger(mux)
 	httpServer := &http.Server{

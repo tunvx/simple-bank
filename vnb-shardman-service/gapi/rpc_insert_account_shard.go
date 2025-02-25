@@ -18,7 +18,6 @@ func (service *Service) InsertAccountShard(ctx context.Context, req *pb.InsertAc
 	arg := db.InsertAccountShardMapParams{
 		AccountID:  req.GetAccountId(),
 		CustomerID: req.GetCustomerId(),
-		ShardID:    req.GetShardId(),
 	}
 	_, err := service.store.InsertAccountShardMap(ctx, arg)
 	if err != nil {

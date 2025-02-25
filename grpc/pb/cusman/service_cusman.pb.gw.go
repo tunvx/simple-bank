@@ -59,43 +59,117 @@ func local_request_CustomerManagementService_CreateCustomer_0(ctx context.Contex
 
 }
 
-var (
-	filter_CustomerManagementService_VerifyCustomerEmail_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-)
-
-func request_CustomerManagementService_VerifyCustomerEmail_0(ctx context.Context, marshaler runtime.Marshaler, client CustomerManagementServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_CustomerManagementService_VerifyEmail_0(ctx context.Context, marshaler runtime.Marshaler, client CustomerManagementServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq customer.VerifyEmailRequest
 	var metadata runtime.ServerMetadata
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_CustomerManagementService_VerifyCustomerEmail_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["email_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "email_id")
 	}
 
-	msg, err := client.VerifyCustomerEmail(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	protoReq.EmailId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "email_id", err)
+	}
+
+	val, ok = pathParams["shard_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "shard_id")
+	}
+
+	protoReq.ShardId, err = runtime.Int32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "shard_id", err)
+	}
+
+	val, ok = pathParams["secret_code"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "secret_code")
+	}
+
+	protoReq.SecretCode, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "secret_code", err)
+	}
+
+	msg, err := client.VerifyEmail(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_CustomerManagementService_VerifyCustomerEmail_0(ctx context.Context, marshaler runtime.Marshaler, server CustomerManagementServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_CustomerManagementService_VerifyEmail_0(ctx context.Context, marshaler runtime.Marshaler, server CustomerManagementServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq customer.VerifyEmailRequest
 	var metadata runtime.ServerMetadata
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_CustomerManagementService_VerifyCustomerEmail_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["email_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "email_id")
 	}
 
-	msg, err := server.VerifyCustomerEmail(ctx, &protoReq)
+	protoReq.EmailId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "email_id", err)
+	}
+
+	val, ok = pathParams["shard_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "shard_id")
+	}
+
+	protoReq.ShardId, err = runtime.Int32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "shard_id", err)
+	}
+
+	val, ok = pathParams["secret_code"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "secret_code")
+	}
+
+	protoReq.SecretCode, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "secret_code", err)
+	}
+
+	msg, err := server.VerifyEmail(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_CustomerManagementService_GetCustomerByRID_0(ctx context.Context, marshaler runtime.Marshaler, client CustomerManagementServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_CustomerManagementService_GetCustomerByID_0(ctx context.Context, marshaler runtime.Marshaler, client CustomerManagementServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq customer.GetCustomerByIDRequest
+	var metadata runtime.ServerMetadata
+
+	msg, err := client.GetCustomerByID(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_CustomerManagementService_GetCustomerByID_0(ctx context.Context, marshaler runtime.Marshaler, server CustomerManagementServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq customer.GetCustomerByIDRequest
+	var metadata runtime.ServerMetadata
+
+	msg, err := server.GetCustomerByID(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_CustomerManagementService_GetCustomerByRid_0(ctx context.Context, marshaler runtime.Marshaler, client CustomerManagementServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq customer.GetCustomerByRidRequest
 	var metadata runtime.ServerMetadata
 
@@ -116,12 +190,12 @@ func request_CustomerManagementService_GetCustomerByRID_0(ctx context.Context, m
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "customer_rid", err)
 	}
 
-	msg, err := client.GetCustomerByRID(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetCustomerByRid(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_CustomerManagementService_GetCustomerByRID_0(ctx context.Context, marshaler runtime.Marshaler, server CustomerManagementServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_CustomerManagementService_GetCustomerByRid_0(ctx context.Context, marshaler runtime.Marshaler, server CustomerManagementServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq customer.GetCustomerByRidRequest
 	var metadata runtime.ServerMetadata
 
@@ -142,7 +216,7 @@ func local_request_CustomerManagementService_GetCustomerByRID_0(ctx context.Cont
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "customer_rid", err)
 	}
 
-	msg, err := server.GetCustomerByRID(ctx, &protoReq)
+	msg, err := server.GetCustomerByRid(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -184,14 +258,14 @@ func request_CustomerManagementService_GetAccountByID_0(ctx context.Context, mar
 		_   = err
 	)
 
-	val, ok = pathParams["account_id"]
+	val, ok = pathParams["account_number"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "account_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "account_number")
 	}
 
-	protoReq.AccountId, err = runtime.String(val)
+	protoReq.AccountNumber, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "account_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "account_number", err)
 	}
 
 	msg, err := client.GetAccountByID(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -210,14 +284,14 @@ func local_request_CustomerManagementService_GetAccountByID_0(ctx context.Contex
 		_   = err
 	)
 
-	val, ok = pathParams["account_id"]
+	val, ok = pathParams["account_number"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "account_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "account_number")
 	}
 
-	protoReq.AccountId, err = runtime.String(val)
+	protoReq.AccountNumber, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "account_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "account_number", err)
 	}
 
 	msg, err := server.GetAccountByID(ctx, &protoReq)
@@ -257,7 +331,7 @@ func RegisterCustomerManagementServiceHandlerServer(ctx context.Context, mux *ru
 
 	})
 
-	mux.Handle("GET", pattern_CustomerManagementService_VerifyCustomerEmail_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_CustomerManagementService_VerifyEmail_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -265,12 +339,12 @@ func RegisterCustomerManagementServiceHandlerServer(ctx context.Context, mux *ru
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/cusman.CustomerManagementService/VerifyCustomerEmail", runtime.WithHTTPPathPattern("/v1/customers/verify_email"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/cusman.CustomerManagementService/VerifyEmail", runtime.WithHTTPPathPattern("/v1/customers/verify_email/{email_id}/{shard_id}/{secret_code}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CustomerManagementService_VerifyCustomerEmail_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CustomerManagementService_VerifyEmail_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -278,11 +352,11 @@ func RegisterCustomerManagementServiceHandlerServer(ctx context.Context, mux *ru
 			return
 		}
 
-		forward_CustomerManagementService_VerifyCustomerEmail_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_CustomerManagementService_VerifyEmail_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_CustomerManagementService_GetCustomerByRID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_CustomerManagementService_GetCustomerByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -290,12 +364,12 @@ func RegisterCustomerManagementServiceHandlerServer(ctx context.Context, mux *ru
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/cusman.CustomerManagementService/GetCustomerByRID", runtime.WithHTTPPathPattern("/v1/customers/rid/{customer_rid}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/cusman.CustomerManagementService/GetCustomerByID", runtime.WithHTTPPathPattern("/v1/customers"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CustomerManagementService_GetCustomerByRID_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CustomerManagementService_GetCustomerByID_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -303,7 +377,32 @@ func RegisterCustomerManagementServiceHandlerServer(ctx context.Context, mux *ru
 			return
 		}
 
-		forward_CustomerManagementService_GetCustomerByRID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_CustomerManagementService_GetCustomerByID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_CustomerManagementService_GetCustomerByRid_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/cusman.CustomerManagementService/GetCustomerByRid", runtime.WithHTTPPathPattern("/v1/customers/{customer_rid}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_CustomerManagementService_GetCustomerByRid_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_CustomerManagementService_GetCustomerByRid_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -340,7 +439,7 @@ func RegisterCustomerManagementServiceHandlerServer(ctx context.Context, mux *ru
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/cusman.CustomerManagementService/GetAccountByID", runtime.WithHTTPPathPattern("/v1/accounts/{account_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/cusman.CustomerManagementService/GetAccountByID", runtime.WithHTTPPathPattern("/v1/accounts/{account_number}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -420,47 +519,69 @@ func RegisterCustomerManagementServiceHandlerClient(ctx context.Context, mux *ru
 
 	})
 
-	mux.Handle("GET", pattern_CustomerManagementService_VerifyCustomerEmail_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_CustomerManagementService_VerifyEmail_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/cusman.CustomerManagementService/VerifyCustomerEmail", runtime.WithHTTPPathPattern("/v1/customers/verify_email"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/cusman.CustomerManagementService/VerifyEmail", runtime.WithHTTPPathPattern("/v1/customers/verify_email/{email_id}/{shard_id}/{secret_code}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CustomerManagementService_VerifyCustomerEmail_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CustomerManagementService_VerifyEmail_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_CustomerManagementService_VerifyCustomerEmail_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_CustomerManagementService_VerifyEmail_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_CustomerManagementService_GetCustomerByRID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_CustomerManagementService_GetCustomerByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/cusman.CustomerManagementService/GetCustomerByRID", runtime.WithHTTPPathPattern("/v1/customers/rid/{customer_rid}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/cusman.CustomerManagementService/GetCustomerByID", runtime.WithHTTPPathPattern("/v1/customers"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CustomerManagementService_GetCustomerByRID_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CustomerManagementService_GetCustomerByID_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_CustomerManagementService_GetCustomerByRID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_CustomerManagementService_GetCustomerByID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_CustomerManagementService_GetCustomerByRid_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/cusman.CustomerManagementService/GetCustomerByRid", runtime.WithHTTPPathPattern("/v1/customers/{customer_rid}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_CustomerManagementService_GetCustomerByRid_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_CustomerManagementService_GetCustomerByRid_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -492,7 +613,7 @@ func RegisterCustomerManagementServiceHandlerClient(ctx context.Context, mux *ru
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/cusman.CustomerManagementService/GetAccountByID", runtime.WithHTTPPathPattern("/v1/accounts/{account_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/cusman.CustomerManagementService/GetAccountByID", runtime.WithHTTPPathPattern("/v1/accounts/{account_number}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -514,21 +635,25 @@ func RegisterCustomerManagementServiceHandlerClient(ctx context.Context, mux *ru
 var (
 	pattern_CustomerManagementService_CreateCustomer_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "customers"}, ""))
 
-	pattern_CustomerManagementService_VerifyCustomerEmail_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "customers", "verify_email"}, ""))
+	pattern_CustomerManagementService_VerifyEmail_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "customers", "verify_email", "email_id", "shard_id", "secret_code"}, ""))
 
-	pattern_CustomerManagementService_GetCustomerByRID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "customers", "rid", "customer_rid"}, ""))
+	pattern_CustomerManagementService_GetCustomerByID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "customers"}, ""))
+
+	pattern_CustomerManagementService_GetCustomerByRid_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "customers", "customer_rid"}, ""))
 
 	pattern_CustomerManagementService_CreateAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "accounts"}, ""))
 
-	pattern_CustomerManagementService_GetAccountByID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "accounts", "account_id"}, ""))
+	pattern_CustomerManagementService_GetAccountByID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "accounts", "account_number"}, ""))
 )
 
 var (
 	forward_CustomerManagementService_CreateCustomer_0 = runtime.ForwardResponseMessage
 
-	forward_CustomerManagementService_VerifyCustomerEmail_0 = runtime.ForwardResponseMessage
+	forward_CustomerManagementService_VerifyEmail_0 = runtime.ForwardResponseMessage
 
-	forward_CustomerManagementService_GetCustomerByRID_0 = runtime.ForwardResponseMessage
+	forward_CustomerManagementService_GetCustomerByID_0 = runtime.ForwardResponseMessage
+
+	forward_CustomerManagementService_GetCustomerByRid_0 = runtime.ForwardResponseMessage
 
 	forward_CustomerManagementService_CreateAccount_0 = runtime.ForwardResponseMessage
 

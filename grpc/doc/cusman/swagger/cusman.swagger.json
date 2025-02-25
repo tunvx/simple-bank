@@ -55,7 +55,7 @@
         ]
       }
     },
-    "/v1/accounts/{accountId}": {
+    "/v1/accounts/{accountNumber}": {
       "get": {
         "summary": "Get Account",
         "description": "Retrieve an account using the account id (account number)",
@@ -76,7 +76,7 @@
         },
         "parameters": [
           {
-            "name": "accountId",
+            "name": "accountNumber",
             "in": "path",
             "required": true,
             "type": "string"
@@ -88,6 +88,28 @@
       }
     },
     "/v1/customers": {
+      "get": {
+        "summary": "Get customer by ID [from auth_token]",
+        "description": "Customer retrieves their infomation [from auth_token]",
+        "operationId": "CustomerManagementService_GetCustomerByID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/customerGetCustomerByIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "CustomerManagementService"
+        ]
+      },
       "post": {
         "summary": "Create Customer",
         "description": "Create a new bank customer",
@@ -121,11 +143,56 @@
         ]
       }
     },
-    "/v1/customers/rid/{customerRid}": {
+    "/v1/customers/verify_email/{emailId}/{shardId}/{secretCode}": {
       "get": {
-        "summary": "Get Customer by RID",
-        "description": "Retrieve a customer by RID",
-        "operationId": "CustomerManagementService_GetCustomerByRID",
+        "summary": "Verify Email",
+        "description": "Verify the email address of a customer",
+        "operationId": "CustomerManagementService_VerifyEmail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/customerVerifyEmailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "emailId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "shardId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "secretCode",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "CustomerManagementService"
+        ]
+      }
+    },
+    "/v1/customers/{customerRid}": {
+      "get": {
+        "summary": "Get customer by RID [limited role]",
+        "description": "Retrieve a customer by RID [limited role]",
+        "operationId": "CustomerManagementService_GetCustomerByRid",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -145,45 +212,6 @@
             "name": "customerRid",
             "in": "path",
             "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "CustomerManagementService"
-        ]
-      }
-    },
-    "/v1/customers/verify_email": {
-      "get": {
-        "summary": "Verify Email",
-        "description": "Verify the email address of a customer",
-        "operationId": "CustomerManagementService_VerifyCustomerEmail",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/customerVerifyEmailResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "emailId",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "secretCode",
-            "in": "query",
-            "required": false,
             "type": "string"
           }
         ],
@@ -223,9 +251,8 @@
     "accountCreateAccountRequest": {
       "type": "object",
       "properties": {
-        "accountId": {
-          "type": "string",
-          "format": "int64"
+        "accountNumber": {
+          "type": "string"
         },
         "currencyType": {
           "type": "string"
@@ -260,13 +287,13 @@
         "dateOfBirth": {
           "type": "string"
         },
-        "address": {
+        "permanentAddress": {
           "type": "string"
         },
         "phoneNumber": {
           "type": "string"
         },
-        "email": {
+        "emailAddress": {
           "type": "string"
         },
         "customerTier": {
@@ -304,13 +331,13 @@
         "dateOfBirth": {
           "type": "string"
         },
-        "address": {
+        "permanentAddress": {
           "type": "string"
         },
         "phoneNumber": {
           "type": "string"
         },
-        "email": {
+        "emailAddress": {
           "type": "string"
         },
         "customerTier": {
@@ -321,6 +348,14 @@
         },
         "financialStatus": {
           "type": "string"
+        }
+      }
+    },
+    "customerGetCustomerByIDResponse": {
+      "type": "object",
+      "properties": {
+        "customer": {
+          "$ref": "#/definitions/customerCustomer"
         }
       }
     },

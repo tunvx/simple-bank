@@ -4,12 +4,11 @@ import (
 	"context"
 
 	db "github.com/tunvx/simplebank/authsrv/db/sqlc"
-	"github.com/tunvx/simplebank/authsrv/gapi/val"
+	"github.com/tunvx/simplebank/authsrv/val"
 	errdb "github.com/tunvx/simplebank/common/errs/db"
 	errga "github.com/tunvx/simplebank/common/errs/gapi"
 	"github.com/tunvx/simplebank/common/util"
 	pb "github.com/tunvx/simplebank/grpc/pb/auth"
-	cuspb "github.com/tunvx/simplebank/grpc/pb/cusman/customer"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -23,20 +22,13 @@ func (service *Service) LoginCustomer(ctx context.Context, req *pb.LoginCustomer
 		return nil, errga.InvalidArgumentError(violations)
 	}
 
-	// 2. Retrieve customer credentials & customer management service
+	// 2. Retrieve customer credentials
 	customerCredential, err := service.store.GetCustomerCredential(ctx, req.Username)
 	if err != nil {
 		if errdb.ErrorCode(err) == errdb.RecordNotFound {
 			return nil, status.Errorf(codes.NotFound, "customer credential for user ( %s ) not found in database: ", req.Username)
 		}
 		return nil, status.Errorf(codes.Internal, "failed to retrieve customer credential of user ( %s ) in database: %s", req.Username, err)
-	}
-
-	cusRsp, err := service.manageClient.IGetCustomerByID(ctx, &cuspb.IGetCustomerByIDRequest{
-		CustomerId: customerCredential.CustomerID,
-	})
-	if err != nil {
-		return nil, err
 	}
 
 	// 3. Check that the customer has entered his/her login password correctly
@@ -48,6 +40,7 @@ func (service *Service) LoginCustomer(ctx context.Context, req *pb.LoginCustomer
 	// 4. Create tokens
 	accessToken, accessPayload, err := service.tokenMaker.CreateToken(
 		customerCredential.CustomerID,
+		customerCredential.ShardID,
 		util.CustomerRole,
 		service.config.AccessTokenDuration,
 	)
@@ -57,6 +50,7 @@ func (service *Service) LoginCustomer(ctx context.Context, req *pb.LoginCustomer
 
 	refreshToken, refreshPayload, err := service.tokenMaker.CreateToken(
 		customerCredential.CustomerID,
+		customerCredential.ShardID,
 		util.BankerRole,
 		service.config.RefreshTokenDuration,
 	)
@@ -80,7 +74,7 @@ func (service *Service) LoginCustomer(ctx context.Context, req *pb.LoginCustomer
 
 	// 5. Prepare and return the response
 	response := &pb.LoginCustomerResponse{
-		Customer:              cusRsp.GetCustomer(),
+		CustomerId:            customerCredential.CustomerID,
 		SessionId:             session.SessionID.String(),
 		AccessToken:           accessToken,
 		RefreshToken:          refreshToken,

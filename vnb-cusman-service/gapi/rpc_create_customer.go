@@ -8,15 +8,16 @@ import (
 	errdb "github.com/tunvx/simplebank/common/errs/db"
 	errga "github.com/tunvx/simplebank/common/errs/gapi"
 	db "github.com/tunvx/simplebank/cusmansrv/db/sqlc"
-	"github.com/tunvx/simplebank/cusmansrv/gapi/val"
-	cuspb "github.com/tunvx/simplebank/grpc/pb/cusman/customer"
-	"github.com/tunvx/simplebank/notificationsrv/redis"
+	"github.com/tunvx/simplebank/cusmansrv/val"
+	"github.com/tunvx/simplebank/cusmansrv/worker"
+	pb "github.com/tunvx/simplebank/grpc/pb/cusman/customer"
+	"github.com/tunvx/simplebank/grpc/pb/shardman"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (service *Service) CreateCustomer(ctx context.Context, req *cuspb.CreateCustomerRequest) (*cuspb.CreateCustomerResponse, error) {
+func (service *Service) CreateCustomer(ctx context.Context, req *pb.CreateCustomerRequest) (*pb.CreateCustomerResponse, error) {
 	// 1. Validate params
 	violations := validateCreateCustomerRequest(req)
 	if violations != nil {
@@ -27,29 +28,39 @@ func (service *Service) CreateCustomer(ctx context.Context, req *cuspb.CreateCus
 	// 2. Parse string dateOfBirth from request to time.Time, assuming it's already validated
 	dateOfBirth, _ := time.Parse("2006/01/02", req.GetDateOfBirth())
 
-	// 3. Prepare the arguments for creating a customer in the database
+	// 3. Create new customer in original db
+	newCusShard, err := service.shardmanClient.InsertCustomerShard(ctx, &shardman.InsertCustomerShardRequest{
+		CustomerRid: req.GetCustomerRid(),
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to create id for customer (cus shard) ( %s ): %s", req.GetCustomerRid(), err)
+	}
+
+	// 4. Prepare the arguments for creating a customer in the database
 	arg := db.CreateCustomerTxParams{
 		CreateCustomerParams: db.CreateCustomerParams{
-			CustomerRid:     req.GetCustomerRid(),
-			Fullname:        req.GetFullname(),
-			DateOfBirth:     dateOfBirth,
-			Address:         req.GetAddress(),
-			PhoneNumber:     req.GetPhoneNumber(),
-			Email:           req.GetEmail(),
-			CustomerTier:    db.Customertier(req.GetCustomerTier()),
-			CustomerSegment: db.Customersegment(req.GetCustomerSegment()),
-			FinancialStatus: db.Financialstatus(req.GetFinancialStatus()),
+			CustomerID:       newCusShard.GetCustomerId(),
+			CustomerRid:      req.GetCustomerRid(),
+			FullName:         req.GetFullName(),
+			DateOfBirth:      dateOfBirth,
+			PermanentAddress: req.GetPermanentAddress(),
+			PhoneNumber:      req.GetPhoneNumber(),
+			EmailAddress:     req.GetEmailAddress(),
+			CustomerTier:     db.Customertier(req.GetCustomerTier()),
+			CustomerSegment:  db.Customersegment(req.GetCustomerSegment()),
+			FinancialStatus:  db.Financialstatus(req.GetFinancialStatus()),
 		},
 
 		// Important step: Distribute/assign the task of sending verification mail for background worker.
 		AfterCreate: func(custom db.Customer) error {
-			taskPayload := &redis.PayloadSendVerifyEmail{
-				CustomerRid: custom.CustomerRid,
+			taskPayload := &worker.PayloadSendVerifyEmail{
+				CustomerID: custom.CustomerID,
+				ShardID:    newCusShard.ShardId,
 			}
 			opts := []asynq.Option{
 				asynq.MaxRetry(10),
 				asynq.ProcessIn(10 * time.Second),
-				asynq.Queue(redis.QueueCritical),
+				asynq.Queue(worker.QueueCritical),
 			}
 
 			// Time to distribute/assign the task is very small
@@ -57,29 +68,31 @@ func (service *Service) CreateCustomer(ctx context.Context, req *cuspb.CreateCus
 		},
 	}
 
-	// 4. Call the database layer to create the customer
-	txResult, err := service.stores[0].CreateCustomerTx(ctx, arg)
+	// 5. Call the database layer to create the customer
+	shardId := newCusShard.GetShardId() - 1
+	txResult, err := service.stores[shardId].CreateCustomerTx(ctx, arg)
 	if err != nil {
 		if errdb.ErrorCode(err) == errdb.UniqueViolation {
-			return nil, status.Errorf(codes.AlreadyExists, err.Error())
+			return nil, status.Errorf(codes.AlreadyExists, "%s", err.Error())
 		}
 		return nil, status.Errorf(codes.Internal, "failed to create user ( %s ): %s", req.GetCustomerRid(), err)
 	}
 
-	rsp := &cuspb.CreateCustomerResponse{
+	// 6. Return Reponse
+	rsp := &pb.CreateCustomerResponse{
 		Customer: convertCustomer(txResult.Customer),
 	}
 	return rsp, nil
 }
 
-func validateCreateCustomerRequest(req *cuspb.CreateCustomerRequest) (violations []*errdetails.BadRequest_FieldViolation) {
+func validateCreateCustomerRequest(req *pb.CreateCustomerRequest) (violations []*errdetails.BadRequest_FieldViolation) {
 	// Validate Customer Real ID
 	if err := val.ValidateCustomerRID(req.GetCustomerRid()); err != nil {
 		violations = append(violations, errga.FieldViolation("customer_rid", err))
 	}
 
 	// Validate Full Name
-	if err := val.ValidateFullName(req.GetFullname()); err != nil {
+	if err := val.ValidateFullName(req.GetFullName()); err != nil {
 		violations = append(violations, errga.FieldViolation("full_name", err))
 	}
 
@@ -89,8 +102,8 @@ func validateCreateCustomerRequest(req *cuspb.CreateCustomerRequest) (violations
 	}
 
 	// Validate Address (optional: depending on requirements)
-	if err := val.ValidateString(req.GetAddress(), 5, 255); err != nil {
-		violations = append(violations, errga.FieldViolation("address", err))
+	if err := val.ValidateString(req.GetPermanentAddress(), 5, 255); err != nil {
+		violations = append(violations, errga.FieldViolation("permanent_address", err))
 	}
 
 	// Validate Phone Number (ensure it is a valid format and length)
@@ -99,8 +112,8 @@ func validateCreateCustomerRequest(req *cuspb.CreateCustomerRequest) (violations
 	}
 
 	// Validate Email
-	if err := val.ValidateEmail(req.GetEmail()); err != nil {
-		violations = append(violations, errga.FieldViolation("email", err))
+	if err := val.ValidateEmail(req.GetEmailAddress()); err != nil {
+		violations = append(violations, errga.FieldViolation("email_address", err))
 	}
 
 	// Validate Customer Tier

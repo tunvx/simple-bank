@@ -8,6 +8,8 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Accountstatus string
@@ -97,11 +99,11 @@ func (ns NullCurrencytype) Value() (driver.Value, error) {
 type Customersegment string
 
 const (
-	CustomersegmentIndividual       Customersegment = "individual"
-	CustomersegmentSmallEnterprise  Customersegment = "small_enterprise"
-	CustomersegmentMediumEnterprise Customersegment = "medium_enterprise"
-	CustomersegmentLargeEnterprise  Customersegment = "large_enterprise"
-	CustomersegmentInstitutional    Customersegment = "institutional"
+	CustomersegmentRetail        Customersegment = "retail"
+	CustomersegmentSmallBusiness Customersegment = "small_business"
+	CustomersegmentCorporate     Customersegment = "corporate"
+	CustomersegmentInstitutional Customersegment = "institutional"
+	CustomersegmentGovernment    Customersegment = "government"
 )
 
 func (e *Customersegment) Scan(src interface{}) error {
@@ -142,12 +144,13 @@ func (ns NullCustomersegment) Value() (driver.Value, error) {
 type Customertier string
 
 const (
-	CustomertierRegular  Customertier = "regular"
+	CustomertierStandard Customertier = "standard"
 	CustomertierBronze   Customertier = "bronze"
 	CustomertierSilver   Customertier = "silver"
 	CustomertierGold     Customertier = "gold"
 	CustomertierPlatinum Customertier = "platinum"
 	CustomertierDiamond  Customertier = "diamond"
+	CustomertierVip      Customertier = "vip"
 )
 
 func (e *Customertier) Scan(src interface{}) error {
@@ -188,12 +191,12 @@ func (ns NullCustomertier) Value() (driver.Value, error) {
 type Financialstatus string
 
 const (
-	FinancialstatusExcellent Financialstatus = "excellent"
 	FinancialstatusVeryGood  Financialstatus = "very_good"
 	FinancialstatusGood      Financialstatus = "good"
-	FinancialstatusFair      Financialstatus = "fair"
-	FinancialstatusPoor      Financialstatus = "poor"
-	FinancialstatusVeryPoor  Financialstatus = "very_poor"
+	FinancialstatusAverage   Financialstatus = "average"
+	FinancialstatusLowRisk   Financialstatus = "low_risk"
+	FinancialstatusHighRisk  Financialstatus = "high_risk"
+	FinancialstatusDefaulted Financialstatus = "defaulted"
 )
 
 func (e *Financialstatus) Scan(src interface{}) error {
@@ -283,7 +286,7 @@ const (
 	TransactiontypeExternalReceive Transactiontype = "external_receive"
 	TransactiontypeRepayLoan       Transactiontype = "repay_loan"
 	TransactiontypeDepositSavings  Transactiontype = "deposit_savings"
-	TransactiontypeOther           Transactiontype = "other"
+	TransactiontypeOthers          Transactiontype = "others"
 )
 
 func (e *Transactiontype) Scan(src interface{}) error {
@@ -323,7 +326,6 @@ func (ns NullTransactiontype) Value() (driver.Value, error) {
 
 type Account struct {
 	AccountID      int64         `json:"account_id"`
-	AccountNumber  string        `json:"account_number"`
 	CustomerID     int64         `json:"customer_id"`
 	CurrentBalance int64         `json:"current_balance"`
 	CurrencyType   Currencytype  `json:"currency_type"`
@@ -332,22 +334,8 @@ type Account struct {
 	AccountStatus  Accountstatus `json:"account_status"`
 }
 
-type Customer struct {
-	CustomerID      int64           `json:"customer_id"`
-	CustomerRid     string          `json:"customer_rid"`
-	Fullname        string          `json:"fullname"`
-	DateOfBirth     time.Time       `json:"date_of_birth"`
-	Address         string          `json:"address"`
-	PhoneNumber     string          `json:"phone_number"`
-	Email           string          `json:"email"`
-	CustomerTier    Customertier    `json:"customer_tier"`
-	CustomerSegment Customersegment `json:"customer_segment"`
-	FinancialStatus Financialstatus `json:"financial_status"`
-	IsEmailVerified bool            `json:"is_email_verified"`
-}
-
-type MoneyTransferTransaction struct {
-	TransactionID     int64             `json:"transaction_id"`
+type AccountTransaction struct {
+	TransactionID     uuid.UUID         `json:"transaction_id"`
 	Amount            int64             `json:"amount"`
 	AccountID         int64             `json:"account_id"`
 	NewBalance        int64             `json:"new_balance"`
@@ -357,12 +345,28 @@ type MoneyTransferTransaction struct {
 	TransactionStatus Transactionstatus `json:"transaction_status"`
 }
 
+type Customer struct {
+	CustomerID       int64           `json:"customer_id"`
+	CustomerRid      string          `json:"customer_rid"`
+	FullName         string          `json:"full_name"`
+	DateOfBirth      time.Time       `json:"date_of_birth"`
+	PermanentAddress string          `json:"permanent_address"`
+	PhoneNumber      string          `json:"phone_number"`
+	EmailAddress     string          `json:"email_address"`
+	CustomerTier     Customertier    `json:"customer_tier"`
+	CustomerSegment  Customersegment `json:"customer_segment"`
+	FinancialStatus  Financialstatus `json:"financial_status"`
+	CreatedAt        time.Time       `json:"created_at"`
+	UpdatedAt        time.Time       `json:"updated_at"`
+	IsEmailVerified  bool            `json:"is_email_verified"`
+}
+
 type VerifyEmail struct {
-	ID         int64     `json:"id"`
-	CustomerID int64     `json:"customer_id"`
-	Email      string    `json:"email"`
-	SecretCode string    `json:"secret_code"`
-	IsUsed     bool      `json:"is_used"`
-	CreatedAt  time.Time `json:"created_at"`
-	ExpiredAt  time.Time `json:"expired_at"`
+	ID           uuid.UUID `json:"id"`
+	CustomerID   int64     `json:"customer_id"`
+	EmailAddress string    `json:"email_address"`
+	SecretCode   string    `json:"secret_code"`
+	IsUsed       bool      `json:"is_used"`
+	CreatedAt    time.Time `json:"created_at"`
+	ExpiredAt    time.Time `json:"expired_at"`
 }

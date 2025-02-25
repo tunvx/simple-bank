@@ -1,6 +1,6 @@
 -- name: CreateAccount :one
 INSERT INTO accounts (
-    account_number,
+    account_id,
     customer_id,
     current_balance,
     currency_type,
@@ -9,29 +9,27 @@ INSERT INTO accounts (
     $1, $2, $3, $4, $5
 ) RETURNING *;
 
+-- name: GetAccountByID :one
+SELECT * FROM accounts
+WHERE account_id = $1
+LIMIT 1;
+
+-- name: CheckAccountByID :one
+SELECT 
+  a.account_id, 
+  c.full_name AS customer_name, 
+  a.currency_type, 
+  a.account_status
+FROM accounts a
+JOIN customers c ON a.customer_id = c.customer_id
+WHERE a.account_id = sqlc.arg(account_id)
+LIMIT 1;
+
 -- name: ListAccountByCustomerID :many
 SELECT * FROM accounts
-WHERE 
-    customer_id = $1 AND
-    account_status = $2
-ORDER BY account_id
-LIMIT $3
-OFFSET $4;
+WHERE customer_id = $1
+ORDER BY account_id;
 
--- name: GetAccountByAccNumber :one
-SELECT * FROM accounts
-WHERE account_number = $1
-LIMIT 1;
-
--- name: GetAccountIDByAccNumber :one
-SELECT account_id FROM accounts
-WHERE account_number = $1
-LIMIT 1;
-
--- name: GetCustomerIDByAccNumber :one
-SELECT customer_id FROM accounts
-WHERE account_number = $1
-LIMIT 1;
 
 -- The methods below are directly related to transactions (multiple queries), so will be implemented query with id
 -- Especially directly related to the locking mechanism, locking in order in the database

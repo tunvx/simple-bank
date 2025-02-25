@@ -1,4 +1,4 @@
-package redis
+package worker
 
 import (
 	"context"
@@ -22,12 +22,12 @@ type TaskProcessor interface {
 }
 
 type RedisTaskProcessor struct {
-	server   *asynq.Server
-	cusStore db.Store
-	mailer   mail.EmailSender
+	server *asynq.Server
+	stores []db.Store
+	mailer mail.EmailSender
 }
 
-func NewRedisTaskProcessor(redisOpts asynq.RedisClientOpt, cusStore db.Store, mailer mail.EmailSender) TaskProcessor {
+func NewRedisTaskProcessor(redisOpts asynq.RedisClientOpt, stores []db.Store, mailer mail.EmailSender) TaskProcessor {
 	logger := NewLogger()
 	redis.SetLogger(logger)
 
@@ -47,9 +47,9 @@ func NewRedisTaskProcessor(redisOpts asynq.RedisClientOpt, cusStore db.Store, ma
 	)
 
 	return &RedisTaskProcessor{
-		server:   server,
-		cusStore: cusStore,
-		mailer:   mailer,
+		server: server,
+		stores: stores,
+		mailer: mailer,
 	}
 }
 

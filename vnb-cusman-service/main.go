@@ -20,14 +20,17 @@ import (
 	"github.com/hibiken/asynq"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/natefinch/lumberjack"
+	"github.com/rakyll/statik/fs"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/tunvx/simplebank/common/logger"
+	"github.com/tunvx/simplebank/common/mail"
 	"github.com/tunvx/simplebank/common/util"
 	db "github.com/tunvx/simplebank/cusmansrv/db/sqlc"
 	"github.com/tunvx/simplebank/cusmansrv/gapi"
+	"github.com/tunvx/simplebank/cusmansrv/worker"
+	_ "github.com/tunvx/simplebank/grpc/doc/cusman/statik"
 	pb "github.com/tunvx/simplebank/grpc/pb/cusman"
-	"github.com/tunvx/simplebank/notificationsrv/redis"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -69,10 +72,19 @@ func main() {
 		log.Fatal().Msgf("Unknown environment: %v", config.Environment)
 	}
 
+	ctx, stop := signal.NotifyContext(context.Background(), interruptSignals...)
+	defer stop()
+
 	// Run database migrations
 	runDBMigration(config.SourceSchemaURL, config.ListDBSourceCoreDB, config.NumCoreDBShard)
 
-	// Establish SQL Store for all shards
+	redisOpt := asynq.RedisClientOpt{
+		Addr: config.InternalRedisAddress,
+	}
+
+	taskDistributor := worker.NewRedisTaskDistributor(redisOpt)
+	log.Info().Msgf("start Task:Distributor at :: %s", redisOpt.Addr)
+
 	stores, err := establishShardedSQLStore(config.ListDBSourceCoreDB, config.NumCoreDBShard)
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to initialize sharded stores")
@@ -85,18 +97,9 @@ func main() {
 		}
 	}()
 
-	redisOpt := asynq.RedisClientOpt{
-		Addr: config.InternalRedisAddress,
-	}
-
-	taskDistributor := redis.NewRedisTaskDistributor(redisOpt)
-	log.Info().Msgf("start Task:Distributor at :: %s", redisOpt.Addr)
-
-	ctx, stop := signal.NotifyContext(context.Background(), interruptSignals...)
-	defer stop()
-
 	waitGroup, ctx := errgroup.WithContext(ctx)
 
+	runTaskProcessor(ctx, waitGroup, config, stores, redisOpt)
 	runGrpcServer(ctx, waitGroup, config, stores, taskDistributor)
 	runGatewayServer(ctx, waitGroup, config, stores, taskDistributor)
 
@@ -106,51 +109,6 @@ func main() {
 	}
 
 	// log.Info().Msg("add trigger to run github action")
-}
-
-func establishShardedSQLStore(listShardDatabaseURL []string, numShard int) ([]db.Store, error) {
-	// Check if the length of listShardDatabaseURL matches numShard
-	if len(listShardDatabaseURL) != numShard {
-		log.Fatal().Msgf("The length of listShardDatabaseURL [ %d ] does not match numShard [ %d ]", len(listShardDatabaseURL), numShard)
-	}
-
-	var stores []db.Store
-
-	// Loop over each shard and apply migration
-	for shardID := 1; shardID <= numShard; shardID++ {
-		// Access the shard database URL based on shardID
-		shardDatabaseURL := listShardDatabaseURL[shardID-1]
-		// *************************************************************
-		connPoolConfig, err := pgxpool.ParseConfig(shardDatabaseURL)
-		if err != nil {
-			log.Error().Err(err).Msgf("unable to parse database config, error: %v", err)
-			continue
-		}
-
-		connPoolConfig.MinConns = 40
-		connPoolConfig.MaxConns = 100
-		connPoolConfig.MaxConnLifetime = time.Minute * 10
-		connPoolConfig.MaxConnIdleTime = time.Minute * 2
-
-		// Create pool with custom configuration
-		connPool, err := pgxpool.NewWithConfig(context.Background(), connPoolConfig)
-		if err != nil {
-			log.Error().Err(err).Msgf("cannot connect to shard [ %d ], error: %v", err)
-			continue
-		} else {
-			log.Info().Msgf("successfully created pool connection to shard [ %d ]", shardID)
-		}
-
-		// Create a new store to interact with the database
-		store := db.NewStore(connPool)
-		stores = append(stores, store)
-	}
-
-	if len(stores) == 0 {
-		return nil, fmt.Errorf("failed to initialize any database shard")
-	}
-
-	return stores, nil
 }
 
 // runDBMigration applies the database migrations to ensure the database schema is up-to-date
@@ -225,13 +183,85 @@ func runDBMigration(sourceSchemaURL string, listShardDatabaseURL []string, numSh
 	}
 }
 
+func establishShardedSQLStore(listShardDatabaseURL []string, numShard int) ([]db.Store, error) {
+	// Check if the length of listShardDatabaseURL matches numShard
+	if len(listShardDatabaseURL) != numShard {
+		log.Fatal().Msgf("The length of listShardDatabaseURL [ %d ] does not match numShard [ %d ]", len(listShardDatabaseURL), numShard)
+	}
+
+	var stores []db.Store
+
+	// Loop over each shard and apply migration
+	for shardID := 1; shardID <= numShard; shardID++ {
+		// Access the shard database URL based on shardID
+		shardDatabaseURL := listShardDatabaseURL[shardID-1]
+		// *************************************************************
+		connPoolConfig, err := pgxpool.ParseConfig(shardDatabaseURL)
+		if err != nil {
+			log.Error().Err(err).Msgf("unable to parse database config, error: %v", err)
+			continue
+		}
+
+		connPoolConfig.MinConns = 20
+		connPoolConfig.MaxConns = 50
+		connPoolConfig.MaxConnLifetime = time.Minute * 10
+		connPoolConfig.MaxConnIdleTime = time.Minute * 2
+
+		// Create pool with custom configuration
+		connPool, err := pgxpool.NewWithConfig(context.Background(), connPoolConfig)
+		if err != nil {
+			log.Error().Err(err).Msgf("cannot connect to shard [ %d ], error: %v", err)
+			continue
+		} else {
+			log.Info().Msgf("successfully created pool connection to shard [ %d ]", shardID)
+		}
+
+		// Create a new store to interact with the database
+		store := db.NewStore(connPool)
+		stores = append(stores, store)
+	}
+
+	if len(stores) == 0 {
+		return nil, fmt.Errorf("failed to initialize any database shard")
+	}
+
+	return stores, nil
+}
+
+func runTaskProcessor(
+	ctx context.Context,
+	waitGroup *errgroup.Group,
+	config util.Config,
+	stores []db.Store,
+	redisOpt asynq.RedisClientOpt,
+) {
+	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
+	taskProcessor := worker.NewRedisTaskProcessor(redisOpt, stores, mailer)
+
+	log.Info().Msg("start task processor")
+	err := taskProcessor.Start()
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to start task processor")
+	}
+
+	waitGroup.Go(func() error {
+		<-ctx.Done()
+		log.Info().Msg("graceful shutdown task processor")
+
+		taskProcessor.Shutdown()
+		log.Info().Msg("task processor is stopped")
+
+		return nil
+	})
+}
+
 // runGrpcServer starts the gRPC server for handling core banking services
 func runGrpcServer(
 	ctx context.Context,
 	waitGroup *errgroup.Group,
 	config util.Config,
 	stores []db.Store,
-	taskDistributor redis.TaskDistributor,
+	taskDistributor worker.TaskDistributor,
 ) {
 	// Create a new manage service
 	manageService, err := gapi.NewService(config, stores, taskDistributor)
@@ -287,7 +317,7 @@ func runGatewayServer(
 	waitGroup *errgroup.Group,
 	config util.Config,
 	stores []db.Store,
-	taskDistributor redis.TaskDistributor,
+	taskDistributor worker.TaskDistributor,
 ) {
 	// Create a new gRPC Gateway server
 	manageService, err := gapi.NewService(config, stores, taskDistributor)
@@ -317,9 +347,13 @@ func runGatewayServer(
 	mux := http.NewServeMux()
 	mux.Handle("/", grpcMux)
 
-	// Serve Swagger documentation for the API at /swagger/
-	fs := http.FileServer(http.Dir("./doc/swagger"))
-	mux.Handle("/swagger/", http.StripPrefix("/swagger/", fs))
+	statikFS, err := fs.New()
+	if err != nil {
+		log.Fatal().Err(err).Msg("cannot create statik fs")
+	}
+
+	swaggerHandler := http.StripPrefix("/docs/", http.FileServer(statikFS))
+	mux.Handle("/docs/", swaggerHandler)
 
 	loggingHandler := logger.HttpLogger(mux)
 	httpServer := &http.Server{

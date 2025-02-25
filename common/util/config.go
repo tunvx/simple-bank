@@ -53,6 +53,8 @@ type Config struct {
 	GRPCAuthServiceAddress        string `mapstructure:"GRPC_AUTH_SERVICE_ADDRESS"`
 	HTTPTransactionServiceAddress string `mapstructure:"HTTP_TRANSACTION_SERVICE_ADDRESS"`
 	GRPCTransactionServiceAddress string `mapstructure:"GRPC_TRANSACTION_SERVICE_ADDRESS"`
+
+	ShardVolume int64 `mapstructure:"SHARD_VOLUME"`
 }
 
 // LoadConfig reads configuration from file or environment variables.

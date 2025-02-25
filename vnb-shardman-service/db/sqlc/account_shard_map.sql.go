@@ -10,36 +10,35 @@ import (
 )
 
 const getShardByAccountID = `-- name: GetShardByAccountID :one
-SELECT account_id, customer_id, shard_id FROM account_shard_map
-WHERE account_id = $1 LIMIT 1
+SELECT c.shard_id FROM account_shard_map a
+JOIN customer_shard_map c ON a.customer_id = c.customer_id
+WHERE a.account_id = $1
 `
 
-func (q *Queries) GetShardByAccountID(ctx context.Context, accountID int64) (AccountShardMap, error) {
+func (q *Queries) GetShardByAccountID(ctx context.Context, accountID int64) (int32, error) {
 	row := q.db.QueryRow(ctx, getShardByAccountID, accountID)
-	var i AccountShardMap
-	err := row.Scan(&i.AccountID, &i.CustomerID, &i.ShardID)
-	return i, err
+	var shard_id int32
+	err := row.Scan(&shard_id)
+	return shard_id, err
 }
 
 const insertAccountShardMap = `-- name: InsertAccountShardMap :one
 INSERT INTO account_shard_map (
   account_id,
-  customer_id,
-  shard_id
+  customer_id
 ) VALUES (
-  $1, $2, $3
-) RETURNING account_id, customer_id, shard_id
+  $1, $2
+) RETURNING account_id, customer_id
 `
 
 type InsertAccountShardMapParams struct {
 	AccountID  int64 `json:"account_id"`
 	CustomerID int64 `json:"customer_id"`
-	ShardID    int32 `json:"shard_id"`
 }
 
 func (q *Queries) InsertAccountShardMap(ctx context.Context, arg InsertAccountShardMapParams) (AccountShardMap, error) {
-	row := q.db.QueryRow(ctx, insertAccountShardMap, arg.AccountID, arg.CustomerID, arg.ShardID)
+	row := q.db.QueryRow(ctx, insertAccountShardMap, arg.AccountID, arg.CustomerID)
 	var i AccountShardMap
-	err := row.Scan(&i.AccountID, &i.CustomerID, &i.ShardID)
+	err := row.Scan(&i.AccountID, &i.CustomerID)
 	return i, err
 }

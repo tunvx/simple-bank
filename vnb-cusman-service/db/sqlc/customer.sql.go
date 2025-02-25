@@ -14,41 +14,44 @@ import (
 
 const createCustomer = `-- name: CreateCustomer :one
 INSERT INTO customers (
+  customer_id,
   customer_rid,
-  fullname,
+  full_name,
   date_of_birth,
-  address,
+  permanent_address,
   phone_number,
-  email,
+  email_address,
   customer_tier,
   customer_segment,
   financial_status
 ) VALUES (
-  $1, $2, $3, $4, $5, $6, $7, $8, $9
+  $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
 )
-RETURNING customer_id, customer_rid, fullname, date_of_birth, address, phone_number, email, customer_tier, customer_segment, financial_status, is_email_verified
+RETURNING customer_id, customer_rid, full_name, date_of_birth, permanent_address, phone_number, email_address, customer_tier, customer_segment, financial_status, created_at, updated_at, is_email_verified
 `
 
 type CreateCustomerParams struct {
-	CustomerRid     string          `json:"customer_rid"`
-	Fullname        string          `json:"fullname"`
-	DateOfBirth     time.Time       `json:"date_of_birth"`
-	Address         string          `json:"address"`
-	PhoneNumber     string          `json:"phone_number"`
-	Email           string          `json:"email"`
-	CustomerTier    Customertier    `json:"customer_tier"`
-	CustomerSegment Customersegment `json:"customer_segment"`
-	FinancialStatus Financialstatus `json:"financial_status"`
+	CustomerID       int64           `json:"customer_id"`
+	CustomerRid      string          `json:"customer_rid"`
+	FullName         string          `json:"full_name"`
+	DateOfBirth      time.Time       `json:"date_of_birth"`
+	PermanentAddress string          `json:"permanent_address"`
+	PhoneNumber      string          `json:"phone_number"`
+	EmailAddress     string          `json:"email_address"`
+	CustomerTier     Customertier    `json:"customer_tier"`
+	CustomerSegment  Customersegment `json:"customer_segment"`
+	FinancialStatus  Financialstatus `json:"financial_status"`
 }
 
 func (q *Queries) CreateCustomer(ctx context.Context, arg CreateCustomerParams) (Customer, error) {
 	row := q.db.QueryRow(ctx, createCustomer,
+		arg.CustomerID,
 		arg.CustomerRid,
-		arg.Fullname,
+		arg.FullName,
 		arg.DateOfBirth,
-		arg.Address,
+		arg.PermanentAddress,
 		arg.PhoneNumber,
-		arg.Email,
+		arg.EmailAddress,
 		arg.CustomerTier,
 		arg.CustomerSegment,
 		arg.FinancialStatus,
@@ -57,21 +60,23 @@ func (q *Queries) CreateCustomer(ctx context.Context, arg CreateCustomerParams) 
 	err := row.Scan(
 		&i.CustomerID,
 		&i.CustomerRid,
-		&i.Fullname,
+		&i.FullName,
 		&i.DateOfBirth,
-		&i.Address,
+		&i.PermanentAddress,
 		&i.PhoneNumber,
-		&i.Email,
+		&i.EmailAddress,
 		&i.CustomerTier,
 		&i.CustomerSegment,
 		&i.FinancialStatus,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 		&i.IsEmailVerified,
 	)
 	return i, err
 }
 
 const getCustomerByID = `-- name: GetCustomerByID :one
-SELECT customer_id, customer_rid, fullname, date_of_birth, address, phone_number, email, customer_tier, customer_segment, financial_status, is_email_verified FROM customers
+SELECT customer_id, customer_rid, full_name, date_of_birth, permanent_address, phone_number, email_address, customer_tier, customer_segment, financial_status, created_at, updated_at, is_email_verified FROM customers
 WHERE customer_id = $1 LIMIT 1
 `
 
@@ -81,21 +86,23 @@ func (q *Queries) GetCustomerByID(ctx context.Context, customerID int64) (Custom
 	err := row.Scan(
 		&i.CustomerID,
 		&i.CustomerRid,
-		&i.Fullname,
+		&i.FullName,
 		&i.DateOfBirth,
-		&i.Address,
+		&i.PermanentAddress,
 		&i.PhoneNumber,
-		&i.Email,
+		&i.EmailAddress,
 		&i.CustomerTier,
 		&i.CustomerSegment,
 		&i.FinancialStatus,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 		&i.IsEmailVerified,
 	)
 	return i, err
 }
 
 const getCustomerByRid = `-- name: GetCustomerByRid :one
-SELECT customer_id, customer_rid, fullname, date_of_birth, address, phone_number, email, customer_tier, customer_segment, financial_status, is_email_verified FROM customers
+SELECT customer_id, customer_rid, full_name, date_of_birth, permanent_address, phone_number, email_address, customer_tier, customer_segment, financial_status, created_at, updated_at, is_email_verified FROM customers
 WHERE customer_rid = $1 LIMIT 1
 `
 
@@ -105,68 +112,43 @@ func (q *Queries) GetCustomerByRid(ctx context.Context, customerRid string) (Cus
 	err := row.Scan(
 		&i.CustomerID,
 		&i.CustomerRid,
-		&i.Fullname,
+		&i.FullName,
 		&i.DateOfBirth,
-		&i.Address,
+		&i.PermanentAddress,
 		&i.PhoneNumber,
-		&i.Email,
+		&i.EmailAddress,
 		&i.CustomerTier,
 		&i.CustomerSegment,
 		&i.FinancialStatus,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 		&i.IsEmailVerified,
 	)
 	return i, err
 }
 
-const getCustomerIdByRid = `-- name: GetCustomerIdByRid :one
-SELECT customer_id FROM customers
-WHERE customer_rid = $1 LIMIT 1
-`
-
-func (q *Queries) GetCustomerIdByRid(ctx context.Context, customerRid string) (int64, error) {
-	row := q.db.QueryRow(ctx, getCustomerIdByRid, customerRid)
-	var customer_id int64
-	err := row.Scan(&customer_id)
-	return customer_id, err
-}
-
-const getCustomerNameByID = `-- name: GetCustomerNameByID :one
-SELECT fullname FROM customers
-WHERE customer_id = $1 LIMIT 1
-`
-
-func (q *Queries) GetCustomerNameByID(ctx context.Context, customerID int64) (string, error) {
-	row := q.db.QueryRow(ctx, getCustomerNameByID, customerID)
-	var fullname string
-	err := row.Scan(&fullname)
-	return fullname, err
-}
-
 const updateCustomer = `-- name: UpdateCustomer :one
 UPDATE customers
 SET
-  address = COALESCE($1, address),
-  phone_number = COALESCE($2, phone_number),
-  email = COALESCE($3, email),
-  is_email_verified = COALESCE($4, is_email_verified)
+  phone_number = COALESCE($1, phone_number),
+  email_address = COALESCE($2, email_address),
+  is_email_verified = COALESCE($3, is_email_verified)
 WHERE
-  customer_id = $5
-RETURNING customer_id, customer_rid, fullname, date_of_birth, address, phone_number, email, customer_tier, customer_segment, financial_status, is_email_verified
+  customer_id = $4
+RETURNING customer_id, customer_rid, full_name, date_of_birth, permanent_address, phone_number, email_address, customer_tier, customer_segment, financial_status, created_at, updated_at, is_email_verified
 `
 
 type UpdateCustomerParams struct {
-	Address         pgtype.Text `json:"address"`
 	PhoneNumber     pgtype.Text `json:"phone_number"`
-	Email           pgtype.Text `json:"email"`
+	EmailAddress    pgtype.Text `json:"email_address"`
 	IsEmailVerified pgtype.Bool `json:"is_email_verified"`
 	CustomerID      int64       `json:"customer_id"`
 }
 
 func (q *Queries) UpdateCustomer(ctx context.Context, arg UpdateCustomerParams) (Customer, error) {
 	row := q.db.QueryRow(ctx, updateCustomer,
-		arg.Address,
 		arg.PhoneNumber,
-		arg.Email,
+		arg.EmailAddress,
 		arg.IsEmailVerified,
 		arg.CustomerID,
 	)
@@ -174,14 +156,16 @@ func (q *Queries) UpdateCustomer(ctx context.Context, arg UpdateCustomerParams) 
 	err := row.Scan(
 		&i.CustomerID,
 		&i.CustomerRid,
-		&i.Fullname,
+		&i.FullName,
 		&i.DateOfBirth,
-		&i.Address,
+		&i.PermanentAddress,
 		&i.PhoneNumber,
-		&i.Email,
+		&i.EmailAddress,
 		&i.CustomerTier,
 		&i.CustomerSegment,
 		&i.FinancialStatus,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 		&i.IsEmailVerified,
 	)
 	return i, err

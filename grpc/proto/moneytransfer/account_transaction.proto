@@ -6,7 +6,7 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/tunvx/simplebank/grpc/pb/moneytransfer";
 
-message MoneyTransferTx {
+message AccountTransaction {
     int64  transaction_id = 1;
     int64  amount = 2;
     int64  new_balance = 3;
