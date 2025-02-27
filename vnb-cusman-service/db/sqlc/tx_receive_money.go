@@ -7,11 +7,12 @@ import (
 )
 
 type CreateTxReceiveMoneyParams struct {
-	TransactionID    uuid.UUID `json:"transaction_id"`
-	Amount           int64  `json:"amount"`
-	BeneficiaryAccID int64  `json:"beneficiary_acc_id"`
-	Description string `json:"description"`
-	TransactionType Transactiontype `json:"transaction_type"`
+	TransactionID     uuid.UUID         `json:"transaction_id"`
+	Amount            int64             `json:"amount"`
+	BeneficiaryAccID  int64             `json:"beneficiary_acc_id"`
+	Description       string            `json:"description"`
+	TransactionType   Transactiontype   `json:"transaction_type"`
+	TransactionStatus Transactionstatus `json:"transaction_status"`
 }
 
 type CreateTxReceiveMoneyResult struct {
@@ -34,16 +35,17 @@ func (store *SQLStore) CreateTxReceiveMoney(
 			return err
 		}
 
-		resutl.ReceivingTransaction, err = q.CreateAccountTransaction(ctx, 
+		resutl.ReceivingTransaction, err = q.CreateAccountTransaction(ctx,
 			CreateAccountTransactionParams{
-				TransactionID: arg.TransactionID,
-				Amount: arg.Amount,
-				NewBalance: resutl.BeneficiaryAccount.CurrentBalance,
-				Description: arg.Description,
-				TransactionType: arg.TransactionType,
-				TransactionStatus: TransactionstatusCompleted,
+				TransactionID:     arg.TransactionID,
+				AccountID:         arg.BeneficiaryAccID,
+				Amount:            arg.Amount,
+				NewBalance:        resutl.BeneficiaryAccount.CurrentBalance,
+				Description:       arg.Description,
+				TransactionType:   arg.TransactionType,
+				TransactionStatus: arg.TransactionStatus,
 			})
-			
+
 		return err
 	})
 	return resutl, err

@@ -14,10 +14,11 @@ SELECT * FROM accounts
 WHERE account_id = $1
 LIMIT 1;
 
--- name: CheckAccountByID :one
+-- name: GetAccountForCheck :one
 SELECT 
   a.account_id, 
-  c.full_name AS customer_name, 
+  a.customer_id,
+  c.full_name AS owner_name, 
   a.currency_type, 
   a.account_status
 FROM accounts a

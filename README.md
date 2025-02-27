@@ -95,16 +95,17 @@ If multiple retry attempts fail, the transaction remains **PENDING**
 ```bash
   ### CONFIG INGRESS FOR MAC: Add to etc/hosts
   127.0.0.1 auth.banking.local
-  127.0.0.1 management.banking.local
-  127.0.0.1 transfermoney.banking.local
+  127.0.0.1 cusman.banking.local
+  127.0.0.1 moneytransfer.banking.local
+  127.0.0.1 shardman.banking.local
 ```
 
 4. Start core banking services (database, Redis, Kafka, etc.):
 ```bash
-  make rm
+  make clear-infra
   make network
   make volume
-  make start
+  make start-infra
 ```
 
 5. Then, try to test service via your browser by URL:

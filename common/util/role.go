@@ -1,8 +1,9 @@
 package util
 
 const (
-	IServiceRole = "iservice"
 	AdminRole    = "admin"
-	CustomerRole = "customer"
 	BankerRole   = "banker"
+	CustomerRole = "customer"
+	OtherBanks   = "other-banks"
+	IServiceRole = "internal-service"
 )

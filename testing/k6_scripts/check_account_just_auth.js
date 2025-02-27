@@ -9,18 +9,18 @@ export const options = {
     duration: __ENV.DURATION ? __ENV.DURATION : undefined,
 };
 
-let totalAccounts = 50000;
-// let apiHost = "http://localhost:8082";                   // Docker 
-let apiHost = "http://transaction-service.banking.com";     // Minikube
+let totalAccounts = 20000;
+// let apiHost = "http://localhost:8083";               // Docker 
+let apiHost = "http://moneytransfer.banking.local";     // Minikube
 let failedRequestCounter = new Counter('failed_requests');
 
-const BEARER_TOKEN = "v2.public.eyJpZCI6IjU0MzVmNDkyLWYxMDItNGIwNS1hMzZmLWFjZmMxMzI5MWM5NiIsInVzZXJfaWQiOjEsInJvbGUiOiJiYW5rZXIiLCJpc3N1ZWRfYXQiOiIyMDI0LTEyLTAzVDEyOjExOjA5Ljk4MzQwOTgzNloiLCJleHBpcmVkX2F0IjoiMjAyNC0xMi0wNFQxMjoxMTowOS45ODM0MDk5NjFaIn2zqhR2ZLrR9_gbaqUl704kgHNXFe5ZyUtNQVX5TF_j_zox_WeF8-5QN17Xd9igW9MR7xkAJXhl_GTe8PVMabwI.bnVsbA";
+const BEARER_TOKEN = "v2.public.eyJpZCI6IjAxOTU2NzBhLTFhNDgtN2U2YS04YjA4LWE0NGQ0ZTY1ZmYyMiIsInVzZXJfaWQiOjEsInNoYXJkX2lkIjoxLCJyb2xlIjoiYmFua2VyIiwiaXNzdWVkX2F0IjoiMjAyNS0wMy0wNVQxNjowMToxMC4yMTY5NDUwODFaIiwiZXhwaXJlZF9hdCI6IjIwMjUtMDMtMDZUMTY6MDE6MTAuMjE2OTQ1MTIzWiJ9fX2mVaRSL7aSjGbAxGNfRUCqC9X2K2wC56kvSvsxDQjC1_XzdMNtnSJEfjVS27rGj1E9__1s6sTTsZ6eyQPbCQ.bnVsbA";
 
 export default function () {
     let checkerId = Math.floor(Math.random() * totalAccounts) + 1;
     let accountNumber = `${checkerId.toString().padStart(11, '0')}`;
 
-    let checkAccountUrl = `${apiHost}/v1/test/check_account_process_auth`;
+    let checkAccountUrl = `${apiHost}/v1/test/check_account_just_auth`;
     let checkAccountPayload = JSON.stringify({
         acc_number: accountNumber,
         currency_type: "VND",

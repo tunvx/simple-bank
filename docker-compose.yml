@@ -14,6 +14,7 @@ volumes:
   redis-volume:
     external: true  
   kafka-volume:
+    external: true  
   manage-service-logs:
   auth-service-logs:
   transaction-service-logs:
@@ -80,12 +81,18 @@ services:
     volumes:
       - core-database-01-volume:/var/lib/postgresql/data
     command: >
-      postgres -c max_connections=200
+      postgres 
+      -c max_connections=200
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -p 5432 -U ${PG_USER:-postgres} -d ${PG_DATABASE_CORE_DB:-core_db} || exit 1"]
       interval: 60s
       timeout: 5s
       retries: 3
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: "4"
+    #       memory: "10GB"
 
   core-database-02:
     container_name: core-database-02
@@ -102,12 +109,30 @@ services:
     volumes:
       - core-database-02-volume:/var/lib/postgresql/data
     command: >
-      postgres -c max_connections=200
+      postgres 
+      -c max_connections=200
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -p 5432 -U ${PG_USER:-postgres} -d ${PG_DATABASE_CORE_DB:-core_db} || exit 1"]
       interval: 60s
       timeout: 5s
       retries: 3
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: "4"
+    #       memory: "10GB"
+
+### Command for optim postgres
+# command: >
+#   postgres 
+#   -c max_connections=200
+#   -c shared_buffers=2GB
+#   -c work_mem=64MB
+#   -c effective_cache_size=6GB
+#   -c max_parallel_workers_per_gather=4
+#   -c max_worker_processes=8
+#   -c wal_buffers=16MB
+#   -c checkpoint_completion_target=0.9
 
   redis:
     container_name: redis
@@ -118,82 +143,94 @@ services:
       - bank-network
     volumes:
       - redis-volume:/data
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 2g
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '1'
+    #       memory: 4g
 
-  # kafka:
-  #   container_name: kafka
-  #   image: bitnami/kafka:3.6.2
-  #   restart: always
-  #   ports:
-  #   - "9092:9092"
-  #   - "9093:9093"  # Expose the controller port
-  #   environment:
-  #     # KRaft settings
-  #     - KAFKA_CFG_NODE_ID=1
-  #     - KAFKA_CFG_PROCESS_ROLES=controller,broker
-  #     - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
-  #     # Listeners
-  #     - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
-  #     - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
-  #     - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-  #     - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-  #     - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
-  #   networks:
-  #     - bank-network
-  #   volumes:
-  #     - kafka-volume:/bitnami/kafka 
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         cpus: '1'
-  #         memory: 1g
+  kafka:
+    container_name: kafka
+    image: bitnami/kafka:3.6.2
+    restart: always
+    ports:
+      - "${KAFKA_CLIENT_PORT}:${KAFKA_CLIENT_PORT}"
+      - "${KAFKA_CONTROLLER_PORT}:${KAFKA_CONTROLLER_PORT}"
+    environment:
+      - KAFKA_CFG_NODE_ID=${KAFKA_BROKER_ID}
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=${KAFKA_BROKER_ID}@kafka:${KAFKA_CONTROLLER_PORT}
+      - KAFKA_CFG_LISTENERS=${KAFKA_LISTENERS}
+      - KAFKA_CFG_ADVERTISED_LISTENERS=${KAFKA_ADVERTISED_LISTENERS}
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+    networks:
+      - bank-network
+    volumes:
+      - kafka-volume:/bitnami/kafka
 
-  # reverse-proxy:
-  #   container_name: reverse-proxy
-  #   image: nginx:1.27.2
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ./nginx/templates:/etc/nginx/templates
-  #     - ./nginx/configuration/custom_proxy_settings.conf:/etc/nginx/conf.d/custom_proxy_settings.conf
-  #   ports:
-  #     - "80:80"
-  #   networks:
-  #     - bank-network
+  reverse-proxy:
+    container_name: reverse-proxy
+    image: nginx:1.27.2
+    restart: unless-stopped
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+      - ./nginx/configuration/custom_proxy_settings.conf:/etc/nginx/conf.d/custom_proxy_settings.conf
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - bank-network
 
-  # auth-service:
-  #   container_name: auth-service
-  #   image: auth-service
-  #   restart: unless-stopped
-  #   depends_on:
-  #     auth-database:
-  #       condition: service_healthy
-  #   networks:
-  #     - bank-network
+  auth-service:
+    container_name: auth-service
+    image: auth-service
+    restart: unless-stopped
+    expose:
+      - 443
+    depends_on:
+      auth-database:
+        condition: service_healthy
+    networks:
+      - bank-network
 
-  # management-service:
-  #   container_name: management-service
-  #   image: management-service
-  #   restart: unless-stopped
-  #   depends_on:
-  #     core-database-01:
-  #       condition: service_healthy
-  #     core-database-02:
-  #       condition: service_healthy
-  #   networks:
-  #     - bank-network
+  cusman-service:
+    container_name: cusman-service
+    image: cusman-service
+    restart: unless-stopped
+    expose:
+      - 443
+    depends_on:
+      core-database-01:
+        condition: service_healthy
+      core-database-02:
+        condition: service_healthy
+    networks:
+      - bank-network
 
-  # transfermoney-service:
-  #   container_name: transfermoney-service
-  #   image: transfermoney-service
-  #   restart: unless-stopped
-  #   depends_on:
-  #     core-database-01:
-  #       condition: service_healthy
-  #     core-database-02:
-  #       condition: service_healthy
-  #   networks:
-  #     - bank-network
+  moneytransfer-service:
+    container_name: moneytransfer-service
+    image: moneytransfer-service
+    restart: unless-stopped
+    expose:
+      - 443
+    depends_on:
+      core-database-01:
+        condition: service_healthy
+      core-database-02:
+        condition: service_healthy
+    networks:
+      - bank-network
+
+  shardman-service:
+    container_name: shardman-service
+    image: shardman-service
+    restart: unless-stopped
+    expose:
+      - 443
+    depends_on:
+      original-database:
+        condition: service_healthy
+    networks:
+      - bank-network

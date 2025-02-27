@@ -1,32 +1,43 @@
 build-auth:
-	docker build -t auth-service -f service-auth/Dockerfile .
+	docker build -t auth-service -f vnb-auth-service/Dockerfile .
 
-build-management:
-	docker build -t management-service -f service-management/Dockerfile .
+rm-build-auth:
+	docker image rm auth-service
 
-build-transfermoney:
-	docker build -t transfermoney-service -f service-transfermoney/Dockerfile .
+build-cusman:
+	docker build -t cusman-service -f vnb-cusman-service/Dockerfile .
 
-build-notification:
-	docker build -t notification-service -f service-notification/Dockerfile .
+rm-build-cusman:
+	docker image rm cusman-service
+
+build-moneytransfer:
+	docker build -t moneytransfer-service -f vnb-moneytransfer-service/Dockerfile .
+
+rm-build-moneytransfer:
+	docker image rm moneytransfer-service
+
+build-shardman:
+	docker build -t shardman-service -f vnb-shardman-service/Dockerfile .
+
+rm-build-shardman:
+	docker image rm shardman-service
 
 build:
-	docker build -t auth-service -f service-auth/Dockerfile .
-	docker build -t management-service -f service-management/Dockerfile .
-	docker build -t transfermoney-service -f service-transfermoney/Dockerfile .
-	docker build -t notification-service -f service-notification/Dockerfile .
+	docker build -t auth-service -f vnb-auth-service/Dockerfile .
+	docker build -t cusman-service -f vnb-cusman-service/Dockerfile .
+	docker build -t moneytransfer-service -f vnb-moneytransfer-service/Dockerfile .
+	docker build -t shardman-service -f vnb-shardman-service/Dockerfile .
 
 rm-build:
 	docker image rm auth-service
-	docker image rm management-service
-	docker image rm transfermoney-service
-	docker image rm notification-service
+	docker image rm cusman-service
+	docker image rm moneytransfer-service
+	docker image rm shardman-service
 
 config:
 	cp config.dev.env vnb-auth-service/config.env
 	cp config.dev.env vnb-cusman-service/config.env
 	cp config.dev.env vnb-moneytransfer-service/config.env
-	cp config.dev.env vnb-notification-service/config.env
 	cp config.dev.env vnb-shardman-service/config.env
 
 network:
@@ -38,8 +49,9 @@ volume:
 	docker volume create core-database-01-volume
 	docker volume create core-database-02-volume
 	docker volume create redis-volume
+	docker volume create kafka-volume
 
-infra:
+start-infra:
 	docker compose --env-file .env -f docker-compose.yml up -d 
 
 stop-infra:
@@ -53,8 +65,8 @@ clear-infra:
 	docker volume rm core-database-02-volume
 	docker volume rm redis-volume
 
-.PHONY: config network volume infra stop-infra clear-infra \ 
-		build build-auth build-management build-transfermoney build-notification
+.PHONY: config network volume start-infra stop-infra clear-infra \ 
+		build rm-build build-auth build-management build-transfermoney build-notification
 
 ### See network config of any machine
 # docker exec -it auth-service ss -tulnp

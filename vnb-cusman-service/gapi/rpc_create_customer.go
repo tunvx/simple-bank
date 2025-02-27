@@ -9,7 +9,7 @@ import (
 	errga "github.com/tunvx/simplebank/common/errs/gapi"
 	db "github.com/tunvx/simplebank/cusmansrv/db/sqlc"
 	"github.com/tunvx/simplebank/cusmansrv/val"
-	"github.com/tunvx/simplebank/cusmansrv/worker"
+	worker "github.com/tunvx/simplebank/cusmansrv/worker/redis"
 	pb "github.com/tunvx/simplebank/grpc/pb/cusman/customer"
 	"github.com/tunvx/simplebank/grpc/pb/shardman"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
@@ -33,7 +33,7 @@ func (service *Service) CreateCustomer(ctx context.Context, req *pb.CreateCustom
 		CustomerRid: req.GetCustomerRid(),
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create id for customer (cus shard) ( %s ): %s", req.GetCustomerRid(), err)
+		return nil, status.Errorf(codes.Internal, "failed to create id for customer ( %s ): %s", req.GetCustomerRid(), err)
 	}
 
 	// 4. Prepare the arguments for creating a customer in the database

@@ -9,12 +9,12 @@ export const options = {
     duration: __ENV.DURATION ? __ENV.DURATION : undefined,
 };
 
-// let apiHost = "http://localhost:8082";                      // Docker 
-let apiHost = "http://transaction-service.banking.com";     // Minikube
+// let apiHost = "http://localhost:8083";               // Docker 
+let apiHost = "http://moneytransfer.banking.local";     // Minikube
 let failedRequestCounter = new Counter('failed_requests');
 
 export default function () {
-    let connectionUrl = `${apiHost}/v1/test/get_empty`;
+    let connectionUrl = `${apiHost}/v1/test/empty_get`;
     let res = http.get(connectionUrl);
 
     let isSuccess = check(res, {

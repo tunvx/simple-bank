@@ -177,86 +177,6 @@ func ValidateFinancialStatus(value string) error {
 	return nil
 }
 
-// ValidateEmployeePosition checks if the employee position is valid.
-func ValidateEmployeePosition(value string) error {
-	if !util.IsSupportedEmployeePosition(value) {
-		return fmt.Errorf("unsupported employee position")
-	}
-	return nil
-}
-
-// ValidateEmployeeStatus checks if the employee status is valid.
-func ValidateEmployeeStatus(value string) error {
-	if !util.IsSupportedEmployeeStatus(value) {
-		return fmt.Errorf("unsupported employee status")
-	}
-	return nil
-}
-
-// ValidateBankStatus checks if the bank status is valid.
-func ValidateBankStatus(value string) error {
-	if !util.IsSupportedBankStatus(value) {
-		return fmt.Errorf("unsupported bank status")
-	}
-	return nil
-}
-
-// ValidateBranchStatus checks if the branch status is valid.
-func ValidateBranchStatus(value string) error {
-	if !util.IsSupportedBranchStatus(value) {
-		return fmt.Errorf("unsupported branch status")
-	}
-	return nil
-}
-
-// ValidateAccountStatus checks if the account status is valid.
-func ValidateAccountStatus(value string) error {
-	if !util.IsSupportedAccountStatus(value) {
-		return fmt.Errorf("unsupported account status")
-	}
-	return nil
-}
-
-// ValidateCurrency checks if the currency type is valid.
-func ValidateCurrency(value string) error {
-	if !util.IsSupportedCurrencyType(value) {
-		return fmt.Errorf("unsupported currency type")
-	}
-	return nil
-}
-
-// ValidateMaturityInstruction checks if the maturity instruction is valid.
-func ValidateMaturityInstruction(value string) error {
-	if !util.IsSupportedMaturityInstruction(value) {
-		return fmt.Errorf("unsupported maturity instruction")
-	}
-	return nil
-}
-
-// ValidateTransactionStatus checks if the transaction status is valid.
-func ValidateTransactionStatus(value string) error {
-	if !util.IsSupportedTransactionStatus(value) {
-		return fmt.Errorf("unsupported transaction status")
-	}
-	return nil
-}
-
-// ValidateSavingStatus checks if the saving status is valid.
-func ValidateSavingStatus(value string) error {
-	if !util.IsSupportedSavingStatus(value) {
-		return fmt.Errorf("unsupported saving status")
-	}
-	return nil
-}
-
-// ValidateLoanStatus checks if the loan status is valid.
-func ValidateLoanStatus(value string) error {
-	if !util.IsSupportedLoanStatus(value) {
-		return fmt.Errorf("unsupported loan status")
-	}
-	return nil
-}
-
 // ValidateDateOfBirth checks if the date of birth can be parsed and is a valid past date.
 func ValidateDateOfBirth(dateOfBirth string) error {
 	// Define the expected date format
@@ -285,4 +205,12 @@ func ValidateEmailId(value int64) error {
 
 func ValidateSecretCode(value string) error {
 	return ValidateString(value, 32, 128)
+}
+
+// ValidateCurrency checks if the currency type is valid.
+func ValidateCurrency(value string) error {
+	if !util.IsSupportedCurrencyType(value) {
+		return fmt.Errorf("unsupported currency type")
+	}
+	return nil
 }

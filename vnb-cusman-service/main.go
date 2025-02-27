@@ -11,7 +11,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -28,7 +27,7 @@ import (
 	"github.com/tunvx/simplebank/common/util"
 	db "github.com/tunvx/simplebank/cusmansrv/db/sqlc"
 	"github.com/tunvx/simplebank/cusmansrv/gapi"
-	"github.com/tunvx/simplebank/cusmansrv/worker"
+	worker "github.com/tunvx/simplebank/cusmansrv/worker/redis"
 	_ "github.com/tunvx/simplebank/grpc/doc/cusman/statik"
 	pb "github.com/tunvx/simplebank/grpc/pb/cusman"
 	"golang.org/x/sync/errgroup"
@@ -99,7 +98,7 @@ func main() {
 
 	waitGroup, ctx := errgroup.WithContext(ctx)
 
-	runTaskProcessor(ctx, waitGroup, config, stores, redisOpt)
+	// runTaskProcessor(ctx, waitGroup, config, stores, redisOpt)
 	runGrpcServer(ctx, waitGroup, config, stores, taskDistributor)
 	runGatewayServer(ctx, waitGroup, config, stores, taskDistributor)
 
@@ -115,7 +114,7 @@ func main() {
 func runDBMigration(sourceSchemaURL string, listShardDatabaseURL []string, numShard int) {
 	// Check if the length of listShardDatabaseURL matches numShard
 	if len(listShardDatabaseURL) != numShard {
-		log.Fatal().Msgf("The length of listShardDatabaseURL [ %d ] does not match numShard [ %d ]", len(listShardDatabaseURL), numShard)
+		log.Fatal().Msgf("The length of listShardDatabaseURL ( %d ) does not match numShard ( %d )", len(listShardDatabaseURL), numShard)
 	}
 
 	// Loop over each shard and apply migration
@@ -125,10 +124,10 @@ func runDBMigration(sourceSchemaURL string, listShardDatabaseURL []string, numSh
 
 		conn, err := sql.Open("postgres", shardDatabaseURL)
 		if err != nil {
-			log.Error().Err(err).Msgf("cannot connect to shard [ %d ], error: %v", shardID, err)
+			log.Error().Err(err).Msgf("cannot connect to shard ( %d ), error: %v", shardID, err)
 			continue // Skip the current shard and continue with the next one
 		} else {
-			log.Info().Msgf("Successfully connected to shard [ %d ]", shardID)
+			log.Info().Msgf("Successfully connected to shard ( %d )", shardID)
 		}
 		defer conn.Close()
 
@@ -157,15 +156,15 @@ func runDBMigration(sourceSchemaURL string, listShardDatabaseURL []string, numSh
 
 		_, err = conn.Exec(createInitSchemaSQL)
 		if err != nil {
-			log.Error().Err(err).Msgf("failed to create ID generator function for shard [ %d ], error: %v", shardID, err)
+			log.Error().Err(err).Msgf("failed to create ID generator function for shard ( %d ), error: %v", shardID, err)
 			continue // Skip the current shard and continue with the next one
 		}
-		log.Info().Msgf("ID generator function created successfully for shard [ %d ]", shardID)
+		log.Info().Msgf("ID generator function created successfully for shard ( %d )", shardID)
 
 		// Init migration
 		migration, err := migrate.New(sourceSchemaURL, shardDatabaseURL)
 		if err != nil {
-			log.Error().Err(err).Msgf("cannot create migrate instance for shard [ %d ], error: %v", shardID, err)
+			log.Error().Err(err).Msgf("cannot create migrate instance for shard ( %d ), error: %v", shardID, err)
 			continue // Skip the current shard and continue with the next one
 		}
 		defer migration.Close()
@@ -173,12 +172,12 @@ func runDBMigration(sourceSchemaURL string, listShardDatabaseURL []string, numSh
 		// Apply (run) the migration
 		err = migration.Up()
 		if err == migrate.ErrNoChange {
-			log.Info().Msgf("no migration changes detected for shard [ %d ]", shardID)
+			log.Info().Msgf("no migration changes detected for shard ( %d )", shardID)
 		} else if err != nil {
-			log.Error().Err(err).Msgf("failed to run migrate up for shard [ %d ], error: %v", shardID, err)
+			log.Error().Err(err).Msgf("failed to run migrate up for shard ( %d ), error: %v", shardID, err)
 			continue // Skip the current shard and continue with the next one
 		} else {
-			log.Info().Msgf("db migrated successfully for shard [ %d ]", shardID)
+			log.Info().Msgf("db migrated successfully for shard ( %d )", shardID)
 		}
 	}
 }
@@ -186,7 +185,7 @@ func runDBMigration(sourceSchemaURL string, listShardDatabaseURL []string, numSh
 func establishShardedSQLStore(listShardDatabaseURL []string, numShard int) ([]db.Store, error) {
 	// Check if the length of listShardDatabaseURL matches numShard
 	if len(listShardDatabaseURL) != numShard {
-		log.Fatal().Msgf("The length of listShardDatabaseURL [ %d ] does not match numShard [ %d ]", len(listShardDatabaseURL), numShard)
+		log.Fatal().Msgf("The length of listShardDatabaseURL ( %d ) does not match numShard ( %d )", len(listShardDatabaseURL), numShard)
 	}
 
 	var stores []db.Store
@@ -196,25 +195,15 @@ func establishShardedSQLStore(listShardDatabaseURL []string, numShard int) ([]db
 		// Access the shard database URL based on shardID
 		shardDatabaseURL := listShardDatabaseURL[shardID-1]
 		// *************************************************************
-		connPoolConfig, err := pgxpool.ParseConfig(shardDatabaseURL)
+		// Create a new database connection pool
+		connPool, err := pgxpool.New(context.Background(), shardDatabaseURL)
 		if err != nil {
-			log.Error().Err(err).Msgf("unable to parse database config, error: %v", err)
-			continue
-		}
-
-		connPoolConfig.MinConns = 20
-		connPoolConfig.MaxConns = 50
-		connPoolConfig.MaxConnLifetime = time.Minute * 10
-		connPoolConfig.MaxConnIdleTime = time.Minute * 2
-
-		// Create pool with custom configuration
-		connPool, err := pgxpool.NewWithConfig(context.Background(), connPoolConfig)
-		if err != nil {
-			log.Error().Err(err).Msgf("cannot connect to shard [ %d ], error: %v", err)
+			log.Error().Err(err).Msgf("cannot connect to shard ( %d ), error: %v", shardID, err)
 			continue
 		} else {
-			log.Info().Msgf("successfully created pool connection to shard [ %d ]", shardID)
+			log.Info().Msgf("successfully created pool connection to shard ( %d )", shardID)
 		}
+		// defer connPool.Close()
 
 		// Create a new store to interact with the database
 		store := db.NewStore(connPool)
@@ -270,7 +259,7 @@ func runGrpcServer(
 	}
 
 	// Attach gRPC logger middleware for logging requests
-	grpcLogger := grpc.UnaryInterceptor(logger.GrpcLogger)
+	grpcLogger := grpc.UnaryInterceptor(logger.GrpcLoggerMiddleware)
 	grpcServer := grpc.NewServer(grpcLogger)
 
 	// Register the manageService to the gRPC server
@@ -280,7 +269,7 @@ func runGrpcServer(
 	reflection.Register(grpcServer)
 
 	// Create a TCP listener for the gRPC server on the configured address
-	listener, err := net.Listen("tcp", config.GRPCManageServiceAddress)
+	listener, err := net.Listen("tcp", config.GRPCCusmanServiceAddress)
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot create listener")
 	}
@@ -355,10 +344,10 @@ func runGatewayServer(
 	swaggerHandler := http.StripPrefix("/docs/", http.FileServer(statikFS))
 	mux.Handle("/docs/", swaggerHandler)
 
-	loggingHandler := logger.HttpLogger(mux)
+	loggingHandler := logger.HttpLoggerMiddleware(mux)
 	httpServer := &http.Server{
 		Handler: loggingHandler,
-		Addr:    config.HTTPManageServiceAddress,
+		Addr:    config.HTTPCusmanServiceAddress,
 	}
 
 	waitGroup.Go(func() error {

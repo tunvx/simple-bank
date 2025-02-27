@@ -2,21 +2,21 @@
 FROM golang:1.24-alpine3.21 AS builder
 WORKDIR /app
 COPY . .
-RUN cd service-management && go mod download
-RUN cd service-management && go build -o main main.go
+RUN cd vnb-cusman-service && go mod download
+RUN cd vnb-cusman-service && go build -o main main.go
 
 # Run stage
 FROM alpine:3.21
 WORKDIR /app
-COPY --from=builder /app/service-management/main .
+COPY --from=builder /app/vnb-cusman-service/main .
 COPY config.env .
 COPY start.sh .
 COPY wait-for.sh .
-COPY service-management/db/migration ./db/migration
+COPY vnb-cusman-service/db/migration ./db/migration
 
 # Ensure wait-for.sh has execute permissions
 RUN chmod +x ./wait-for.sh ./start.sh
 
 EXPOSE 80 443
-CMD [ "service-management/main" ]
+CMD [ "vnb-cusman-service/main" ]
 ENTRYPOINT [ "/app/start.sh" ]

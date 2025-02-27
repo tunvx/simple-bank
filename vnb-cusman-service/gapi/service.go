@@ -7,7 +7,7 @@ import (
 	"github.com/tunvx/simplebank/common/token"
 	"github.com/tunvx/simplebank/common/util"
 	db "github.com/tunvx/simplebank/cusmansrv/db/sqlc"
-	"github.com/tunvx/simplebank/cusmansrv/worker"
+	worker "github.com/tunvx/simplebank/cusmansrv/worker/redis"
 	pb "github.com/tunvx/simplebank/grpc/pb/cusman"
 	"github.com/tunvx/simplebank/grpc/pb/shardman"
 	"google.golang.org/grpc"
@@ -36,7 +36,7 @@ func NewService(config util.Config, stores []db.Store, taskDistributor worker.Ta
 	// Dial the ShardMan Service (Insecure for local dev environments)
 	// Using insecure credentials for local development
 	conn, err := grpc.NewClient(
-		config.GRPCShardManServiceAddress,
+		config.InternalShardManServiceAddress,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		icallInterceptor,
 	)

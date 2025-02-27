@@ -10,9 +10,9 @@ export const options = {
 };
 
 
-let totalAccounts = 50000;
-// let apiHost = "http://localhost:8082";                      // Docker 
-let apiHost = "http://transaction-service.banking.com";     // Minikube
+let totalAccounts = 20000;
+// let apiHost = "http://localhost:8083";               // Docker 
+let apiHost = "http://moneytransfer.banking.local";     // Minikube
 let failedRequestCounter = new Counter('failed_requests');
 
 export default function () {
@@ -27,7 +27,7 @@ export default function () {
     let recipientAccountNumber = `${recipientId.toString().padStart(11, '0')}`;
 
     // Perform internal transfer
-    let transferUrl = `${apiHost}/v1/test/fast_internal_transfer_without_processing`;
+    let transferUrl = `${apiHost}/v1/test/internal_transfer_no_processing`;
     let transferPayload = JSON.stringify({
         amount: 10000,
         sender_acc_number: senderAccountNumber,
