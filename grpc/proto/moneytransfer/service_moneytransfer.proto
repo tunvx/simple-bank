@@ -83,32 +83,31 @@ service MoneyTransferService {
 // ==================================================================================================================
 // ==================================================================================================================
 
-    // Kiểm tra kết nối máy chủ (Health Check)
-    rpc HealthCheckGET (Empty) returns (OkayResponse) {
+    rpc TestEmptyGET (Empty) returns (OkayResponse) {
         option (google.api.http) = {
-            get: "/v1/test/health_check_get"
+            get: "/v1/test/empty_get"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             description: "Basic server connectivity test using a GET request.";
-            summary: "Health Check (GET)";
+            summary: "Limit Empty Get";
         };
     };
 
-    rpc HealthCheckPOST (Empty) returns (OkayResponse) {
+    rpc TestEmptyPOST (Empty) returns (OkayResponse) {
         option (google.api.http) = {
-            post: "/v1/test/health_check_post"
+            post: "/v1/test/empty_post"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             description: "Basic server connectivity test using a POST request.";
-            summary: "Health Check (POST)";
+            summary: "Limit Empty Post";
         };
     };
 
-    // Kiểm thử API CheckAccount
-    rpc MockCheckAccount (CheckAccountRequest) returns (OkayResponse) {
+
+    rpc TestCheckAccountNoProcessing (CheckAccountRequest) returns (OkayResponse) {
         option (google.api.http) = {
-            post: "/v1/test/mock_check_account"
+            post: "/v1/test/check_account_no_processing"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -117,9 +116,9 @@ service MoneyTransferService {
         };
     };
 
-    rpc MockCheckAccountJustAuth (CheckAccountRequest) returns (OkayResponse) {
+    rpc TestCheckAccountJustAuth (CheckAccountRequest) returns (OkayResponse) {
         option (google.api.http) = {
-            post: "/v1/test/mock_check_account_just_auth"
+            post: "/v1/test/check_account_just_auth"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -128,10 +127,10 @@ service MoneyTransferService {
         };
     };
 
-    // Kiểm thử API Internal Transfer
-    rpc MockInternalTransferMoney (InternalTransferMoneyRequest) returns (OkayResponse) {
+ 
+    rpc TestInternalTransferMoneyNoProcessing (InternalTransferMoneyRequest) returns (OkayResponse) {
         option (google.api.http) = {
-            post: "/v1/test/mock_internal_transfer"
+            post: "/v1/test/internal_transfer_no_processing"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -140,9 +139,9 @@ service MoneyTransferService {
         };
     };
 
-    rpc MockInternalTransferMoneyJustAuth (InternalTransferMoneyRequest) returns (OkayResponse) {
+    rpc TestInternalTransferMoneyJustAuth (InternalTransferMoneyRequest) returns (OkayResponse) {
         option (google.api.http) = {
-            post: "/v1/test/mock_internal_transfer_just_auth"
+            post: "/v1/test/internal_transfer_just_auth"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {

@@ -3,6 +3,7 @@ syntax = "proto3";
 package moneytransfer;
 
 import "cusman/account/account.proto";
+import "moneytransfer/account_transaction.proto";
 
 option go_package = "github.com/tunvx/simplebank/grpc/pb/moneytransfer";
 
@@ -10,16 +11,17 @@ option go_package = "github.com/tunvx/simplebank/grpc/pb/moneytransfer";
 message InternalTransferMoneyRequest {
     int64  amount = 1;
     string currency_type = 2;
-    int64  source_acc_id = 3;       // Source account ID
-    int64  beneficiary_acc_id = 4;  // Beneficiary account ID
-    string beneficiary_name = 5;        // Beneficiary name
-    string message = 6;
+    string src_acc_number = 3;          // Source account number
+    string bene_acc_number = 4;         // Beneficiary account number
+    string message = 5;
 }
 
 message InternalTransferMoneyResponse {
-    bool is_successful = 1;
-    account.Account source_account = 2;
-    account.Account beneficiary_account = 3; // Just for development phase
+    bool                is_successful = 1;
+    account.Account     source_account = 2;
+    AccountTransaction  sending_transaction = 3;
+    account.Account     beneficiary_account = 4; // Just for development phase
+    AccountTransaction  receiving_transaction = 5; // Just for development phase
 }
 
 
@@ -27,14 +29,14 @@ message InternalTransferMoneyResponse {
 message ExternalTransferMoneyRequest {
     int64  amount = 1;
     string currency_type = 2;
-    int64  source_acc_id = 3;       // Source account ID
-    int64  beneficiary_acc_id = 4;  // Beneficiary account ID
-    string beneficiary_bank_code = 5;   // Beneficiary Bank Code
+    string src_acc_id = 3;              // Source account number
+    string bene_acc_id = 4;             // Beneficiary account number
+    string bene_bank_code = 5;          // Beneficiary Bank Code
     string beneficiary_name = 6;        // Beneficiary name
     string message = 7;
 }
 
 message ExternalTransferMoneyResponse {
-    bool is_successful = 1;
+    bool            is_successful = 1;
     account.Account source_account = 2;
 }

@@ -10,16 +10,16 @@ export const options = {
 };
 
 
-let totalAccounts = 50000;
-// let apiHost = "http://localhost:8082";                      // Docker 
-let apiHost = "http://transaction-service.banking.com";     // Minikube
+let totalAccounts = 20000;
+// let apiHost = "http://localhost:8083";               // Docker 
+let apiHost = "http://moneytransfer.banking.local";     // Minikube
 let failedRequestCounter = new Counter('failed_requests');
 
 export default function () {
     let checkerId = Math.floor(Math.random() * totalAccounts) + 1;
     let accountNumber = `${checkerId.toString().padStart(11, '0')}`;
 
-    let checkAccountUrl = `${apiHost}/v1/test/check_account_without_processing`;
+    let checkAccountUrl = `${apiHost}/v1/test/check_account_no_processing`;
     let checkAccountPayload = JSON.stringify({
         acc_number: accountNumber,
         currency_type: "VND",

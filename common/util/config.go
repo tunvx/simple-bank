@@ -41,18 +41,19 @@ type Config struct {
 	DBSourceCoreDB_Shard_4 string `mapstructure:"DB_SOURCE_CORE_DB_SHARD_4"`
 
 	// 6. Internal Address for Internal Connections
-	InternalRedisAddress         string `mapstructure:"INTERNAL_REDIS_ADDRESS"`
-	InternalManageServiceAddress string `mapstructure:"INTERNAL_MANAGE_SERVICE_ADDRESS"`
+	InternalRedisAddress           string `mapstructure:"INTERNAL_REDIS_ADDRESS"`
+	InternalKafkaAddress           string `mapstructure:"INTERNAL_KAFKA_ADDRESS"`
+	InternalShardManServiceAddress string `mapstructure:"INTERNAL_SHARDMAN_SERVICE_ADDRESS"`
 
-	// 7. Bind Address for External Connections
-	HTTPShardManServiceAddress    string `mapstructure:"HTTP_SHARDMAN_SERVICE_ADDRESS"`
-	GRPCShardManServiceAddress    string `mapstructure:"GRPC_SHARDMAN_SERVICE_ADDRESS"`
-	HTTPManageServiceAddress      string `mapstructure:"HTTP_MANAGE_SERVICE_ADDRESS"`
-	GRPCManageServiceAddress      string `mapstructure:"GRPC_MANAGE_SERVICE_ADDRESS"`
-	HTTPAuthServiceAddress        string `mapstructure:"HTTP_AUTH_SERVICE_ADDRESS"`
-	GRPCAuthServiceAddress        string `mapstructure:"GRPC_AUTH_SERVICE_ADDRESS"`
-	HTTPTransactionServiceAddress string `mapstructure:"HTTP_TRANSACTION_SERVICE_ADDRESS"`
-	GRPCTransactionServiceAddress string `mapstructure:"GRPC_TRANSACTION_SERVICE_ADDRESS"`
+	// 7. Bind Address for HTTP/gRPC Services
+	HTTPAuthServiceAddress          string `mapstructure:"HTTP_AUTH_SERVICE_ADDRESS"`
+	GRPCAuthServiceAddress          string `mapstructure:"GRPC_AUTH_SERVICE_ADDRESS"`
+	HTTPCusmanServiceAddress        string `mapstructure:"HTTP_CUSMAN_SERVICE_ADDRESS"`
+	GRPCCusmanServiceAddress        string `mapstructure:"GRPC_CUSMAN_SERVICE_ADDRESS"`
+	HTTPMoneyTransferServiceAddress string `mapstructure:"HTTP_MONEYTRANSFER_SERVICE_ADDRESS"`
+	GRPCMoneyTransferServiceAddress string `mapstructure:"GRPC_MONEYTRANSFER_SERVICE_ADDRESS"`
+	HTTPShardManServiceAddress      string `mapstructure:"HTTP_SHARDMAN_SERVICE_ADDRESS"`
+	GRPCShardManServiceAddress      string `mapstructure:"GRPC_SHARDMAN_SERVICE_ADDRESS"`
 
 	ShardVolume int64 `mapstructure:"SHARD_VOLUME"`
 }

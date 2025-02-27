@@ -134,7 +134,7 @@ SET
   email_address = COALESCE($2, email_address),
   is_email_verified = COALESCE($3, is_email_verified)
 WHERE
-  customer_id = $4
+  customer_id = $4 -- id from auth_token
 RETURNING customer_id, customer_rid, full_name, date_of_birth, permanent_address, phone_number, email_address, customer_tier, customer_segment, financial_status, created_at, updated_at, is_email_verified
 `
 

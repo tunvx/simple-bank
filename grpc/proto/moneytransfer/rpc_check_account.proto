@@ -5,13 +5,11 @@ package moneytransfer;
 option go_package = "github.com/tunvx/simplebank/grpc/pb/moneytransfer";
 
 message CheckAccountRequest {
-    int64  account_id = 1;
+    string account_number = 1;
     string currency_type = 2;
 }
 
 message CheckAccountResponse {
-    int64  account_id = 1;
-    string currency_type = 2;
-    bool   is_valid = 3;
-    string account_holder_name = 4;
+    bool   is_valid = 1;
+    string owner_name = 2;
 }

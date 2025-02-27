@@ -14,22 +14,24 @@ import (
 
 	_ "net/http/pprof"
 
+	"github.com/IBM/sarama"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/hibiken/asynq"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/natefinch/lumberjack"
+	"github.com/rakyll/statik/fs"
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/tunvx/simplebank/common/logger"
 	"github.com/tunvx/simplebank/common/util"
 	db "github.com/tunvx/simplebank/cusmansrv/db/sqlc"
+	_ "github.com/tunvx/simplebank/grpc/doc/moneytransfer/statik"
 	pb "github.com/tunvx/simplebank/grpc/pb/moneytransfer"
 	"github.com/tunvx/simplebank/moneytransfersrv/cache"
 	"github.com/tunvx/simplebank/moneytransfersrv/gapi"
-	worker "github.com/tunvx/simplebank/notificationsrv/redis"
+	worker "github.com/tunvx/simplebank/moneytransfersrv/worker/kafka"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -48,6 +50,8 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot load config")
 	}
+
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
 	// Set up lumberjack for log rotation
 	logFile := &lumberjack.Logger{
@@ -70,14 +74,13 @@ func main() {
 		// Default fallback if environment is not recognized
 		log.Fatal().Msg("Unknown environment: " + config.Environment)
 	}
-
 	ctx, stop := signal.NotifyContext(context.Background(), interruptSignals...)
 	defer stop()
 
-	// Establish SQL Store for all shards
+	// STORE DB: Establish SQL Store for all shards
 	stores, err := establishShardedSQLStore(config.ListDBSourceCoreDB, config.NumCoreDBShard)
 	if err != nil {
-		log.Fatal().Err(err).Msg("failed to initialize sharded stores")
+		log.Fatal().Err(err).Msg("MoneyTransfer Service: Failed to initialize stores for shards")
 	}
 	defer func() {
 		for _, store := range stores {
@@ -87,29 +90,37 @@ func main() {
 		}
 	}()
 
-	// Redis connection pool configuration
-	redisOpt1 := redis.Options{
+	// CACHE REDIS: Redis connection pool configuration
+	redisOpt := redis.Options{
 		Addr:            config.InternalRedisAddress,
 		MaxActiveConns:  120,
 		ConnMaxIdleTime: time.Minute * 5,
 	}
-	cache := cache.NewRedisCache(&redisOpt1)
+	cache := cache.NewRedisCache(&redisOpt)
 
-	redisOpt2 := asynq.RedisClientOpt{
-		Addr: config.InternalRedisAddress,
+	// KAFKA PRODUCER: Kafka producer configuration
+	brokers := []string{config.InternalKafkaAddress}
+	topics := []string{worker.TopicInternalTransferMoney}
+
+	kafkaConfig := sarama.NewConfig()
+	kafkaConfig.ClientID = "moneytransfer service"
+	kafkaConfig.Producer.RequiredAcks = sarama.WaitForAll // Ensure message is written to all replicas
+	kafkaConfig.Producer.Retry.Max = 0                    // Retry sending if error
+	kafkaConfig.Producer.Return.Successes = true          // Catch success event
+	kafkaConfig.Producer.Return.Errors = true             // Catch sending errors
+
+	taskProducer, err := worker.NewKafkaTaskProducer(brokers, topics, kafkaConfig)
+	if err != nil {
+		log.Fatal().Err(err).Msgf("MoneyTransfer Service: Failed to create taskProducer: %s", err)
 	}
 
-	taskDistributor := worker.NewRedisTaskDistributor(redisOpt2)
-	log.Info().Msgf("start Task:Distributor at :: %s", redisOpt2.Addr)
-
 	waitGroup, ctx := errgroup.WithContext(ctx)
-
-	runGrpcServer(ctx, waitGroup, config, stores, cache, taskDistributor)
-	runGatewayServer(ctx, waitGroup, config, stores, cache, taskDistributor)
+	runGrpcServer(ctx, waitGroup, config, stores, cache, taskProducer)
+	runGatewayServer(ctx, waitGroup, config, stores, cache, taskProducer)
 
 	err = waitGroup.Wait()
 	if err != nil {
-		log.Fatal().Err(err).Msg("error from wait group")
+		log.Fatal().Err(err).Msg("MoneyTransfer Service: Error from wait group")
 	}
 
 	// log.Info().Msg("add trigger to run github action")
@@ -118,7 +129,7 @@ func main() {
 func establishShardedSQLStore(listShardDatabaseURL []string, numShard int) ([]db.Store, error) {
 	// Check if the length of listShardDatabaseURL matches numShard
 	if len(listShardDatabaseURL) != numShard {
-		log.Fatal().Msgf("The length of listShardDatabaseURL [ %d ] does not match numShard [ %d ]", len(listShardDatabaseURL), numShard)
+		log.Fatal().Msgf("MoneyTransfer Service: The length of listShardDatabaseURL ( %d ) does not match numShard ( %d )", len(listShardDatabaseURL), numShard)
 	}
 
 	var stores []db.Store
@@ -128,25 +139,14 @@ func establishShardedSQLStore(listShardDatabaseURL []string, numShard int) ([]db
 		// Access the shard database URL based on shardID
 		shardDatabaseURL := listShardDatabaseURL[shardID-1]
 		// *************************************************************
-		connPoolConfig, err := pgxpool.ParseConfig(shardDatabaseURL)
+		connPool, err := pgxpool.New(context.Background(), shardDatabaseURL)
 		if err != nil {
-			log.Error().Err(err).Msgf("unable to parse database config, error: %v", err)
-			continue
-		}
-
-		connPoolConfig.MinConns = 40
-		connPoolConfig.MaxConns = 100
-		connPoolConfig.MaxConnLifetime = time.Minute * 10
-		connPoolConfig.MaxConnIdleTime = time.Minute * 2
-
-		// Create pool with custom configuration
-		connPool, err := pgxpool.NewWithConfig(context.Background(), connPoolConfig)
-		if err != nil {
-			log.Error().Err(err).Msgf("cannot connect to shard [ %d ], error: %v", err)
+			log.Error().Err(err).Msgf("cannot connect to shard ( %d ), error: %v", shardID, err)
 			continue
 		} else {
-			log.Info().Msgf("successfully created pool connection to shard [ %d ]", shardID)
+			log.Info().Msgf("successfully created pool connection to shard ( %d )", shardID)
 		}
+		// defer connPool.Close()
 
 		// Create a new store to interact with the database
 		store := db.NewStore(connPool)
@@ -154,7 +154,7 @@ func establishShardedSQLStore(listShardDatabaseURL []string, numShard int) ([]db
 	}
 
 	if len(stores) == 0 {
-		return nil, fmt.Errorf("failed to initialize any database shard")
+		return nil, fmt.Errorf("MoneyTransfer Service: Failed to initialize any database shard")
 	}
 
 	return stores, nil
@@ -167,16 +167,16 @@ func runGrpcServer(
 	config util.Config,
 	stores []db.Store,
 	cache cache.Cache,
-	taskDistributor worker.TaskDistributor,
+	taskProducer worker.TaskProducer,
 ) {
 	// Create a new transaction service
-	tranService, err := gapi.NewService(config, stores, cache, taskDistributor)
+	tranService, err := gapi.NewService(config, stores, cache, taskProducer)
 	if err != nil {
-		log.Fatal().Err(err).Msg("cannot create transaction service")
+		log.Fatal().Err(err).Msg("MoneyTransfer Service: gRPC service cannot create")
 	}
 
 	// Attach gRPC logger middleware for logging requests
-	grpcLogger := grpc.UnaryInterceptor(logger.GrpcLogger)
+	grpcLogger := grpc.UnaryInterceptor(logger.GrpcLoggerMiddleware)
 	grpcServer := grpc.NewServer(grpcLogger)
 
 	// Register the transactionService to the gRPC server
@@ -186,20 +186,20 @@ func runGrpcServer(
 	reflection.Register(grpcServer)
 
 	// Create a TCP listener for the gRPC server on the configured address
-	listener, err := net.Listen("tcp", config.GRPCTransactionServiceAddress)
+	listener, err := net.Listen("tcp", config.GRPCMoneyTransferServiceAddress)
 	if err != nil {
-		log.Fatal().Err(err).Msg("cannot create listener")
+		log.Fatal().Err(err).Msg("MoneyTransfer Service: gRPC service cannot create listener")
 	}
 
 	waitGroup.Go(func() error {
-		log.Info().Msgf("start gRPC Transaction:Service as server at :: %s", listener.Addr().String())
+		log.Info().Msgf("MoneyTransfer Service: gRPC service started at %s", listener.Addr().String())
 
 		err = grpcServer.Serve(listener)
 		if err != nil {
 			if errors.Is(err, grpc.ErrServerStopped) {
 				return nil
 			}
-			log.Error().Err(err).Msg("gRPC server failed to serve")
+			log.Error().Err(err).Msg("MoneyTransfer Service: gRPC service failed to serve")
 			return err
 		}
 
@@ -208,10 +208,10 @@ func runGrpcServer(
 
 	waitGroup.Go(func() error {
 		<-ctx.Done()
-		log.Info().Msg("graceful shutdown gRPC server")
+		log.Info().Msg("MoneyTransfer Service: gRPC service shutdown gracefully")
 
 		grpcServer.GracefulStop()
-		log.Info().Msg("gRPC server is stopped")
+		log.Info().Msg("MoneyTransfer Service: gRPC server is stopped")
 
 		return nil
 	})
@@ -224,12 +224,12 @@ func runGatewayServer(
 	config util.Config,
 	stores []db.Store,
 	cache cache.Cache,
-	taskDistributor worker.TaskDistributor,
+	taskProducer worker.TaskProducer,
 ) {
 	// Create a new gRPC Gateway server
-	tranService, err := gapi.NewService(config, stores, cache, taskDistributor)
+	tranService, err := gapi.NewService(config, stores, cache, taskProducer)
 	if err != nil {
-		log.Fatal().Err(err).Msg("cannot create server")
+		log.Fatal().Err(err).Msg("MoneyTransfer Service: HTTPGateway service cannot create")
 	}
 
 	// Set custom JSON marshaling options for the gRPC Gateway
@@ -247,34 +247,35 @@ func runGatewayServer(
 
 	err = pb.RegisterMoneyTransferServiceHandlerServer(ctx, grpcMux, tranService)
 	if err != nil {
-		log.Fatal().Err(err).Msg("cannot register handler server")
+		log.Fatal().Err(err).Msg("MoneyTransfer Service: HTTPGateway service cannot register handler")
 	}
 
 	// Create a new HTTP multiplexer for handling additional routes
 	mux := http.NewServeMux()
 	mux.Handle("/", grpcMux)
 
-	// Serve Swagger documentation for the API at /swagger/
-	fs := http.FileServer(http.Dir("./doc/swagger"))
-	mux.Handle("/swagger/", http.StripPrefix("/swagger/", fs))
+	statikFS, err := fs.New()
+	if err != nil {
+		log.Fatal().Err(err).Msg("MoneyTransfer Service: Cannot create statik fs")
+	}
 
-	// Register pprof handlers for profiling
-	// mux.Handle("/debug/pprof/", http.DefaultServeMux)
+	swaggerHandler := http.StripPrefix("/docs/", http.FileServer(statikFS))
+	mux.Handle("/docs/", swaggerHandler)
 
-	loggingHandler := logger.HttpLogger(mux)
+	loggingHandler := logger.HttpLoggerMiddleware(mux)
 	httpServer := &http.Server{
-		Addr:    config.HTTPTransactionServiceAddress,
+		Addr:    config.HTTPMoneyTransferServiceAddress,
 		Handler: loggingHandler,
 	}
 
 	waitGroup.Go(func() error {
-		log.Info().Msgf("start HTTPGateway Transaction:Service as server at :: %s", httpServer.Addr)
+		log.Info().Msgf("MoneyTransfer Service: HTTPGateway service served at %s", httpServer.Addr)
 		err = httpServer.ListenAndServe()
 		if err != nil {
 			if errors.Is(err, http.ErrServerClosed) {
 				return nil
 			}
-			log.Error().Err(err).Msg("HTTP gateway server failed to serve")
+			log.Error().Err(err).Msg("MoneyTransfer Service: HTTPGateway service failed to serve")
 			return err
 		}
 		return nil
@@ -282,15 +283,15 @@ func runGatewayServer(
 
 	waitGroup.Go(func() error {
 		<-ctx.Done()
-		log.Info().Msg("graceful shutdown HTTP gateway server")
+		log.Info().Msg("MoneyTransfer Service: HTTPGateway service shutdown gracefully")
 
 		err := httpServer.Shutdown(context.Background())
 		if err != nil {
-			log.Error().Err(err).Msg("failed to shutdown HTTP gateway server")
+			log.Error().Err(err).Msg("MoneyTransfer Service: HTTPGateway service failed to shutdown ")
 			return err
 		}
 
-		log.Info().Msg("HTTP gateway server is stopped")
+		log.Info().Msg("MoneyTransfer Service: HTTPGateway service is stopped")
 		return nil
 	})
 }

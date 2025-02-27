@@ -1,8 +1,11 @@
 package main
 
 import (
+	"encoding/binary"
 	"fmt"
+	"log"
 	"strconv"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/tunvx/simplebank/common/util"
@@ -57,4 +60,23 @@ func main() {
 
 	fmt.Println("Decoded UUID:", decodedUUID)
 	fmt.Println("Match:", originalUUID == decodedUUID)
+
+	// Tạo UUID v7
+	tokenID, err := uuid.NewV7()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Chuyển UUID thành mảng byte
+	bytes := tokenID[:]
+
+	// Lấy timestamp từ 48 bit đầu tiên
+	timestamp := binary.BigEndian.Uint64(bytes[:8]) >> 16
+
+	// Chuyển timestamp từ mili giây về thời gian UTC
+	parsedTime := time.UnixMilli(int64(timestamp))
+
+	fmt.Println("UUID v7:", tokenID)
+	fmt.Println("Timestamp:", timestamp)
+	fmt.Println("Parsed Time:", parsedTime.UTC())
 }

@@ -54,8 +54,8 @@ func extractGrpcMetadata(ctx context.Context) *Metadata {
 	return mtdt
 }
 
-// GrpcLogger là middleware ghi log cho gRPC requests.
-func GrpcLogger(
+// GrpcLoggerMiddleware là middleware ghi log cho gRPC requests.
+func GrpcLoggerMiddleware(
 	ctx context.Context,
 	req interface{},
 	info *grpc.UnaryServerInfo,
@@ -93,7 +93,7 @@ func GrpcLogger(
 		Int("status_code", int(statusCode)).
 		Str("status_text", statusCode.String()).
 		Dur("duration", duration).
-		Msg("received a gRPC request")
+		Msg("GRPC request received")
 
 	return result, err
 }
@@ -135,8 +135,8 @@ func (rec *ResponseRecorder) Write(body []byte) (int, error) {
 	return rec.ResponseWriter.Write(body)
 }
 
-// HttpLogger là middleware ghi log cho HTTP requests.
-func HttpLogger(handler http.Handler) http.Handler {
+// HttpLoggerMiddleware là middleware ghi log cho HTTP requests.
+func HttpLoggerMiddleware(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		// Ghi nhận thời điểm bắt đầu request
 		startTime := time.Now()
@@ -170,7 +170,7 @@ func HttpLogger(handler http.Handler) http.Handler {
 			Str("user_agent", mtdt.UserAgent).
 			Int("status_code", rec.StatusCode).
 			Str("status_text", http.StatusText(rec.StatusCode)).
-			Dur("duration", duration).
-			Msg("received a HTTP request")
+			Dur("duration(ns)", duration).
+			Msg("HTTP request received")
 	})
 }

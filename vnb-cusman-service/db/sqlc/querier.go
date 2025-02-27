@@ -12,12 +12,12 @@ import (
 
 type Querier interface {
 	AddAccountBalance(ctx context.Context, arg AddAccountBalanceParams) (Account, error)
-	CheckAccountByID(ctx context.Context, accountID int64) (CheckAccountByIDRow, error)
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (Account, error)
 	CreateAccountTransaction(ctx context.Context, arg CreateAccountTransactionParams) (AccountTransaction, error)
 	CreateCustomer(ctx context.Context, arg CreateCustomerParams) (Customer, error)
 	CreateVerifyEmail(ctx context.Context, arg CreateVerifyEmailParams) (VerifyEmail, error)
 	GetAccountByID(ctx context.Context, accountID int64) (Account, error)
+	GetAccountForCheck(ctx context.Context, accountID int64) (GetAccountForCheckRow, error)
 	// The methods below are directly related to transactions (multiple queries), so will be implemented query with id
 	// Especially directly related to the locking mechanism, locking in order in the database
 	// ...

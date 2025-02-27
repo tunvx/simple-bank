@@ -15,16 +15,16 @@ server {
   }
 }
 
-# Config for management.banking.local
+# Config for cusman.banking.local
 server {
   listen 80;
-  server_name management.banking.local;
+  server_name cusman.banking.local;
 
   # Defaul Docker DNS
   resolver 127.0.0.11;
 
   location / {
-    proxy_pass http://management-service;
+    proxy_pass http://cusman-service;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -32,16 +32,33 @@ server {
   }
 }
 
-# Config for transfermoney.banking.local
+# Config for moneytransfer.banking.local
 server {
   listen 80;
-  server_name transfermoney.banking.local;
+  server_name moneytransfer.banking.local;
 
   # Defaul Docker DNS
   resolver 127.0.0.11;
 
   location / {
-    proxy_pass http://transfermoney-service;
+    proxy_pass http://moneytransfer-service;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+}
+
+# Config for shardman.banking.local
+server {
+  listen 80;
+  server_name shardman.banking.local;
+
+  # Defaul Docker DNS
+  resolver 127.0.0.11;
+
+  location / {
+    proxy_pass http://shardman-service;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

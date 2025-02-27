@@ -135,38 +135,25 @@ func local_request_MoneyTransferService_ExternalTransferMoney_0(ctx context.Cont
 
 }
 
-func request_MoneyTransferService_HealthCheckGET_0(ctx context.Context, marshaler runtime.Marshaler, client MoneyTransferServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_MoneyTransferService_TestEmptyGET_0(ctx context.Context, marshaler runtime.Marshaler, client MoneyTransferServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq Empty
 	var metadata runtime.ServerMetadata
 
-	msg, err := client.HealthCheckGET(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.TestEmptyGET(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_MoneyTransferService_HealthCheckGET_0(ctx context.Context, marshaler runtime.Marshaler, server MoneyTransferServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_MoneyTransferService_TestEmptyGET_0(ctx context.Context, marshaler runtime.Marshaler, server MoneyTransferServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq Empty
 	var metadata runtime.ServerMetadata
 
-	msg, err := server.HealthCheckGET(ctx, &protoReq)
+	msg, err := server.TestEmptyGET(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_MoneyTransferService_HealthCheckPOST_0(ctx context.Context, marshaler runtime.Marshaler, client MoneyTransferServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq Empty
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	msg, err := client.HealthCheckPOST(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_MoneyTransferService_HealthCheckPOST_0(ctx context.Context, marshaler runtime.Marshaler, server MoneyTransferServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_MoneyTransferService_TestEmptyPOST_0(ctx context.Context, marshaler runtime.Marshaler, client MoneyTransferServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq Empty
 	var metadata runtime.ServerMetadata
 
@@ -174,12 +161,25 @@ func local_request_MoneyTransferService_HealthCheckPOST_0(ctx context.Context, m
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.HealthCheckPOST(ctx, &protoReq)
+	msg, err := client.TestEmptyPOST(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func request_MoneyTransferService_MockCheckAccount_0(ctx context.Context, marshaler runtime.Marshaler, client MoneyTransferServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_MoneyTransferService_TestEmptyPOST_0(ctx context.Context, marshaler runtime.Marshaler, server MoneyTransferServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq Empty
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.TestEmptyPOST(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_MoneyTransferService_TestCheckAccountNoProcessing_0(ctx context.Context, marshaler runtime.Marshaler, client MoneyTransferServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CheckAccountRequest
 	var metadata runtime.ServerMetadata
 
@@ -187,12 +187,12 @@ func request_MoneyTransferService_MockCheckAccount_0(ctx context.Context, marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.MockCheckAccount(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.TestCheckAccountNoProcessing(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_MoneyTransferService_MockCheckAccount_0(ctx context.Context, marshaler runtime.Marshaler, server MoneyTransferServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_MoneyTransferService_TestCheckAccountNoProcessing_0(ctx context.Context, marshaler runtime.Marshaler, server MoneyTransferServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CheckAccountRequest
 	var metadata runtime.ServerMetadata
 
@@ -200,12 +200,12 @@ func local_request_MoneyTransferService_MockCheckAccount_0(ctx context.Context, 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.MockCheckAccount(ctx, &protoReq)
+	msg, err := server.TestCheckAccountNoProcessing(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_MoneyTransferService_MockCheckAccountJustAuth_0(ctx context.Context, marshaler runtime.Marshaler, client MoneyTransferServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_MoneyTransferService_TestCheckAccountJustAuth_0(ctx context.Context, marshaler runtime.Marshaler, client MoneyTransferServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CheckAccountRequest
 	var metadata runtime.ServerMetadata
 
@@ -213,12 +213,12 @@ func request_MoneyTransferService_MockCheckAccountJustAuth_0(ctx context.Context
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.MockCheckAccountJustAuth(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.TestCheckAccountJustAuth(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_MoneyTransferService_MockCheckAccountJustAuth_0(ctx context.Context, marshaler runtime.Marshaler, server MoneyTransferServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_MoneyTransferService_TestCheckAccountJustAuth_0(ctx context.Context, marshaler runtime.Marshaler, server MoneyTransferServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CheckAccountRequest
 	var metadata runtime.ServerMetadata
 
@@ -226,12 +226,12 @@ func local_request_MoneyTransferService_MockCheckAccountJustAuth_0(ctx context.C
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.MockCheckAccountJustAuth(ctx, &protoReq)
+	msg, err := server.TestCheckAccountJustAuth(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_MoneyTransferService_MockInternalTransferMoney_0(ctx context.Context, marshaler runtime.Marshaler, client MoneyTransferServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_MoneyTransferService_TestInternalTransferMoneyNoProcessing_0(ctx context.Context, marshaler runtime.Marshaler, client MoneyTransferServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq InternalTransferMoneyRequest
 	var metadata runtime.ServerMetadata
 
@@ -239,12 +239,12 @@ func request_MoneyTransferService_MockInternalTransferMoney_0(ctx context.Contex
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.MockInternalTransferMoney(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.TestInternalTransferMoneyNoProcessing(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_MoneyTransferService_MockInternalTransferMoney_0(ctx context.Context, marshaler runtime.Marshaler, server MoneyTransferServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_MoneyTransferService_TestInternalTransferMoneyNoProcessing_0(ctx context.Context, marshaler runtime.Marshaler, server MoneyTransferServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq InternalTransferMoneyRequest
 	var metadata runtime.ServerMetadata
 
@@ -252,12 +252,12 @@ func local_request_MoneyTransferService_MockInternalTransferMoney_0(ctx context.
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.MockInternalTransferMoney(ctx, &protoReq)
+	msg, err := server.TestInternalTransferMoneyNoProcessing(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_MoneyTransferService_MockInternalTransferMoneyJustAuth_0(ctx context.Context, marshaler runtime.Marshaler, client MoneyTransferServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_MoneyTransferService_TestInternalTransferMoneyJustAuth_0(ctx context.Context, marshaler runtime.Marshaler, client MoneyTransferServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq InternalTransferMoneyRequest
 	var metadata runtime.ServerMetadata
 
@@ -265,12 +265,12 @@ func request_MoneyTransferService_MockInternalTransferMoneyJustAuth_0(ctx contex
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.MockInternalTransferMoneyJustAuth(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.TestInternalTransferMoneyJustAuth(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_MoneyTransferService_MockInternalTransferMoneyJustAuth_0(ctx context.Context, marshaler runtime.Marshaler, server MoneyTransferServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_MoneyTransferService_TestInternalTransferMoneyJustAuth_0(ctx context.Context, marshaler runtime.Marshaler, server MoneyTransferServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq InternalTransferMoneyRequest
 	var metadata runtime.ServerMetadata
 
@@ -278,7 +278,7 @@ func local_request_MoneyTransferService_MockInternalTransferMoneyJustAuth_0(ctx 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.MockInternalTransferMoneyJustAuth(ctx, &protoReq)
+	msg, err := server.TestInternalTransferMoneyJustAuth(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -390,7 +390,7 @@ func RegisterMoneyTransferServiceHandlerServer(ctx context.Context, mux *runtime
 
 	})
 
-	mux.Handle("GET", pattern_MoneyTransferService_HealthCheckGET_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_MoneyTransferService_TestEmptyGET_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -398,12 +398,12 @@ func RegisterMoneyTransferServiceHandlerServer(ctx context.Context, mux *runtime
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/HealthCheckGET", runtime.WithHTTPPathPattern("/v1/test/health_check_get"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/TestEmptyGET", runtime.WithHTTPPathPattern("/v1/test/empty_get"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_MoneyTransferService_HealthCheckGET_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_MoneyTransferService_TestEmptyGET_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -411,11 +411,11 @@ func RegisterMoneyTransferServiceHandlerServer(ctx context.Context, mux *runtime
 			return
 		}
 
-		forward_MoneyTransferService_HealthCheckGET_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MoneyTransferService_TestEmptyGET_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_MoneyTransferService_HealthCheckPOST_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_MoneyTransferService_TestEmptyPOST_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -423,12 +423,12 @@ func RegisterMoneyTransferServiceHandlerServer(ctx context.Context, mux *runtime
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/HealthCheckPOST", runtime.WithHTTPPathPattern("/v1/test/health_check_post"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/TestEmptyPOST", runtime.WithHTTPPathPattern("/v1/test/empty_post"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_MoneyTransferService_HealthCheckPOST_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_MoneyTransferService_TestEmptyPOST_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -436,11 +436,11 @@ func RegisterMoneyTransferServiceHandlerServer(ctx context.Context, mux *runtime
 			return
 		}
 
-		forward_MoneyTransferService_HealthCheckPOST_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MoneyTransferService_TestEmptyPOST_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_MoneyTransferService_MockCheckAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_MoneyTransferService_TestCheckAccountNoProcessing_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -448,12 +448,12 @@ func RegisterMoneyTransferServiceHandlerServer(ctx context.Context, mux *runtime
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/MockCheckAccount", runtime.WithHTTPPathPattern("/v1/test/mock_check_account"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/TestCheckAccountNoProcessing", runtime.WithHTTPPathPattern("/v1/test/check_account_no_processing"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_MoneyTransferService_MockCheckAccount_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_MoneyTransferService_TestCheckAccountNoProcessing_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -461,11 +461,11 @@ func RegisterMoneyTransferServiceHandlerServer(ctx context.Context, mux *runtime
 			return
 		}
 
-		forward_MoneyTransferService_MockCheckAccount_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MoneyTransferService_TestCheckAccountNoProcessing_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_MoneyTransferService_MockCheckAccountJustAuth_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_MoneyTransferService_TestCheckAccountJustAuth_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -473,12 +473,12 @@ func RegisterMoneyTransferServiceHandlerServer(ctx context.Context, mux *runtime
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/MockCheckAccountJustAuth", runtime.WithHTTPPathPattern("/v1/test/mock_check_account_just_auth"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/TestCheckAccountJustAuth", runtime.WithHTTPPathPattern("/v1/test/check_account_just_auth"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_MoneyTransferService_MockCheckAccountJustAuth_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_MoneyTransferService_TestCheckAccountJustAuth_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -486,11 +486,11 @@ func RegisterMoneyTransferServiceHandlerServer(ctx context.Context, mux *runtime
 			return
 		}
 
-		forward_MoneyTransferService_MockCheckAccountJustAuth_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MoneyTransferService_TestCheckAccountJustAuth_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_MoneyTransferService_MockInternalTransferMoney_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_MoneyTransferService_TestInternalTransferMoneyNoProcessing_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -498,12 +498,12 @@ func RegisterMoneyTransferServiceHandlerServer(ctx context.Context, mux *runtime
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/MockInternalTransferMoney", runtime.WithHTTPPathPattern("/v1/test/mock_internal_transfer"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/TestInternalTransferMoneyNoProcessing", runtime.WithHTTPPathPattern("/v1/test/internal_transfer_no_processing"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_MoneyTransferService_MockInternalTransferMoney_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_MoneyTransferService_TestInternalTransferMoneyNoProcessing_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -511,11 +511,11 @@ func RegisterMoneyTransferServiceHandlerServer(ctx context.Context, mux *runtime
 			return
 		}
 
-		forward_MoneyTransferService_MockInternalTransferMoney_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MoneyTransferService_TestInternalTransferMoneyNoProcessing_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_MoneyTransferService_MockInternalTransferMoneyJustAuth_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_MoneyTransferService_TestInternalTransferMoneyJustAuth_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -523,12 +523,12 @@ func RegisterMoneyTransferServiceHandlerServer(ctx context.Context, mux *runtime
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/MockInternalTransferMoneyJustAuth", runtime.WithHTTPPathPattern("/v1/test/mock_internal_transfer_just_auth"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/TestInternalTransferMoneyJustAuth", runtime.WithHTTPPathPattern("/v1/test/internal_transfer_just_auth"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_MoneyTransferService_MockInternalTransferMoneyJustAuth_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_MoneyTransferService_TestInternalTransferMoneyJustAuth_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -536,7 +536,7 @@ func RegisterMoneyTransferServiceHandlerServer(ctx context.Context, mux *runtime
 			return
 		}
 
-		forward_MoneyTransferService_MockInternalTransferMoneyJustAuth_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MoneyTransferService_TestInternalTransferMoneyJustAuth_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -669,135 +669,135 @@ func RegisterMoneyTransferServiceHandlerClient(ctx context.Context, mux *runtime
 
 	})
 
-	mux.Handle("GET", pattern_MoneyTransferService_HealthCheckGET_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_MoneyTransferService_TestEmptyGET_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/HealthCheckGET", runtime.WithHTTPPathPattern("/v1/test/health_check_get"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/TestEmptyGET", runtime.WithHTTPPathPattern("/v1/test/empty_get"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_MoneyTransferService_HealthCheckGET_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_MoneyTransferService_TestEmptyGET_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_MoneyTransferService_HealthCheckGET_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MoneyTransferService_TestEmptyGET_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_MoneyTransferService_HealthCheckPOST_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_MoneyTransferService_TestEmptyPOST_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/HealthCheckPOST", runtime.WithHTTPPathPattern("/v1/test/health_check_post"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/TestEmptyPOST", runtime.WithHTTPPathPattern("/v1/test/empty_post"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_MoneyTransferService_HealthCheckPOST_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_MoneyTransferService_TestEmptyPOST_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_MoneyTransferService_HealthCheckPOST_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MoneyTransferService_TestEmptyPOST_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_MoneyTransferService_MockCheckAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_MoneyTransferService_TestCheckAccountNoProcessing_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/MockCheckAccount", runtime.WithHTTPPathPattern("/v1/test/mock_check_account"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/TestCheckAccountNoProcessing", runtime.WithHTTPPathPattern("/v1/test/check_account_no_processing"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_MoneyTransferService_MockCheckAccount_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_MoneyTransferService_TestCheckAccountNoProcessing_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_MoneyTransferService_MockCheckAccount_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MoneyTransferService_TestCheckAccountNoProcessing_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_MoneyTransferService_MockCheckAccountJustAuth_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_MoneyTransferService_TestCheckAccountJustAuth_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/MockCheckAccountJustAuth", runtime.WithHTTPPathPattern("/v1/test/mock_check_account_just_auth"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/TestCheckAccountJustAuth", runtime.WithHTTPPathPattern("/v1/test/check_account_just_auth"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_MoneyTransferService_MockCheckAccountJustAuth_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_MoneyTransferService_TestCheckAccountJustAuth_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_MoneyTransferService_MockCheckAccountJustAuth_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MoneyTransferService_TestCheckAccountJustAuth_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_MoneyTransferService_MockInternalTransferMoney_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_MoneyTransferService_TestInternalTransferMoneyNoProcessing_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/MockInternalTransferMoney", runtime.WithHTTPPathPattern("/v1/test/mock_internal_transfer"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/TestInternalTransferMoneyNoProcessing", runtime.WithHTTPPathPattern("/v1/test/internal_transfer_no_processing"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_MoneyTransferService_MockInternalTransferMoney_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_MoneyTransferService_TestInternalTransferMoneyNoProcessing_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_MoneyTransferService_MockInternalTransferMoney_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MoneyTransferService_TestInternalTransferMoneyNoProcessing_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_MoneyTransferService_MockInternalTransferMoneyJustAuth_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_MoneyTransferService_TestInternalTransferMoneyJustAuth_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/MockInternalTransferMoneyJustAuth", runtime.WithHTTPPathPattern("/v1/test/mock_internal_transfer_just_auth"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/moneytransfer.MoneyTransferService/TestInternalTransferMoneyJustAuth", runtime.WithHTTPPathPattern("/v1/test/internal_transfer_just_auth"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_MoneyTransferService_MockInternalTransferMoneyJustAuth_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_MoneyTransferService_TestInternalTransferMoneyJustAuth_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_MoneyTransferService_MockInternalTransferMoneyJustAuth_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MoneyTransferService_TestInternalTransferMoneyJustAuth_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -813,17 +813,17 @@ var (
 
 	pattern_MoneyTransferService_ExternalTransferMoney_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "accounts", "transfers", "external"}, ""))
 
-	pattern_MoneyTransferService_HealthCheckGET_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "test", "health_check_get"}, ""))
+	pattern_MoneyTransferService_TestEmptyGET_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "test", "empty_get"}, ""))
 
-	pattern_MoneyTransferService_HealthCheckPOST_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "test", "health_check_post"}, ""))
+	pattern_MoneyTransferService_TestEmptyPOST_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "test", "empty_post"}, ""))
 
-	pattern_MoneyTransferService_MockCheckAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "test", "mock_check_account"}, ""))
+	pattern_MoneyTransferService_TestCheckAccountNoProcessing_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "test", "check_account_no_processing"}, ""))
 
-	pattern_MoneyTransferService_MockCheckAccountJustAuth_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "test", "mock_check_account_just_auth"}, ""))
+	pattern_MoneyTransferService_TestCheckAccountJustAuth_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "test", "check_account_just_auth"}, ""))
 
-	pattern_MoneyTransferService_MockInternalTransferMoney_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "test", "mock_internal_transfer"}, ""))
+	pattern_MoneyTransferService_TestInternalTransferMoneyNoProcessing_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "test", "internal_transfer_no_processing"}, ""))
 
-	pattern_MoneyTransferService_MockInternalTransferMoneyJustAuth_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "test", "mock_internal_transfer_just_auth"}, ""))
+	pattern_MoneyTransferService_TestInternalTransferMoneyJustAuth_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "test", "internal_transfer_just_auth"}, ""))
 )
 
 var (
@@ -835,15 +835,15 @@ var (
 
 	forward_MoneyTransferService_ExternalTransferMoney_0 = runtime.ForwardResponseMessage
 
-	forward_MoneyTransferService_HealthCheckGET_0 = runtime.ForwardResponseMessage
+	forward_MoneyTransferService_TestEmptyGET_0 = runtime.ForwardResponseMessage
 
-	forward_MoneyTransferService_HealthCheckPOST_0 = runtime.ForwardResponseMessage
+	forward_MoneyTransferService_TestEmptyPOST_0 = runtime.ForwardResponseMessage
 
-	forward_MoneyTransferService_MockCheckAccount_0 = runtime.ForwardResponseMessage
+	forward_MoneyTransferService_TestCheckAccountNoProcessing_0 = runtime.ForwardResponseMessage
 
-	forward_MoneyTransferService_MockCheckAccountJustAuth_0 = runtime.ForwardResponseMessage
+	forward_MoneyTransferService_TestCheckAccountJustAuth_0 = runtime.ForwardResponseMessage
 
-	forward_MoneyTransferService_MockInternalTransferMoney_0 = runtime.ForwardResponseMessage
+	forward_MoneyTransferService_TestInternalTransferMoneyNoProcessing_0 = runtime.ForwardResponseMessage
 
-	forward_MoneyTransferService_MockInternalTransferMoneyJustAuth_0 = runtime.ForwardResponseMessage
+	forward_MoneyTransferService_TestInternalTransferMoneyJustAuth_0 = runtime.ForwardResponseMessage
 )

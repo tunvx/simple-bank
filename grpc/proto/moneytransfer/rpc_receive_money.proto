@@ -3,6 +3,7 @@ syntax = "proto3";
 package moneytransfer;
 
 import "cusman/account/account.proto";
+import "moneytransfer/account_transaction.proto";
 
 option go_package = "github.com/tunvx/simplebank/grpc/pb/moneytransfer";
 
@@ -10,14 +11,13 @@ option go_package = "github.com/tunvx/simplebank/grpc/pb/moneytransfer";
 message ReceiveMoneyRequest {
     int64  amount = 1;
     string currency_type = 2;
-    int64  beneficiary_acc_id = 3;  // Beneficiary account ID
+    int64  bene_acc_number = 3;  // Beneficiary account ID
     string reference_number = 4;    // Provided by the sending transaction
     string message = 5;
 }
 
 message ReceiveMoneyResponse {
-    bool    is_successed = 1;
-    string  message = 2;
-    account.Account beneficiary_account = 3; // Just for development phase
-
+    bool                is_successful = 1;
+    account.Account     beneficiary_account = 2;    // Just for development phase
+    AccountTransaction  receiving_transaction = 5;  // Just for development phase
 }

@@ -1,0 +1,489 @@
+{
+    "info": {
+        "_postman_id": "ba382dc7-dfd7-4f43-b074-01dedcf53971",
+        "name": "Simple Bank",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "Create Customer C01",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:82/v1/customers",
+                    "path": [
+                        "v1",
+                        "customers"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "82"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"customerRid\": \"00005000051\",\n  \"fullName\": \"Nguyen Van A\",\n  \"dateOfBirth\": \"2001/07/17\",\n  \"permanentAddress\": \"Tu Xa, Lam Thao, Phu Tho\",\n  \"phoneNumber\": \"+8400005000051\",\n  \"emailAddress\": \"tunv.todo1@gmail.com\",\n  \"customerTier\": \"gold\",\n  \"customerSegment\": \"retail\",\n  \"financialStatus\": \"good\"\n}"
+                }
+            }
+        },
+        {
+            "name": "Create Customer C02",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:82/v1/customers",
+                    "path": [
+                        "v1",
+                        "customers"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "82"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"customerRid\": \"00005000052\",\n  \"fullName\": \"Nguyen Van A\",\n  \"dateOfBirth\": \"2001/07/17\",\n  \"permanentAddress\": \"Tu Xa, Lam Thao, Phu Tho\",\n  \"phoneNumber\": \"+8400005000052\",\n  \"emailAddress\": \"tunv.todo2@gmail.com\",\n  \"customerTier\": \"gold\",\n  \"customerSegment\": \"retail\",\n  \"financialStatus\": \"good\"\n}"
+                }
+            }
+        },
+        {
+            "name": "Create Customer C03",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:82/v1/customers",
+                    "path": [
+                        "v1",
+                        "customers"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "82"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"customerRid\": \"00005000053\",\n  \"fullName\": \"Nguyen Van A\",\n  \"dateOfBirth\": \"2001/07/17\",\n  \"permanentAddress\": \"Tu Xa, Lam Thao, Phu Tho\",\n  \"phoneNumber\": \"+8400005000053\",\n  \"emailAddress\": \"tunv.todo3@gmail.com\",\n  \"customerTier\": \"gold\",\n  \"customerSegment\": \"retail\",\n  \"financialStatus\": \"good\"\n}"
+                }
+            }
+        },
+        {
+            "name": "Create Credential C01",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:81/v1/customers/credentials",
+                    "path": [
+                        "v1",
+                        "customers",
+                        "credentials"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "81"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"customerRid\": \"00005000051\",\n  \"username\": \"customer001\",\n  \"password\": \"App-0000\"\n}"
+                }
+            }
+        },
+        {
+            "name": "Create Credential C02",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:81/v1/customers/credentials",
+                    "path": [
+                        "v1",
+                        "customers",
+                        "credentials"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "81"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"customerRid\": \"00005000052\",\n  \"username\": \"customer002\",\n  \"password\": \"App-0000\"\n}"
+                }
+            }
+        },
+        {
+            "name": "Create Credential C03",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:81/v1/customers/credentials",
+                    "path": [
+                        "v1",
+                        "customers",
+                        "credentials"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "81"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"customerRid\": \"00005000053\",\n  \"username\": \"customer003\",\n  \"password\": \"App-0000\"\n}"
+                }
+            }
+        },
+        {
+            "name": "Customer C01 Login",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:81/v1/customers/login",
+                    "path": [
+                        "v1",
+                        "customers",
+                        "login"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "81"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"username\": \"customer001\",\n  \"password\": \"App-0000\"\n}"
+                }
+            }
+        },
+        {
+            "name": "Customer C02 Login",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:81/v1/customers/login",
+                    "path": [
+                        "v1",
+                        "customers",
+                        "login"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "81"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"username\": \"customer002\",\n  \"password\": \"App-0000\"\n}"
+                }
+            }
+        },
+        {
+            "name": "Customer C03 Login",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:81/v1/customers/login",
+                    "path": [
+                        "v1",
+                        "customers",
+                        "login"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "81"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"username\": \"customer003\",\n  \"password\": \"App-0000\"\n}"
+                }
+            }
+        },
+        {
+            "name": "Create Account C01",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:82/v1/accounts",
+                    "path": [
+                        "v1",
+                        "accounts"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "82"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"accountNumber\": \"00005000051\",\n  \"currencyType\": \"VND\"\n}"
+                },
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "v2.public.eyJpZCI6IjAxOTU0YTgyLWYyNGUtNzIwNy04NjJhLWFiZTRkN2U5Y2ZlMSIsInVzZXJfaWQiOjEsInNoYXJkX2lkIjoxLCJyb2xlIjoiY3VzdG9tZXIiLCJpc3N1ZWRfYXQiOiIyMDI1LTAyLTI4VDEwOjA0OjEwLjU3NDEzMyswNzowMCIsImV4cGlyZWRfYXQiOiIyMDI1LTAzLTAxVDEwOjA0OjEwLjU3NDEzMyswNzowMCJ9A_WN4r2K-XYSq33kvE2tnJ7KWuBm4NzLOXqmJbfW8sqcfA27IvP0OIOlkRzmUqLCGr3d1s6t-BCnsxePbL-gCg.bnVsbA",
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Create Account C02",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:82/v1/accounts",
+                    "path": [
+                        "v1",
+                        "accounts"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "82"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"accountNumber\": \"00005000052\",\n  \"currencyType\": \"VND\"\n}"
+                },
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "v2.public.eyJpZCI6IjAxOTU0YTgxLTg0MmMtNzg5My1hZDk3LWFjMjRjY2NhY2JjYyIsInVzZXJfaWQiOjIsInNoYXJkX2lkIjoxLCJyb2xlIjoiY3VzdG9tZXIiLCJpc3N1ZWRfYXQiOiIyMDI1LTAyLTI4VDEwOjAyOjM2Ljg0NDU2MyswNzowMCIsImV4cGlyZWRfYXQiOiIyMDI1LTAzLTAxVDEwOjAyOjM2Ljg0NDU2MyswNzowMCJ95IOSGMcur25rBcm-CM92sHsOfA-j-rpZdmmrTfAytoAkcW-4d30alojTLcR6vrIVWKPCiBN20ZaCXRCEZiaRCQ.bnVsbA",
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Create Account C03",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:82/v1/accounts",
+                    "path": [
+                        "v1",
+                        "accounts"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "82"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"accountNumber\": \"00005000053\",\n  \"currencyType\": \"VND\"\n}"
+                },
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "v2.public.eyJpZCI6IjAxOTU0YTgxLTk3YTAtNzQxMi1iMjJhLWViYTE5MDM5YmFhMiIsInVzZXJfaWQiOjMsInNoYXJkX2lkIjoyLCJyb2xlIjoiY3VzdG9tZXIiLCJpc3N1ZWRfYXQiOiIyMDI1LTAyLTI4VDEwOjAyOjQxLjgyNDI2OCswNzowMCIsImV4cGlyZWRfYXQiOiIyMDI1LTAzLTAxVDEwOjAyOjQxLjgyNDI2OCswNzowMCJ9REZM6iEF4N1UaDul_zqFT38ClHcTG25zvowxwZYzpehZ2bPVgo7zUCs_5Po9jT2J5kciAlloftkIJ967IwxIBg.bnVsbA",
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Check Accout",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:83/v1/accounts/check",
+                    "path": [
+                        "v1",
+                        "accounts",
+                        "check"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "83"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"accountNumber\": \"00005000053\",\n  \"currencyType\": \"VND\"\n}"
+                },
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "v2.public.eyJpZCI6IjAxOTU0YTgyLWYyNGUtNzIwNy04NjJhLWFiZTRkN2U5Y2ZlMSIsInVzZXJfaWQiOjEsInNoYXJkX2lkIjoxLCJyb2xlIjoiY3VzdG9tZXIiLCJpc3N1ZWRfYXQiOiIyMDI1LTAyLTI4VDEwOjA0OjEwLjU3NDEzMyswNzowMCIsImV4cGlyZWRfYXQiOiIyMDI1LTAzLTAxVDEwOjA0OjEwLjU3NDEzMyswNzowMCJ9A_WN4r2K-XYSq33kvE2tnJ7KWuBm4NzLOXqmJbfW8sqcfA27IvP0OIOlkRzmUqLCGr3d1s6t-BCnsxePbL-gCg.bnVsbA",
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Transfer Money",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:83/v1/accounts/transfers/internal",
+                    "path": [
+                        "v1",
+                        "accounts",
+                        "transfers",
+                        "internal"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "83"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"amount\": \"10000\",\n  \"currencyType\": \"VND\",\n  \"srcAccNumber\": \"00005000051\",\n  \"beneAccNumber\": \"00005000053\",\n  \"beneficiaryName\": \"Nguyen Van B\",\n  \"message\": \"Nguyen Van A chuyen tien\"\n}"
+                },
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "v2.public.eyJpZCI6IjAxOTU0YTgyLWYyNGUtNzIwNy04NjJhLWFiZTRkN2U5Y2ZlMSIsInVzZXJfaWQiOjEsInNoYXJkX2lkIjoxLCJyb2xlIjoiY3VzdG9tZXIiLCJpc3N1ZWRfYXQiOiIyMDI1LTAyLTI4VDEwOjA0OjEwLjU3NDEzMyswNzowMCIsImV4cGlyZWRfYXQiOiIyMDI1LTAzLTAxVDEwOjA0OjEwLjU3NDEzMyswNzowMCJ9A_WN4r2K-XYSq33kvE2tnJ7KWuBm4NzLOXqmJbfW8sqcfA27IvP0OIOlkRzmUqLCGr3d1s6t-BCnsxePbL-gCg.bnVsbA",
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

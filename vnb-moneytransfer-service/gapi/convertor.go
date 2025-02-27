@@ -1,15 +1,28 @@
 package gapi
 
 import (
+	"github.com/tunvx/simplebank/common/util"
 	db "github.com/tunvx/simplebank/cusmansrv/db/sqlc"
 	accpb "github.com/tunvx/simplebank/grpc/pb/cusman/account"
 	tranpb "github.com/tunvx/simplebank/grpc/pb/moneytransfer"
+	"github.com/tunvx/simplebank/moneytransfersrv/cache"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+func convertAccountInfo(account db.GetAccountForCheckRow, shardID int) *cache.AccountInfo {
+	return &cache.AccountInfo{
+		AccountID:     account.AccountID,
+		ShardId:       shardID,
+		CustomerID:    account.CustomerID,
+		OwnerName:     account.OwnerName,
+		CurrencyType:  account.CurrencyType,
+		AccountStatus: account.AccountStatus,
+	}
+}
+
 func convertAccount(account db.Account) *accpb.Account {
 	return &accpb.Account{
-		AccountId:  account.AccountID,
+		AccountId:      account.AccountID,
 		CurrentBalance: account.CurrentBalance,
 		CurrencyType:   string(account.CurrencyType),
 		CreatedAt:      timestamppb.New(account.CreatedAt),
@@ -18,9 +31,10 @@ func convertAccount(account db.Account) *accpb.Account {
 	}
 }
 
-func convertMoneyTransferTx(transaction db.AccountTransaction) *tranpb.MoneyTransferTx {
-	return &tranpb.MoneyTransferTx{
-		TransactionId:     transaction.TransactionID,
+func convertAccountTransaction(transaction db.AccountTransaction) *tranpb.AccountTransaction {
+	transactionIdStr, _ := util.ConvertUUIDToString(transaction.TransactionID)
+	return &tranpb.AccountTransaction{
+		TransactionId:     transactionIdStr,
 		Amount:            transaction.Amount,
 		NewBalance:        transaction.NewBalance,
 		AccountId:         transaction.AccountID,

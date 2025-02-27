@@ -41,7 +41,7 @@ func main() {
 	// Load configuration from the environment or config file
 	config, err := util.LoadConfig(".")
 	if err != nil {
-		log.Fatal().Err(err).Msg("cannot load config")
+		log.Fatal().Err(err).Msg("Shardman Service: Cannot load config")
 	}
 
 	// Set up lumberjack for log rotation
@@ -72,7 +72,7 @@ func main() {
 	// Create a new database connection pool
 	connPool, err := pgxpool.New(context.Background(), config.DBSourceOriginalDB)
 	if err != nil {
-		log.Fatal().Err(err).Msg("cannot connect to db")
+		log.Fatal().Err(err).Msg("Shardman Service: Cannot connect to db")
 	}
 	defer connPool.Close()
 
@@ -89,7 +89,7 @@ func main() {
 
 	err = waitGroup.Wait()
 	if err != nil {
-		log.Fatal().Err(err).Msg("error from wait group")
+		log.Fatal().Err(err).Msg("Shardman Service: Error from wait group")
 	}
 
 	// log.Info().Msg("add trigger to run github action")
@@ -100,7 +100,7 @@ func runDBMigration(sourceSchemaURL string, dbSource string) {
 	// Create a new migration instance
 	migration, err := migrate.New(sourceSchemaURL, dbSource)
 	if err != nil {
-		log.Fatal().Err(err).Msg("cannot create new migrate instance")
+		log.Fatal().Err(err).Msg("Shardman Service: Cannot create new migrate instance")
 	}
 
 	defer migration.Close()
@@ -108,11 +108,11 @@ func runDBMigration(sourceSchemaURL string, dbSource string) {
 	// Apply the migrations
 	err = migration.Up()
 	if err == migrate.ErrNoChange {
-		log.Info().Msg("no migration changes detected")
+		log.Info().Msg("Shardman Service: No migration changes detected")
 	} else if err != nil {
-		log.Fatal().Err(err).Msg("failed to run migrate up")
+		log.Fatal().Err(err).Msg("Shardman Service: Failed to run migrate up")
 	} else {
-		log.Info().Msg("db migrated successfully")
+		log.Info().Msg("Shardman Service: DB migrated successfully")
 	}
 }
 
@@ -127,11 +127,11 @@ func runGrpcServer(
 	// Create a new shard management service
 	shardmanService, err := gapi.NewService(config, store)
 	if err != nil {
-		log.Fatal().Err(err).Msg("cannot create shard management service")
+		log.Fatal().Err(err).Msg("Shardman Service: gRPC service cannot create")
 	}
 
 	// Attach gRPC logger, icall middleware for requests
-	grpcLogger := grpc.UnaryInterceptor(logger.GrpcLogger)
+	grpcLogger := grpc.UnaryInterceptor(logger.GrpcLoggerMiddleware)
 	grpcServer := grpc.NewServer(grpcLogger)
 
 	// Register the ShardManService to the gRPC server
@@ -143,18 +143,18 @@ func runGrpcServer(
 	// Create a TCP listener for the gRPC server on the configured address
 	listener, err := net.Listen("tcp", config.GRPCShardManServiceAddress)
 	if err != nil {
-		log.Fatal().Err(err).Msg("cannot create listener")
+		log.Fatal().Err(err).Msg("Shardman Service: gRPC service cannot create listener")
 	}
 
 	waitGroup.Go(func() error {
-		log.Info().Msgf("start GRPC Shard Management:Service as server at :: %s", listener.Addr().String())
+		log.Info().Msgf("Shardman Service: gRPC service served at :: %s", listener.Addr().String())
 
 		err = grpcServer.Serve(listener)
 		if err != nil {
 			if errors.Is(err, grpc.ErrServerStopped) {
 				return nil
 			}
-			log.Error().Err(err).Msg("gRPC server failed to serve")
+			log.Error().Err(err).Msg("Shardman Service: gRPC service failed to serve")
 			return err
 		}
 
@@ -163,10 +163,10 @@ func runGrpcServer(
 
 	waitGroup.Go(func() error {
 		<-ctx.Done()
-		log.Info().Msg("graceful shutdown gRPC server")
+		log.Info().Msg("Shardman Service: gRPC service shutdown gracefully")
 
 		grpcServer.GracefulStop()
-		log.Info().Msg("gRPC server is stopped")
+		log.Info().Msg("Shardman Service: gRPC service is stopped")
 
 		return nil
 	})
@@ -183,7 +183,7 @@ func runGatewayServer(
 	// Create a new gRPC Gateway server
 	shardmanService, err := gapi.NewService(config, store)
 	if err != nil {
-		log.Fatal().Err(err).Msg("cannot create server")
+		log.Fatal().Err(err).Msg("Shardman Service: HTTPGateway service cannot create")
 	}
 
 	// Set custom JSON marshaling options for the gRPC Gateway
@@ -201,7 +201,7 @@ func runGatewayServer(
 
 	err = pb.RegisterShardManagementServiceHandlerServer(ctx, grpcMux, shardmanService)
 	if err != nil {
-		log.Fatal().Err(err).Msg("cannot register handler server")
+		log.Fatal().Err(err).Msg("Shardman Service: HTTPGateway service cannot register handler")
 	}
 
 	// Create a new HTTP multiplexer for handling additional routes
@@ -210,26 +210,26 @@ func runGatewayServer(
 
 	statikFS, err := fs.New()
 	if err != nil {
-		log.Fatal().Err(err).Msg("cannot create statik fs")
+		log.Fatal().Err(err).Msg("Shardman Service: HTTPGateway service cannot create statik fs")
 	}
 
 	swaggerHandler := http.StripPrefix("/docs/", http.FileServer(statikFS))
 	mux.Handle("/docs/", swaggerHandler)
 
-	loggingHandler := logger.HttpLogger(mux)
+	loggingHandler := logger.HttpLoggerMiddleware(mux)
 	httpServer := &http.Server{
 		Handler: loggingHandler,
 		Addr:    config.HTTPShardManServiceAddress,
 	}
 
 	waitGroup.Go(func() error {
-		log.Info().Msgf("start HTTPGateway Shard Management: Service as server at :: %s", httpServer.Addr)
+		log.Info().Msgf("Shardman Service: HTTPGateway service served at :: %s", httpServer.Addr)
 		err = httpServer.ListenAndServe()
 		if err != nil {
 			if errors.Is(err, http.ErrServerClosed) {
 				return nil
 			}
-			log.Error().Err(err).Msg("HTTP gateway server failed to serve")
+			log.Error().Err(err).Msg("Shardman Service: HTTPGateway service failed to serve")
 			return err
 		}
 		return nil
@@ -237,15 +237,15 @@ func runGatewayServer(
 
 	waitGroup.Go(func() error {
 		<-ctx.Done()
-		log.Info().Msg("graceful shutdown HTTP gateway server")
+		log.Info().Msg("Shardman Service: HTTPGateway service shutdown gracefully")
 
 		err := httpServer.Shutdown(context.Background())
 		if err != nil {
-			log.Error().Err(err).Msg("failed to shutdown HTTP gateway server")
+			log.Error().Err(err).Msg("Shardman Service: HTTPGateway service failed to shutdown")
 			return err
 		}
 
-		log.Info().Msg("HTTP gateway server is stopped")
+		log.Info().Msg("Shardman Service: HTTPGateway service is stopped")
 		return nil
 	})
 }

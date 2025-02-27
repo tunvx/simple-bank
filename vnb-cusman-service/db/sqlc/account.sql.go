@@ -36,37 +36,6 @@ func (q *Queries) AddAccountBalance(ctx context.Context, arg AddAccountBalancePa
 	return i, err
 }
 
-const checkAccountByID = `-- name: CheckAccountByID :one
-SELECT 
-  a.account_id, 
-  c.full_name AS customer_name, 
-  a.currency_type, 
-  a.account_status
-FROM accounts a
-JOIN customers c ON a.customer_id = c.customer_id
-WHERE a.account_id = $1
-LIMIT 1
-`
-
-type CheckAccountByIDRow struct {
-	AccountID     int64         `json:"account_id"`
-	CustomerName  string        `json:"customer_name"`
-	CurrencyType  Currencytype  `json:"currency_type"`
-	AccountStatus Accountstatus `json:"account_status"`
-}
-
-func (q *Queries) CheckAccountByID(ctx context.Context, accountID int64) (CheckAccountByIDRow, error) {
-	row := q.db.QueryRow(ctx, checkAccountByID, accountID)
-	var i CheckAccountByIDRow
-	err := row.Scan(
-		&i.AccountID,
-		&i.CustomerName,
-		&i.CurrencyType,
-		&i.AccountStatus,
-	)
-	return i, err
-}
-
 const createAccount = `-- name: CreateAccount :one
 INSERT INTO accounts (
     account_id,
@@ -124,6 +93,40 @@ func (q *Queries) GetAccountByID(ctx context.Context, accountID int64) (Account,
 		&i.CurrencyType,
 		&i.CreatedAt,
 		&i.Description,
+		&i.AccountStatus,
+	)
+	return i, err
+}
+
+const getAccountForCheck = `-- name: GetAccountForCheck :one
+SELECT 
+  a.account_id, 
+  a.customer_id,
+  c.full_name AS owner_name, 
+  a.currency_type, 
+  a.account_status
+FROM accounts a
+JOIN customers c ON a.customer_id = c.customer_id
+WHERE a.account_id = $1
+LIMIT 1
+`
+
+type GetAccountForCheckRow struct {
+	AccountID     int64         `json:"account_id"`
+	CustomerID    int64         `json:"customer_id"`
+	OwnerName     string        `json:"owner_name"`
+	CurrencyType  Currencytype  `json:"currency_type"`
+	AccountStatus Accountstatus `json:"account_status"`
+}
+
+func (q *Queries) GetAccountForCheck(ctx context.Context, accountID int64) (GetAccountForCheckRow, error) {
+	row := q.db.QueryRow(ctx, getAccountForCheck, accountID)
+	var i GetAccountForCheckRow
+	err := row.Scan(
+		&i.AccountID,
+		&i.CustomerID,
+		&i.OwnerName,
+		&i.CurrencyType,
 		&i.AccountStatus,
 	)
 	return i, err

@@ -2,7 +2,6 @@ package gapi
 
 import (
 	"context"
-	"fmt"
 
 	errdb "github.com/tunvx/simplebank/common/errs/db"
 
@@ -23,13 +22,10 @@ func (service *Service) LookupAccountShard(ctx context.Context, req *pb.LookupAc
 		return nil, status.Errorf(codes.Internal, "failed to retrieve account shard map of account id ( %s ) in database: %s", req.GetAccountId(), err)
 	}
 
-	fmt.Println("Shard ID: ", shardID)
-
 	// 3. Prepare and return the response
 	rsp := &pb.LookupAccountShardResponse{
 		AccountId: req.GetAccountId(),
 		ShardId:   shardID,
 	}
-	fmt.Println("Returned Response: ", rsp)
 	return rsp, nil
 }
