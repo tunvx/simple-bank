@@ -1,16 +1,16 @@
-name: CI - Build and Push Notification Service Image
+name: CI - Build and Push MoneyTransfer Service Image
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'services/notification-service/**'
-      - 'app.env'
-      - 'docker/dockerfiles/Dockerfile.0004.notification'
+      - 'vnb-moneytransfer-service/**'
+      - 'config.env'
+      - 'vnb-moneytransfer-service/Dockerfile'
 
 env:
-  DOCKER_REPOSITORY: tunvx/simple-bank-notification-service
+  DOCKER_REPOSITORY: tunvx/vnb-moneytransfer-service
   # BASE_TAG: ${{ github.sha }}
   BASE_TAG: 0.0.1
 
@@ -38,17 +38,11 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       # Step 5: Build and Push 
-      - name: Build and push Notification Service
+      - name: Build and push MoneyTransfer Service
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: ${{ env.DOCKER_REPOSITORY }}:v${{ env.BASE_TAG }}
           platforms: linux/amd64,linux/arm64
-          file: docker/dockerfiles/Dockerfile.0004.notification
-
-      # Step 5: Build and Push
-      # - name: Build and push Notification Service
-      #   run: |
-      #     docker buildx create --use
-      #     docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKER_REPOSITORY:v${{ env.BASE_TAG }} -f docker/dockerfiles/Dockerfile.0004.notification . --push
+          file: vnb-moneytransfer-service/Dockerfile

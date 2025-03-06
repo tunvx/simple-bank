@@ -5,12 +5,12 @@ on:
     branches:
       - main
     paths:
-      - 'services/auth-service/**'
-      - 'app.env'
-      - 'docker/dockerfiles/Dockerfile.0002.auth'
+      - 'vnb-auth-service/**'
+      - 'config.env'
+      - 'vnb-auth-service/Dockerfile'
 
 env:
-  DOCKER_REPOSITORY: tunvx/simple-bank-auth-service
+  DOCKER_REPOSITORY: tunvx/vnb-auth-service
   # BASE_TAG: ${{ github.sha }}
   BASE_TAG: 0.0.1
 
@@ -45,10 +45,4 @@ jobs:
           push: true
           tags: ${{ env.DOCKER_REPOSITORY }}:v${{ env.BASE_TAG }}
           platforms: linux/amd64,linux/arm64
-          file: docker/dockerfiles/Dockerfile.0002.auth
-
-      # Step 5: Build and Push
-      # - name: Build and push Auth Service
-      #   run: |
-      #     docker buildx create --use
-      #     docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKER_REPOSITORY:v${{ env.BASE_TAG }} -f docker/dockerfiles/Dockerfile.0002.auth . --push
+          file: vnb-auth-service/Dockerfile

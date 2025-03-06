@@ -185,7 +185,7 @@ services:
 
   shardman-service:
     container_name: shardman-service
-    image: shardman-service
+    image: tunvx/vnb-shardman-service:v0.0.1
     restart: unless-stopped
     ports:
       - "8080:80"
@@ -198,7 +198,7 @@ services:
 
   auth-service:
     container_name: auth-service
-    image: auth-service
+    image: tunvx/vnb-auth-service:v0.0.1
     restart: unless-stopped
     ports:
       - "8081:80"
@@ -211,7 +211,7 @@ services:
 
   cusman-service:
     container_name: cusman-service
-    image: cusman-service
+    image: tunvx/vnb-cusman-service:v0.0.1
     restart: unless-stopped
     ports:
       - "8082:80"
@@ -226,7 +226,7 @@ services:
 
   moneytransfer-service:
     container_name: moneytransfer-service
-    image: moneytransfer-service
+    image: tunvx/vnb-moneytransfer-service:v0.0.1
     restart: unless-stopped
     ports:
       - "8083:80"
