@@ -10,12 +10,12 @@ import (
 )
 
 const (
-	// authURL            = "127.0.0.1:8081"
-	// cusmanURL          = "127.0.0.1:8082"
-	authURL               = "http://auth.banking.local"
-	cusmanURL             = "http://cusman.banking.local"
+	// authURL            = "http://auth.banking.local"
+	// cusmanURL          = "http://cusman.banking.local"
+	authURL               = "http://127.0.0.1:8081"
+	cusmanURL             = "http://127.0.0.1:8082"
 	numUsers              = 20000 // Total number of users to create
-	maxConcurrentRequests = 25    // Maximum concurrent requests
+	maxConcurrentRequests = 20    // Maximum concurrent requests
 )
 
 type Customer struct {

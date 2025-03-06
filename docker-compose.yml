@@ -170,16 +170,29 @@ services:
     volumes:
       - kafka-volume:/bitnami/kafka
 
-  reverse-proxy:
-    container_name: reverse-proxy
-    image: nginx:1.27.2
+  # reverse-proxy:
+  #   container_name: reverse-proxy
+  #   image: nginx:1.27.2
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./nginx/templates:/etc/nginx/templates
+  #     - ./nginx/configuration/custom_proxy_settings.conf:/etc/nginx/conf.d/custom_proxy_settings.conf
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   networks:
+  #     - bank-network
+
+  shardman-service:
+    container_name: shardman-service
+    image: shardman-service
     restart: unless-stopped
-    volumes:
-      - ./nginx/templates:/etc/nginx/templates
-      - ./nginx/configuration/custom_proxy_settings.conf:/etc/nginx/conf.d/custom_proxy_settings.conf
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"
+      - "10443:443"
+    depends_on:
+      original-database:
+        condition: service_healthy
     networks:
       - bank-network
 
@@ -187,8 +200,9 @@ services:
     container_name: auth-service
     image: auth-service
     restart: unless-stopped
-    expose:
-      - 443
+    ports:
+      - "8081:80"
+      - "10444:443"
     depends_on:
       auth-database:
         condition: service_healthy
@@ -199,8 +213,9 @@ services:
     container_name: cusman-service
     image: cusman-service
     restart: unless-stopped
-    expose:
-      - 443
+    ports:
+      - "8082:80"
+      - "10445:443"
     depends_on:
       core-database-01:
         condition: service_healthy
@@ -213,24 +228,13 @@ services:
     container_name: moneytransfer-service
     image: moneytransfer-service
     restart: unless-stopped
-    expose:
-      - 443
+    ports:
+      - "8083:80"
+      - "10446:443"
     depends_on:
       core-database-01:
         condition: service_healthy
       core-database-02:
-        condition: service_healthy
-    networks:
-      - bank-network
-
-  shardman-service:
-    container_name: shardman-service
-    image: shardman-service
-    restart: unless-stopped
-    expose:
-      - 443
-    depends_on:
-      original-database:
         condition: service_healthy
     networks:
       - bank-network
