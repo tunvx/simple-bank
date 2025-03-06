@@ -64,6 +64,7 @@ clear-infra:
 	docker volume rm core-database-01-volume
 	docker volume rm core-database-02-volume
 	docker volume rm redis-volume
+	docker volume rm kafka-volume
 
 .PHONY: config network volume start-infra stop-infra clear-infra \ 
 		build rm-build build-auth build-management build-transfermoney build-notification
