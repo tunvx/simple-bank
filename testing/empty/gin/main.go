@@ -11,14 +11,14 @@ func main() {
 	// Create a new Gin router
 	router := gin.Default()
 
-	// Define the route for GET /v1/get_empty_connection
-	router.GET("/v1/get_empty_connection", func(c *gin.Context) {
+	// Define the route for GET /v1/test/empty_get
+	router.GET("/v1/test/empty_get", func(c *gin.Context) {
 		// Respond with an empty JSON response (just to simulate a fast response)
 		c.JSON(http.StatusOK, gin.H{
-			"message": "Connection is empty",
+			"message": "Ok",
 		})
 	})
 
-	// Run the server on port 8888
-	router.Run(":8888")
+	// Run the server on port 8083
+	router.Run(":8083")
 }
