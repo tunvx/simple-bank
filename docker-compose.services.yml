@@ -1,0 +1,64 @@
+networks:
+  bank-network:
+    external: true  # If the network does not exist, it must be created manually first
+
+volumes:  
+  manage-service-logs:
+  auth-service-logs:
+  transaction-service-logs:
+  notification-service-logs:
+
+  
+services:
+  # reverse-proxy:
+  #   container_name: reverse-proxy
+  #   image: nginx:1.27.2
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./nginx/templates:/etc/nginx/templates
+  #     - ./nginx/configuration/custom_proxy_settings.conf:/etc/nginx/conf.d/custom_proxy_settings.conf
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   networks:
+  #     - bank-network
+
+  shardman-service:
+    container_name: shardman-service
+    image: tunvx/vnb-shardman-service:v0.0.1
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+      - "10443:443"
+    networks:
+      - bank-network
+
+  auth-service:
+    container_name: auth-service
+    image: tunvx/vnb-auth-service:v0.0.1
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+      - "10444:443"
+    networks:
+      - bank-network
+
+  cusman-service:
+    container_name: cusman-service
+    image: tunvx/vnb-cusman-service:v0.0.1
+    restart: unless-stopped
+    ports:
+      - "8082:80"
+      - "10445:443"
+    networks:
+      - bank-network
+
+  moneytransfer-service:
+    container_name: moneytransfer-service
+    image: tunvx/vnb-moneytransfer-service:v0.0.1
+    restart: unless-stopped
+    ports:
+      - "8083:80"
+      - "10446:443"
+    networks:
+      - bank-network
