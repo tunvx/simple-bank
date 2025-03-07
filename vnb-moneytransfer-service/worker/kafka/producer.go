@@ -3,9 +3,9 @@ package worker
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/IBM/sarama"
+	"github.com/rs/zerolog/log"
 )
 
 type TaskProducer interface {
@@ -22,7 +22,7 @@ type KafkaTaskProducer struct {
 
 // NewKafkaTaskProducer initializes a new Kafka task distributor
 func NewKafkaTaskProducer(brokers []string, topics []string, kafkaConfig *sarama.Config) (TaskProducer, error) {
-	logger := log.Default()
+	logger := NewLogger()
 	sarama.Logger = logger
 
 	// Create Kafka Admin client
@@ -30,24 +30,23 @@ func NewKafkaTaskProducer(brokers []string, topics []string, kafkaConfig *sarama
 	if err != nil {
 		return nil, fmt.Errorf("failed to create Kafka admin client: %w", err)
 	}
-	defer admin.Close() // Đóng admin khi kết thúc hàm
+	defer admin.Close() 
 	
 	// Create topics if they don't exist
 	for _, topic := range topics {
 		topicDetail := &sarama.TopicDetail{
-			NumPartitions:     1,
+			NumPartitions:     8,
 			ReplicationFactor: 1,
 			ConfigEntries:     make(map[string]*string),
 		}
 
 		err := admin.CreateTopic(topic, topicDetail, false)
 		if err != nil {
-			// Kiểm tra chính xác lỗi topic đã tồn tại
 			if topicErr, ok := err.(*sarama.TopicError); ok && topicErr.Err == sarama.ErrTopicAlreadyExists {
-				logger.Printf("Topic ( %s ) already exists", topic)
+				log.Printf("kafka producer: topic ( %s ) already exists", topic)
 				continue
 			}
-			return nil, fmt.Errorf("failed to create topic ( %s ): %w", topic, err)
+			return nil, fmt.Errorf("kafka producer: failed to create topic ( %s ): %w", topic, err)
 		}
 	}
 

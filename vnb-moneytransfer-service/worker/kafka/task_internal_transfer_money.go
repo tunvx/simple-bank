@@ -7,7 +7,6 @@ import (
 
 	"github.com/IBM/sarama"
 	"github.com/google/uuid"
-	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -41,19 +40,18 @@ func (kafkaProducer *KafkaTaskProducer) SendTaskInternalTransferMoney(
 
 	message := &sarama.ProducerMessage{
 		Topic: TopicInternalTransferMoney,
+		Key: sarama.StringEncoder(payload.SrcAccNumber),
 		Value: sarama.ByteEncoder(jsonPayload),
 	}
 
 	// Send message to Kafka
 	kafkaProducer.kafkaProducer.Input() <- message
-	log.Debug().Msgf("Kafka Producer: Sent InternalTransferMoney event with Payload: %+v", payload)
-
 
 	select {
 	case err := <-kafkaProducer.kafkaProducer.Errors():
-		return fmt.Errorf("[Kafka] Failed to send internal transfer money message: %w", err)
+		return fmt.Errorf("[Kafka] Failed to send IMT message: %w", err)
 	case msg := <-kafkaProducer.kafkaProducer.Successes():
-		kafkaProducer.logger.Debug("[Kafka] Successfully sent MTT with SendingTranID ( %s ) to topic %s (Partition: %d, Offset: %d)", payload.SendingTranID, msg.Topic, msg.Partition, msg.Offset)
+		kafkaProducer.logger.Debug("Kafka Producer: Successfully sent IMT message with Payload:  ( %+v ) to topic %s (Partition: %d, Offset: %d)", payload, msg.Topic, msg.Partition, msg.Offset)
 		return nil
 	}
 }

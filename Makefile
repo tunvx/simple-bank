@@ -1,38 +1,8 @@
-build-auth:
-	docker build -t auth-service -f vnb-auth-service/Dockerfile .
+IMAGE_PREFIX=tunvx/
+VERSION=v0.0.1
 
-rm-build-auth:
-	docker image rm auth-service
-
-build-cusman:
-	docker build -t cusman-service -f vnb-cusman-service/Dockerfile .
-
-rm-build-cusman:
-	docker image rm cusman-service
-
-build-moneytransfer:
-	docker build -t moneytransfer-service -f vnb-moneytransfer-service/Dockerfile .
-
-rm-build-moneytransfer:
-	docker image rm moneytransfer-service
-
-build-shardman:
-	docker build -t shardman-service -f vnb-shardman-service/Dockerfile .
-
-rm-build-shardman:
-	docker image rm shardman-service
-
-build:
-	docker build -t auth-service -f vnb-auth-service/Dockerfile .
-	docker build -t cusman-service -f vnb-cusman-service/Dockerfile .
-	docker build -t moneytransfer-service -f vnb-moneytransfer-service/Dockerfile .
-	docker build -t shardman-service -f vnb-shardman-service/Dockerfile .
-
-rm-build:
-	docker image rm auth-service
-	docker image rm cusman-service
-	docker image rm moneytransfer-service
-	docker image rm shardman-service
+.PHONY: config network volume start-infra stop-infra clear-infra start-services stop-services\ 
+		build rm-build build-auth build-management build-transfermoney build-notification
 
 config:
 	cp config.dev.env vnb-auth-service/config.env
@@ -52,10 +22,10 @@ volume:
 	docker volume create kafka-volume
 
 start-infra:
-	docker compose --env-file .env -f docker-compose.yml up -d 
+	docker compose --env-file .env -f docker-compose.infra.yml up -d 
 
 stop-infra:
-	docker compose --env-file .env -f docker-compose.yml down
+	docker compose --env-file .env -f docker-compose.infra.yml down
 
 clear-infra:
 	docker network rm bank-network
@@ -66,8 +36,43 @@ clear-infra:
 	docker volume rm redis-volume
 	docker volume rm kafka-volume
 
-.PHONY: config network volume start-infra stop-infra clear-infra \ 
-		build rm-build build-auth build-management build-transfermoney build-notification
+start-services:
+	docker compose --env-file .env -f docker-compose.services.yml up -d 
+
+stop-services:
+	docker compose --env-file .env -f docker-compose.services.yml down
+
+# Build image for each service
+build-auth:
+	docker build -t $(IMAGE_PREFIX)vnb-auth-service:$(VERSION) -f vnb-auth-service/Dockerfile .
+
+build-cusman:
+	docker build -t $(IMAGE_PREFIX)vnb-cusman-service:$(VERSION) -f vnb-cusman-service/Dockerfile .
+
+build-moneytransfer:
+	docker build -t $(IMAGE_PREFIX)vnb-moneytransfer-service:$(VERSION) -f vnb-moneytransfer-service/Dockerfile .
+
+build-shardman:
+	docker build -t $(IMAGE_PREFIX)vnb-shardman-service:$(VERSION) -f vnb-shardman-service/Dockerfile .
+
+# Remove image of each service
+rm-build-auth:
+	docker image rm $(IMAGE_PREFIX)vnb-auth-service:$(VERSION)
+
+rm-build-cusman:
+	docker image rm $(IMAGE_PREFIX)vnb-cusman-service:$(VERSION)
+
+rm-build-moneytransfer:
+	docker image rm $(IMAGE_PREFIX)vnb-moneytransfer-service:$(VERSION)
+
+rm-build-shardman:
+	docker image rm $(IMAGE_PREFIX)vnb-shardman-service:$(VERSION)
+
+# Build image for all services
+build: build-auth build-cusman build-moneytransfer build-shardman
+
+# Remove image of all services
+rm-build: rm-build-auth rm-build-cusman rm-build-moneytransfer rm-build-shardman
 
 ### See network config of any machine
 # docker exec -it auth-service ss -tulnp

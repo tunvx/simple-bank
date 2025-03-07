@@ -108,6 +108,7 @@ func main() {
 	kafkaConfig.Producer.Retry.Max = 0                    // Retry sending if error
 	kafkaConfig.Producer.Return.Successes = true          // Catch success event
 	kafkaConfig.Producer.Return.Errors = true             // Catch sending errors
+	kafkaConfig.Producer.Partitioner = sarama.NewRandomPartitioner
 
 	taskProducer, err := worker.NewKafkaTaskProducer(brokers, topics, kafkaConfig)
 	if err != nil {

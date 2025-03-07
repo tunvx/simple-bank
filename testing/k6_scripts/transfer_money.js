@@ -15,7 +15,7 @@ let apiHost = "http://localhost:8083";               // Docker
 // let apiHost = "http://moneytransfer.banking.local";     // Minikube
 let failedRequestCounter = new Counter('failed_requests');
 
-const BEARER_TOKEN = "v2.public.eyJpZCI6IjAxOTU2NzBhLTFhNDgtN2U2YS04YjA4LWE0NGQ0ZTY1ZmYyMiIsInVzZXJfaWQiOjEsInNoYXJkX2lkIjoxLCJyb2xlIjoiYmFua2VyIiwiaXNzdWVkX2F0IjoiMjAyNS0wMy0wNVQxNjowMToxMC4yMTY5NDUwODFaIiwiZXhwaXJlZF9hdCI6IjIwMjUtMDMtMDZUMTY6MDE6MTAuMjE2OTQ1MTIzWiJ9fX2mVaRSL7aSjGbAxGNfRUCqC9X2K2wC56kvSvsxDQjC1_XzdMNtnSJEfjVS27rGj1E9__1s6sTTsZ6eyQPbCQ.bnVsbA";
+const BEARER_TOKEN = "v2.public.eyJpZCI6IjAxOTU2ZTNjLWM2YWYtNzcyZS04OGM2LTljYzU2NTNhZTdhYiIsInVzZXJfaWQiOjEsInNoYXJkX2lkIjoxLCJyb2xlIjoiYmFua2VyIiwiaXNzdWVkX2F0IjoiMjAyNS0wMy0wN1QwMTozMzo1MS42NjM0NzExNjhaIiwiZXhwaXJlZF9hdCI6IjIwMjUtMDMtMDhUMDE6MzM6NTEuNjYzNDcxMzE0WiJ9WKiwWY8989s1wCV56kfc4GENv2bBICyda-wabI-A9kqFO8MWmtsK_g1Z2ryiWT7ZvEUzx4YZ74iADZMxHUTEBA.bnVsbA";
 
 export default function () {
     // Generate two distinct random IDs between 1 and totalAccounts
