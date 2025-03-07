@@ -51,7 +51,7 @@ func main() {
 		log.Fatal().Err(err).Msg("cannot load config")
 	}
 
-	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	zerolog.SetGlobalLevel(zerolog.ErrorLevel)
 
 	// Set up lumberjack for log rotation
 	logFile := &lumberjack.Logger{
