@@ -24,7 +24,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   };
 };
 
-service AuthService {
+service Auth {
     rpc CreateCustomerCredential (CreateCustomerCredentialRequest) returns (CreateCustomerCredentialResponse) {
         option (google.api.http) = {
             post: "/v1/customers/credentials"

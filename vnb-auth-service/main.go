@@ -135,7 +135,7 @@ func runGrpcServer(
 	grpcServer := grpc.NewServer(grpcLogger)
 
 	// Register the AuthService to the gRPC server
-	pb.RegisterAuthServiceServer(grpcServer, authService)
+	pb.RegisterAuthServer(grpcServer, authService)
 
 	// Enable reflection for gRPC, useful for debugging or using CLI tools like grpcurl
 	reflection.Register(grpcServer)
@@ -199,7 +199,7 @@ func runGatewayServer(
 	// Create a new gRPC Gateway multiplexer to route HTTP requests
 	grpcMux := runtime.NewServeMux(jsonOption)
 
-	err = pb.RegisterAuthServiceHandlerServer(ctx, grpcMux, authService)
+	err = pb.RegisterAuthHandlerServer(ctx, grpcMux, authService)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Auth Service: Cannot register handler of service")
 	}

@@ -263,7 +263,7 @@ func runGrpcServer(
 	grpcServer := grpc.NewServer(grpcLogger)
 
 	// Register the manageService to the gRPC server
-	pb.RegisterCustomerManagementServiceServer(grpcServer, manageService)
+	pb.RegisterCustomerManagementServer(grpcServer, manageService)
 
 	// Enable reflection for gRPC, useful for debugging or using CLI tools like grpcurl
 	reflection.Register(grpcServer)
@@ -327,7 +327,7 @@ func runGatewayServer(
 	// Create a new gRPC Gateway multiplexer to route HTTP requests
 	grpcMux := runtime.NewServeMux(jsonOption)
 
-	err = pb.RegisterCustomerManagementServiceHandlerServer(ctx, grpcMux, manageService)
+	err = pb.RegisterCustomerManagementHandlerServer(ctx, grpcMux, manageService)
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot register handler server")
 	}

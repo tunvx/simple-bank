@@ -14,11 +14,11 @@ import (
 )
 
 type Service struct {
-	pb.UnimplementedAuthServiceServer
+	pb.UnimplementedAuthServer
 	config         util.Config
 	store          db.Store
 	tokenMaker     token.Maker
-	shardmanClient shardmanpb.ShardManagementServiceClient
+	shardmanClient shardmanpb.ShardManagementClient
 }
 
 // NewService creates new a Grpc service.
@@ -46,7 +46,7 @@ func NewService(config util.Config, store db.Store) (*Service, error) {
 		config:         config,
 		store:          store,
 		tokenMaker:     tokenMaker,
-		shardmanClient: shardmanpb.NewShardManagementServiceClient(conn),
+		shardmanClient: shardmanpb.NewShardManagementClient(conn),
 	}
 
 	return server, nil

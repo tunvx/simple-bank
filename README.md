@@ -4,22 +4,39 @@ This project implements the server-side of a simple banking system using a micro
 
 Note: Loan and saving features are planned for future development.
 
-### Banking System Architecture
+## Banking Service Description
+The banking system is divided into multiple services to ensure scalability, security, and high performance. The main services include:
 
 ![Architecture Diagram](./SimpleBank.png)
 
-### Description of banking service
-1. **Management Service**
-  + **Customer Registration:** Allows new customers to register, with a background process to send email verification.
-  + **Account Creation:** Allows customers to create their accounts.
-2. **Authentication Service**
-+ **Customer Credential Creation:** Allows customers to create login credentials.
-+ **Login and Session Management:** Provides secure login functionality and session management.
-3. **Transfer Money Service**
-+ **Money Transfer Transactions:** Support secure, consistent and efficient money transfers between accounts or banks.
-4. **Notification Service**
+### 1. Shard Management Service
+Responsible for allocating and managing customer data across different shards to optimize performance and scalability.
+
+- **Customer Registration:** When a new customer registers, the system creates and stores **(customer_id, shard_id)** to determine the appropriate data shard for storage.
+- **Account Creation:** When a customer creates a new account, the system generates and stores **(account_id, shard_id)** to assign the account to the correct shard.
+
+### 2. Customer Management Service
+Handles customer information and account management.
+
+- **Customer Registration:** Creates a new customer profile in the system, with a background process to send an email verification request.
+- **Account Creation:** Allows registered customers to open new bank accounts.
+
+### 3. Authentication Service
+Manages customer login credentials and session handling.
+
+- **Customer Credential Creation:** Allows customers to create login credentials, including usernames and passwords.
+- **Login and Session Management:** Provides secure login functionality and maintains active sessions for a seamless experience.
+
+### 4. Money Transfer Service
+Handles internal and interbank money transfer transactions.
+- **Account Checking:** Check and get account info serve for transactions.
+- **Money Transfer:** Ensures secure, consistent, and efficient money transfers between accounts or banks.
+
+### 5. Background Worker
+Processes asynchronous tasks to improve system efficiency.
+
 - **Email Verification:** Sends verification emails to customers as part of the registration process.
-- **Transaction Notifications:** Sends email notifications to customers after each transaction.
+- **Transaction Notifications:** Automatically sends transaction confirmation emails to customers after each money transfer.
 
 ## Tech Stack (for Docker deployment)
 
@@ -27,56 +44,69 @@ Note: Loan and saving features are planned for future development.
 
 + **Languages:** Golang.
 
-+ **DB:** PosgreSQL.
++ **DB:** PosgreSQL (partitioning, sharding).
 
 + **APIs:** RESTful (client-to-service), gRPC ( service-to-service).
 
-+ **Build/Test/Deployment:** Docker (docker file, docker build), Docker Compose, Unittest, K6 (performance testing).
++ **Build/Test/Deployment:** Docker (docker file, docker build), Docker Compose, Unittest, K6 (performance testing), Kubernetes (k8s).
 
 + **Advanced Techs:** JWT/Paseto (authentication/security), Kafka (message queue), Redis (caching), Logging and monitoring.
 
-## Main Purpose:: Handling Large-Scale Money Transfers.
-### Solution 1: Single PostgreSQL Instance (ACID for money transfer transactions).
-- Limitations? Vertical scaling only (limited by hardware capacity), Single point of failure (SPOF).
-- When to Use? Solution 1 is viable for moderate traffic (<50k RPS).
+## Main objective:: Processing large scale money transfers.
+### Solution 1 (Naive): Single PostgreSQL Instance (ACID for money transfer transactions).
+- **Limitations?** Vertical scaling only (limited by hardware capacity).
+- **When to Use?** Solution 1 is viable for moderate traffic (<40k TPS).
 
 ### Solution 2 (Improvement): Horizontal Scaling with DB Sharding (ACID per shard) + Eventual Consistency.
-- When to Use? Solution 2 is essential for high-scale systems (200K+ RPS).
+- **Scalability? Unlimited scalability** by distributing data across multiple database shards.
+- **Performance Expectation?** Each shard is expected to handle a stable throughput of approximately 25k TPS.
 
-### Detailed Solution 2: I will simulate the process of money transfer transaction between two database instances (two shards) (A → B).
+- **How It Works?**
+  - Customer and their accounts data are partitioned into the same shard, ensuring that each shard only processes a subset of transactions.
+  - Each shard maintains **full ACID compliance**, ensuring data integrity within its scope.
+  - **Eventual consistency** is applied at a global level to maintain overall system coherence across multiple shards.
+- **When to Use?**
+- **Essential for high-scale systems** where transaction throughput exceeds 50k TPS.
+- Recommended for **continuous growth**, as new shards can be added dynamically to handle increasing demand.
 
-### 1. A (Source Account) Processes Deduction & Sets Status to PENDING
-1. **Deduct funds from the source account** (`UPDATE accounts SET balance = balance - amount WHERE id = source_id`).
-2. **Create a sending transaction record with status PENDING** (`INSERT INTO transactions ... with PENDING status`)
-3. Send a transfer request to **B** (Destination Account).
 
-### 2. B (Destination Account) Processes and Responds
-1. Validate the destination account.
-2. If valid:
-    - **Add funds to destination account** (`UPDATE accounts SET balance = balance + amount WHERE id = destination_id`).
-    - **Create a receiving transaction record with status SUCCESS** (`INSERT INTO transactions ... with SUCCESS status`)
-    - Send an **OK** response to **A**.
-3. If invalid:
-   - Send a **FAILED** response to **A**.
+## Detailed Solution 2: Cross-Shard Money Transfer Simulation (A → B)
+This approach simulates a money transfer transaction between two database instances (shards) while ensuring consistency and recoverability.
 
-### 3. A (Source Account) Updates Transaction Status
-- If **OK** response received, update transaction status from **PENDING** to **SUCCESS**.
-- If **FAILED** response received, refund the source account (**ROLLBACK**).
-- If no response received, continue periodic retry attempts (retry mechanism).
+### Step 1: Persist Transaction Data (Kafka)
+1. **Generate unique transaction IDs:**
+  - `sending_transaction_id` (for source account).
+  - `receiving_transaction_id` (for destination account).
+2. **Store transaction details in Kafka**, including:
+  - `sending_tran_id`, `receiving_tran_id`, `amount`, `currency_type`, `src_acc_number`, `src_acc_shard_id`, `bene_acc_number`, `bene_acc_shard_id`.
+  - This ensures the transaction is **persisted before execution**, preventing data loss.
+### Step 2: Deduct Funds from Source Account (Shard A)
+1. Deduct the amount from the source account and create sending_transaction_hist:
+```sql
+UPDATE accounts SET balance = balance - amount WHERE id = source_id;
+...
+```
+2. Send request to Shard B (Destination Account) for crediting funds.
+### Step 3: Deduct Funds from Source Account (Shard A)
+1. Credit funds to the destination account and create receiving_transaction_hist:
+```sql
+UPDATE accounts SET balance = balance + amount WHERE id = destination_id;
+...
+```
+2. Notify user about transaction status.
 
-### 4. Handling Errors or No Response from B
-If multiple retry attempts fail, the transaction remains **PENDING**
-  - Mark the transaction as **"manual review required"**.
-  - Notify support team to investigate.
+### Step 4: Background Worker for Final Verification
+- Periodically verifies transactions using sending_transaction_id & receiving_transaction_id with their shard_id.
+- If both transactions are SUCCESS, no action needed.
+- If one or both transactions failed, retry mechanism is triggered to rollback data.
 
-### Why Is This Design Reasonable?
+### Why Is This Approach Reliable?
 
-✅ **Avoids distributed transactions (2PC)** → Simpler, no resource locking across databases.
+✅ **Prevents data loss** → Kafka ensures transaction persistence before execution.
 
-✅ **Ensures eventual consistency** → Prevents fund loss even in network failures.
+✅ **Ensures strong consistency** → Background worker verifies final transaction states.
 
-✅ **Has a recovery mechanism** → Retry logic or manual intervention ensures resolution.
-
+✅ **Provides automatic recovery** → Rollback mechanisms ensure data integrity.
 
 ## Docker Deployment - Quick Start Guide
 ### Docker Deployment Steps
@@ -85,13 +115,7 @@ If multiple retry attempts fail, the transaction remains **PENDING**
   git clone https://github.com/tunvx/simple-bank
 ```
 
-2. Try to build docker images of services:
-```bash
-  cd simple-bank
-  make build
-```
-
-3. Add the following records to your host file:
+2. Add the following records to your host file:
 ```bash
   ### CONFIG INGRESS FOR MAC: Add to etc/hosts
   127.0.0.1 auth.banking.local
@@ -100,22 +124,23 @@ If multiple retry attempts fail, the transaction remains **PENDING**
   127.0.0.1 shardman.banking.local
 ```
 
-4. Start core banking services (database, Redis, Kafka, etc.):
+3. Start core banking services (database, Redis, Kafka, etc.):
 ```bash
   make clear-infra
   make network
   make volume
   make start-infra
+  make start-services
 ```
 
-5. Then, try to test service via your browser by URL:
+4. Then, try to test service via your browser by URL:
 ```bash
   http://auth.banking.local/v1/generate_test_access_token
 ```
 
-6. Start the monitoring services (Prometheus, Grafana, etc.):
+5. Start the monitoring services (Prometheus, Grafana, etc.):
 ```bash
-  make monitor
+  make start-monitor
 ```
 
 ### Docker Monitoring Steps
@@ -137,9 +162,9 @@ After deploy monitor, do the following steps:
 | 6   | gRPC      | Transfer Money    | 3              | 1,278,048             | **7,099**        | 14.0             | 2.07             | 588.27           | 22.95            |
 
 
-Refer to the testing folder for details (experiment and analyze results):
+Refer to the `docs` folder for details (experiment and analyze results):
 ```bash
-  https://github.com/tunvx/simple-bank/tree/docker-deploy/testing
+  https://github.com/tunvx/simple-bank/tree/main/docs
 ```
 
 ## Deploy to Kubernetes

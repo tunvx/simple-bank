@@ -11,7 +11,7 @@
   },
   "tags": [
     {
-      "name": "CustomerManagementService"
+      "name": "CustomerManagement"
     }
   ],
   "consumes": [
@@ -25,7 +25,7 @@
       "post": {
         "summary": "Create Account",
         "description": "Create a new customer account",
-        "operationId": "CustomerManagementService_CreateAccount",
+        "operationId": "CustomerManagement_CreateAccount",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -51,7 +51,7 @@
           }
         ],
         "tags": [
-          "CustomerManagementService"
+          "CustomerManagement"
         ]
       }
     },
@@ -59,7 +59,7 @@
       "get": {
         "summary": "Get Account",
         "description": "Retrieve an account using the account id (account number)",
-        "operationId": "CustomerManagementService_GetAccountByID",
+        "operationId": "CustomerManagement_GetAccountByID",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -83,7 +83,7 @@
           }
         ],
         "tags": [
-          "CustomerManagementService"
+          "CustomerManagement"
         ]
       }
     },
@@ -91,7 +91,7 @@
       "get": {
         "summary": "Get customer by ID [from auth_token]",
         "description": "Customer retrieves their infomation [from auth_token]",
-        "operationId": "CustomerManagementService_GetCustomerByID",
+        "operationId": "CustomerManagement_GetCustomerByID",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -107,13 +107,13 @@
           }
         },
         "tags": [
-          "CustomerManagementService"
+          "CustomerManagement"
         ]
       },
       "post": {
         "summary": "Create Customer",
         "description": "Create a new bank customer",
-        "operationId": "CustomerManagementService_CreateCustomer",
+        "operationId": "CustomerManagement_CreateCustomer",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -139,7 +139,7 @@
           }
         ],
         "tags": [
-          "CustomerManagementService"
+          "CustomerManagement"
         ]
       }
     },
@@ -147,7 +147,7 @@
       "get": {
         "summary": "Verify Email",
         "description": "Verify the email address of a customer",
-        "operationId": "CustomerManagementService_VerifyEmail",
+        "operationId": "CustomerManagement_VerifyEmail",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -184,7 +184,7 @@
           }
         ],
         "tags": [
-          "CustomerManagementService"
+          "CustomerManagement"
         ]
       }
     },
@@ -192,7 +192,7 @@
       "get": {
         "summary": "Get customer by RID [limited role]",
         "description": "Retrieve a customer by RID [limited role]",
-        "operationId": "CustomerManagementService_GetCustomerByRid",
+        "operationId": "CustomerManagement_GetCustomerByRid",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -216,7 +216,7 @@
           }
         ],
         "tags": [
-          "CustomerManagementService"
+          "CustomerManagement"
         ]
       }
     }

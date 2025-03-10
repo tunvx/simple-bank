@@ -14,7 +14,7 @@ const (
 	// cusmanURL          = "http://cusman.banking.local"
 	authURL               = "http://127.0.0.1:8081"
 	cusmanURL             = "http://127.0.0.1:8082"
-	numUsers              = 20000 // Total number of users to create
+	numUsers              = 50000 // Total number of users to create
 	maxConcurrentRequests = 20    // Maximum concurrent requests
 )
 

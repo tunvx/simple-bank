@@ -21,18 +21,18 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	CustomerManagementService_CreateCustomer_FullMethodName   = "/cusman.CustomerManagementService/CreateCustomer"
-	CustomerManagementService_VerifyEmail_FullMethodName      = "/cusman.CustomerManagementService/VerifyEmail"
-	CustomerManagementService_GetCustomerByID_FullMethodName  = "/cusman.CustomerManagementService/GetCustomerByID"
-	CustomerManagementService_GetCustomerByRid_FullMethodName = "/cusman.CustomerManagementService/GetCustomerByRid"
-	CustomerManagementService_CreateAccount_FullMethodName    = "/cusman.CustomerManagementService/CreateAccount"
-	CustomerManagementService_GetAccountByID_FullMethodName   = "/cusman.CustomerManagementService/GetAccountByID"
+	CustomerManagement_CreateCustomer_FullMethodName   = "/cusman.CustomerManagement/CreateCustomer"
+	CustomerManagement_VerifyEmail_FullMethodName      = "/cusman.CustomerManagement/VerifyEmail"
+	CustomerManagement_GetCustomerByID_FullMethodName  = "/cusman.CustomerManagement/GetCustomerByID"
+	CustomerManagement_GetCustomerByRid_FullMethodName = "/cusman.CustomerManagement/GetCustomerByRid"
+	CustomerManagement_CreateAccount_FullMethodName    = "/cusman.CustomerManagement/CreateAccount"
+	CustomerManagement_GetAccountByID_FullMethodName   = "/cusman.CustomerManagement/GetAccountByID"
 )
 
-// CustomerManagementServiceClient is the client API for CustomerManagementService service.
+// CustomerManagementClient is the client API for CustomerManagement service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type CustomerManagementServiceClient interface {
+type CustomerManagementClient interface {
 	CreateCustomer(ctx context.Context, in *customer.CreateCustomerRequest, opts ...grpc.CallOption) (*customer.CreateCustomerResponse, error)
 	VerifyEmail(ctx context.Context, in *customer.VerifyEmailRequest, opts ...grpc.CallOption) (*customer.VerifyEmailResponse, error)
 	GetCustomerByID(ctx context.Context, in *customer.GetCustomerByIDRequest, opts ...grpc.CallOption) (*customer.GetCustomerByIDResponse, error)
@@ -41,272 +41,271 @@ type CustomerManagementServiceClient interface {
 	GetAccountByID(ctx context.Context, in *account.GetAccountByIDRequest, opts ...grpc.CallOption) (*account.GetAccountByIDResponse, error)
 }
 
-type customerManagementServiceClient struct {
+type customerManagementClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewCustomerManagementServiceClient(cc grpc.ClientConnInterface) CustomerManagementServiceClient {
-	return &customerManagementServiceClient{cc}
+func NewCustomerManagementClient(cc grpc.ClientConnInterface) CustomerManagementClient {
+	return &customerManagementClient{cc}
 }
 
-func (c *customerManagementServiceClient) CreateCustomer(ctx context.Context, in *customer.CreateCustomerRequest, opts ...grpc.CallOption) (*customer.CreateCustomerResponse, error) {
+func (c *customerManagementClient) CreateCustomer(ctx context.Context, in *customer.CreateCustomerRequest, opts ...grpc.CallOption) (*customer.CreateCustomerResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(customer.CreateCustomerResponse)
-	err := c.cc.Invoke(ctx, CustomerManagementService_CreateCustomer_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, CustomerManagement_CreateCustomer_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *customerManagementServiceClient) VerifyEmail(ctx context.Context, in *customer.VerifyEmailRequest, opts ...grpc.CallOption) (*customer.VerifyEmailResponse, error) {
+func (c *customerManagementClient) VerifyEmail(ctx context.Context, in *customer.VerifyEmailRequest, opts ...grpc.CallOption) (*customer.VerifyEmailResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(customer.VerifyEmailResponse)
-	err := c.cc.Invoke(ctx, CustomerManagementService_VerifyEmail_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, CustomerManagement_VerifyEmail_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *customerManagementServiceClient) GetCustomerByID(ctx context.Context, in *customer.GetCustomerByIDRequest, opts ...grpc.CallOption) (*customer.GetCustomerByIDResponse, error) {
+func (c *customerManagementClient) GetCustomerByID(ctx context.Context, in *customer.GetCustomerByIDRequest, opts ...grpc.CallOption) (*customer.GetCustomerByIDResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(customer.GetCustomerByIDResponse)
-	err := c.cc.Invoke(ctx, CustomerManagementService_GetCustomerByID_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, CustomerManagement_GetCustomerByID_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *customerManagementServiceClient) GetCustomerByRid(ctx context.Context, in *customer.GetCustomerByRidRequest, opts ...grpc.CallOption) (*customer.GetCustomerByRidResponse, error) {
+func (c *customerManagementClient) GetCustomerByRid(ctx context.Context, in *customer.GetCustomerByRidRequest, opts ...grpc.CallOption) (*customer.GetCustomerByRidResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(customer.GetCustomerByRidResponse)
-	err := c.cc.Invoke(ctx, CustomerManagementService_GetCustomerByRid_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, CustomerManagement_GetCustomerByRid_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *customerManagementServiceClient) CreateAccount(ctx context.Context, in *account.CreateAccountRequest, opts ...grpc.CallOption) (*account.CreateAccountResponse, error) {
+func (c *customerManagementClient) CreateAccount(ctx context.Context, in *account.CreateAccountRequest, opts ...grpc.CallOption) (*account.CreateAccountResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(account.CreateAccountResponse)
-	err := c.cc.Invoke(ctx, CustomerManagementService_CreateAccount_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, CustomerManagement_CreateAccount_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *customerManagementServiceClient) GetAccountByID(ctx context.Context, in *account.GetAccountByIDRequest, opts ...grpc.CallOption) (*account.GetAccountByIDResponse, error) {
+func (c *customerManagementClient) GetAccountByID(ctx context.Context, in *account.GetAccountByIDRequest, opts ...grpc.CallOption) (*account.GetAccountByIDResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(account.GetAccountByIDResponse)
-	err := c.cc.Invoke(ctx, CustomerManagementService_GetAccountByID_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, CustomerManagement_GetAccountByID_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// CustomerManagementServiceServer is the server API for CustomerManagementService service.
-// All implementations must embed UnimplementedCustomerManagementServiceServer
+// CustomerManagementServer is the server API for CustomerManagement service.
+// All implementations must embed UnimplementedCustomerManagementServer
 // for forward compatibility.
-type CustomerManagementServiceServer interface {
+type CustomerManagementServer interface {
 	CreateCustomer(context.Context, *customer.CreateCustomerRequest) (*customer.CreateCustomerResponse, error)
 	VerifyEmail(context.Context, *customer.VerifyEmailRequest) (*customer.VerifyEmailResponse, error)
 	GetCustomerByID(context.Context, *customer.GetCustomerByIDRequest) (*customer.GetCustomerByIDResponse, error)
 	GetCustomerByRid(context.Context, *customer.GetCustomerByRidRequest) (*customer.GetCustomerByRidResponse, error)
 	CreateAccount(context.Context, *account.CreateAccountRequest) (*account.CreateAccountResponse, error)
 	GetAccountByID(context.Context, *account.GetAccountByIDRequest) (*account.GetAccountByIDResponse, error)
-	mustEmbedUnimplementedCustomerManagementServiceServer()
+	mustEmbedUnimplementedCustomerManagementServer()
 }
 
-// UnimplementedCustomerManagementServiceServer must be embedded to have
+// UnimplementedCustomerManagementServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedCustomerManagementServiceServer struct{}
+type UnimplementedCustomerManagementServer struct{}
 
-func (UnimplementedCustomerManagementServiceServer) CreateCustomer(context.Context, *customer.CreateCustomerRequest) (*customer.CreateCustomerResponse, error) {
+func (UnimplementedCustomerManagementServer) CreateCustomer(context.Context, *customer.CreateCustomerRequest) (*customer.CreateCustomerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCustomer not implemented")
 }
-func (UnimplementedCustomerManagementServiceServer) VerifyEmail(context.Context, *customer.VerifyEmailRequest) (*customer.VerifyEmailResponse, error) {
+func (UnimplementedCustomerManagementServer) VerifyEmail(context.Context, *customer.VerifyEmailRequest) (*customer.VerifyEmailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyEmail not implemented")
 }
-func (UnimplementedCustomerManagementServiceServer) GetCustomerByID(context.Context, *customer.GetCustomerByIDRequest) (*customer.GetCustomerByIDResponse, error) {
+func (UnimplementedCustomerManagementServer) GetCustomerByID(context.Context, *customer.GetCustomerByIDRequest) (*customer.GetCustomerByIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCustomerByID not implemented")
 }
-func (UnimplementedCustomerManagementServiceServer) GetCustomerByRid(context.Context, *customer.GetCustomerByRidRequest) (*customer.GetCustomerByRidResponse, error) {
+func (UnimplementedCustomerManagementServer) GetCustomerByRid(context.Context, *customer.GetCustomerByRidRequest) (*customer.GetCustomerByRidResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCustomerByRid not implemented")
 }
-func (UnimplementedCustomerManagementServiceServer) CreateAccount(context.Context, *account.CreateAccountRequest) (*account.CreateAccountResponse, error) {
+func (UnimplementedCustomerManagementServer) CreateAccount(context.Context, *account.CreateAccountRequest) (*account.CreateAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAccount not implemented")
 }
-func (UnimplementedCustomerManagementServiceServer) GetAccountByID(context.Context, *account.GetAccountByIDRequest) (*account.GetAccountByIDResponse, error) {
+func (UnimplementedCustomerManagementServer) GetAccountByID(context.Context, *account.GetAccountByIDRequest) (*account.GetAccountByIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAccountByID not implemented")
 }
-func (UnimplementedCustomerManagementServiceServer) mustEmbedUnimplementedCustomerManagementServiceServer() {
-}
-func (UnimplementedCustomerManagementServiceServer) testEmbeddedByValue() {}
+func (UnimplementedCustomerManagementServer) mustEmbedUnimplementedCustomerManagementServer() {}
+func (UnimplementedCustomerManagementServer) testEmbeddedByValue()                            {}
 
-// UnsafeCustomerManagementServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to CustomerManagementServiceServer will
+// UnsafeCustomerManagementServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to CustomerManagementServer will
 // result in compilation errors.
-type UnsafeCustomerManagementServiceServer interface {
-	mustEmbedUnimplementedCustomerManagementServiceServer()
+type UnsafeCustomerManagementServer interface {
+	mustEmbedUnimplementedCustomerManagementServer()
 }
 
-func RegisterCustomerManagementServiceServer(s grpc.ServiceRegistrar, srv CustomerManagementServiceServer) {
-	// If the following call pancis, it indicates UnimplementedCustomerManagementServiceServer was
+func RegisterCustomerManagementServer(s grpc.ServiceRegistrar, srv CustomerManagementServer) {
+	// If the following call pancis, it indicates UnimplementedCustomerManagementServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&CustomerManagementService_ServiceDesc, srv)
+	s.RegisterService(&CustomerManagement_ServiceDesc, srv)
 }
 
-func _CustomerManagementService_CreateCustomer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CustomerManagement_CreateCustomer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(customer.CreateCustomerRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CustomerManagementServiceServer).CreateCustomer(ctx, in)
+		return srv.(CustomerManagementServer).CreateCustomer(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: CustomerManagementService_CreateCustomer_FullMethodName,
+		FullMethod: CustomerManagement_CreateCustomer_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CustomerManagementServiceServer).CreateCustomer(ctx, req.(*customer.CreateCustomerRequest))
+		return srv.(CustomerManagementServer).CreateCustomer(ctx, req.(*customer.CreateCustomerRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CustomerManagementService_VerifyEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CustomerManagement_VerifyEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(customer.VerifyEmailRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CustomerManagementServiceServer).VerifyEmail(ctx, in)
+		return srv.(CustomerManagementServer).VerifyEmail(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: CustomerManagementService_VerifyEmail_FullMethodName,
+		FullMethod: CustomerManagement_VerifyEmail_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CustomerManagementServiceServer).VerifyEmail(ctx, req.(*customer.VerifyEmailRequest))
+		return srv.(CustomerManagementServer).VerifyEmail(ctx, req.(*customer.VerifyEmailRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CustomerManagementService_GetCustomerByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CustomerManagement_GetCustomerByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(customer.GetCustomerByIDRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CustomerManagementServiceServer).GetCustomerByID(ctx, in)
+		return srv.(CustomerManagementServer).GetCustomerByID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: CustomerManagementService_GetCustomerByID_FullMethodName,
+		FullMethod: CustomerManagement_GetCustomerByID_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CustomerManagementServiceServer).GetCustomerByID(ctx, req.(*customer.GetCustomerByIDRequest))
+		return srv.(CustomerManagementServer).GetCustomerByID(ctx, req.(*customer.GetCustomerByIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CustomerManagementService_GetCustomerByRid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CustomerManagement_GetCustomerByRid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(customer.GetCustomerByRidRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CustomerManagementServiceServer).GetCustomerByRid(ctx, in)
+		return srv.(CustomerManagementServer).GetCustomerByRid(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: CustomerManagementService_GetCustomerByRid_FullMethodName,
+		FullMethod: CustomerManagement_GetCustomerByRid_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CustomerManagementServiceServer).GetCustomerByRid(ctx, req.(*customer.GetCustomerByRidRequest))
+		return srv.(CustomerManagementServer).GetCustomerByRid(ctx, req.(*customer.GetCustomerByRidRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CustomerManagementService_CreateAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CustomerManagement_CreateAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(account.CreateAccountRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CustomerManagementServiceServer).CreateAccount(ctx, in)
+		return srv.(CustomerManagementServer).CreateAccount(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: CustomerManagementService_CreateAccount_FullMethodName,
+		FullMethod: CustomerManagement_CreateAccount_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CustomerManagementServiceServer).CreateAccount(ctx, req.(*account.CreateAccountRequest))
+		return srv.(CustomerManagementServer).CreateAccount(ctx, req.(*account.CreateAccountRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CustomerManagementService_GetAccountByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CustomerManagement_GetAccountByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(account.GetAccountByIDRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CustomerManagementServiceServer).GetAccountByID(ctx, in)
+		return srv.(CustomerManagementServer).GetAccountByID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: CustomerManagementService_GetAccountByID_FullMethodName,
+		FullMethod: CustomerManagement_GetAccountByID_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CustomerManagementServiceServer).GetAccountByID(ctx, req.(*account.GetAccountByIDRequest))
+		return srv.(CustomerManagementServer).GetAccountByID(ctx, req.(*account.GetAccountByIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// CustomerManagementService_ServiceDesc is the grpc.ServiceDesc for CustomerManagementService service.
+// CustomerManagement_ServiceDesc is the grpc.ServiceDesc for CustomerManagement service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var CustomerManagementService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "cusman.CustomerManagementService",
-	HandlerType: (*CustomerManagementServiceServer)(nil),
+var CustomerManagement_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "cusman.CustomerManagement",
+	HandlerType: (*CustomerManagementServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "CreateCustomer",
-			Handler:    _CustomerManagementService_CreateCustomer_Handler,
+			Handler:    _CustomerManagement_CreateCustomer_Handler,
 		},
 		{
 			MethodName: "VerifyEmail",
-			Handler:    _CustomerManagementService_VerifyEmail_Handler,
+			Handler:    _CustomerManagement_VerifyEmail_Handler,
 		},
 		{
 			MethodName: "GetCustomerByID",
-			Handler:    _CustomerManagementService_GetCustomerByID_Handler,
+			Handler:    _CustomerManagement_GetCustomerByID_Handler,
 		},
 		{
 			MethodName: "GetCustomerByRid",
-			Handler:    _CustomerManagementService_GetCustomerByRid_Handler,
+			Handler:    _CustomerManagement_GetCustomerByRid_Handler,
 		},
 		{
 			MethodName: "CreateAccount",
-			Handler:    _CustomerManagementService_CreateAccount_Handler,
+			Handler:    _CustomerManagement_CreateAccount_Handler,
 		},
 		{
 			MethodName: "GetAccountByID",
-			Handler:    _CustomerManagementService_GetAccountByID_Handler,
+			Handler:    _CustomerManagement_GetAccountByID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

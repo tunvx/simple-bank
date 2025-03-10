@@ -16,13 +16,13 @@ import (
 )
 
 type Service struct {
-	pb.UnimplementedMoneyTransferServiceServer
+	pb.UnimplementedMoneyTransferServer
 	config         util.Config
 	stores         []db.Store
 	cache          cache.Cache
 	tokenMaker     token.Maker
 	taskProducer   worker.TaskProducer
-	shardmanClient shardmanpb.ShardManagementServiceClient
+	shardmanClient shardmanpb.ShardManagementClient
 }
 
 // NewService creates new a Grpc service
@@ -52,7 +52,7 @@ func NewService(config util.Config, stores []db.Store, cache cache.Cache, taskPr
 		cache:          cache,
 		tokenMaker:     tokenMaker,
 		taskProducer:   taskProducer,
-		shardmanClient: shardmanpb.NewShardManagementServiceClient(conn),
+		shardmanClient: shardmanpb.NewShardManagementClient(conn),
 	}
 
 	return server, nil

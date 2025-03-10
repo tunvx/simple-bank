@@ -19,22 +19,22 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	MoneyTransferService_CheckAccount_FullMethodName                          = "/moneytransfer.MoneyTransferService/CheckAccount"
-	MoneyTransferService_ReceiveMoney_FullMethodName                          = "/moneytransfer.MoneyTransferService/ReceiveMoney"
-	MoneyTransferService_InternalTransferMoney_FullMethodName                 = "/moneytransfer.MoneyTransferService/InternalTransferMoney"
-	MoneyTransferService_ExternalTransferMoney_FullMethodName                 = "/moneytransfer.MoneyTransferService/ExternalTransferMoney"
-	MoneyTransferService_TestEmptyGET_FullMethodName                          = "/moneytransfer.MoneyTransferService/TestEmptyGET"
-	MoneyTransferService_TestEmptyPOST_FullMethodName                         = "/moneytransfer.MoneyTransferService/TestEmptyPOST"
-	MoneyTransferService_TestCheckAccountNoProcessing_FullMethodName          = "/moneytransfer.MoneyTransferService/TestCheckAccountNoProcessing"
-	MoneyTransferService_TestCheckAccountJustAuth_FullMethodName              = "/moneytransfer.MoneyTransferService/TestCheckAccountJustAuth"
-	MoneyTransferService_TestInternalTransferMoneyNoProcessing_FullMethodName = "/moneytransfer.MoneyTransferService/TestInternalTransferMoneyNoProcessing"
-	MoneyTransferService_TestInternalTransferMoneyJustAuth_FullMethodName     = "/moneytransfer.MoneyTransferService/TestInternalTransferMoneyJustAuth"
+	MoneyTransfer_CheckAccount_FullMethodName                          = "/moneytransfer.MoneyTransfer/CheckAccount"
+	MoneyTransfer_ReceiveMoney_FullMethodName                          = "/moneytransfer.MoneyTransfer/ReceiveMoney"
+	MoneyTransfer_InternalTransferMoney_FullMethodName                 = "/moneytransfer.MoneyTransfer/InternalTransferMoney"
+	MoneyTransfer_ExternalTransferMoney_FullMethodName                 = "/moneytransfer.MoneyTransfer/ExternalTransferMoney"
+	MoneyTransfer_TestEmptyGET_FullMethodName                          = "/moneytransfer.MoneyTransfer/TestEmptyGET"
+	MoneyTransfer_TestEmptyPOST_FullMethodName                         = "/moneytransfer.MoneyTransfer/TestEmptyPOST"
+	MoneyTransfer_TestCheckAccountNoProcessing_FullMethodName          = "/moneytransfer.MoneyTransfer/TestCheckAccountNoProcessing"
+	MoneyTransfer_TestCheckAccountJustAuth_FullMethodName              = "/moneytransfer.MoneyTransfer/TestCheckAccountJustAuth"
+	MoneyTransfer_TestInternalTransferMoneyNoProcessing_FullMethodName = "/moneytransfer.MoneyTransfer/TestInternalTransferMoneyNoProcessing"
+	MoneyTransfer_TestInternalTransferMoneyJustAuth_FullMethodName     = "/moneytransfer.MoneyTransfer/TestInternalTransferMoneyJustAuth"
 )
 
-// MoneyTransferServiceClient is the client API for MoneyTransferService service.
+// MoneyTransferClient is the client API for MoneyTransfer service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type MoneyTransferServiceClient interface {
+type MoneyTransferClient interface {
 	// Kiểm tra tài khoản
 	CheckAccount(ctx context.Context, in *CheckAccountRequest, opts ...grpc.CallOption) (*CheckAccountResponse, error)
 	// Nhận tiền (Receive Money)
@@ -51,118 +51,118 @@ type MoneyTransferServiceClient interface {
 	TestInternalTransferMoneyJustAuth(ctx context.Context, in *InternalTransferMoneyRequest, opts ...grpc.CallOption) (*OkayResponse, error)
 }
 
-type moneyTransferServiceClient struct {
+type moneyTransferClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewMoneyTransferServiceClient(cc grpc.ClientConnInterface) MoneyTransferServiceClient {
-	return &moneyTransferServiceClient{cc}
+func NewMoneyTransferClient(cc grpc.ClientConnInterface) MoneyTransferClient {
+	return &moneyTransferClient{cc}
 }
 
-func (c *moneyTransferServiceClient) CheckAccount(ctx context.Context, in *CheckAccountRequest, opts ...grpc.CallOption) (*CheckAccountResponse, error) {
+func (c *moneyTransferClient) CheckAccount(ctx context.Context, in *CheckAccountRequest, opts ...grpc.CallOption) (*CheckAccountResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CheckAccountResponse)
-	err := c.cc.Invoke(ctx, MoneyTransferService_CheckAccount_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, MoneyTransfer_CheckAccount_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *moneyTransferServiceClient) ReceiveMoney(ctx context.Context, in *ReceiveMoneyRequest, opts ...grpc.CallOption) (*ReceiveMoneyResponse, error) {
+func (c *moneyTransferClient) ReceiveMoney(ctx context.Context, in *ReceiveMoneyRequest, opts ...grpc.CallOption) (*ReceiveMoneyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ReceiveMoneyResponse)
-	err := c.cc.Invoke(ctx, MoneyTransferService_ReceiveMoney_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, MoneyTransfer_ReceiveMoney_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *moneyTransferServiceClient) InternalTransferMoney(ctx context.Context, in *InternalTransferMoneyRequest, opts ...grpc.CallOption) (*InternalTransferMoneyResponse, error) {
+func (c *moneyTransferClient) InternalTransferMoney(ctx context.Context, in *InternalTransferMoneyRequest, opts ...grpc.CallOption) (*InternalTransferMoneyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(InternalTransferMoneyResponse)
-	err := c.cc.Invoke(ctx, MoneyTransferService_InternalTransferMoney_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, MoneyTransfer_InternalTransferMoney_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *moneyTransferServiceClient) ExternalTransferMoney(ctx context.Context, in *ExternalTransferMoneyRequest, opts ...grpc.CallOption) (*ExternalTransferMoneyResponse, error) {
+func (c *moneyTransferClient) ExternalTransferMoney(ctx context.Context, in *ExternalTransferMoneyRequest, opts ...grpc.CallOption) (*ExternalTransferMoneyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ExternalTransferMoneyResponse)
-	err := c.cc.Invoke(ctx, MoneyTransferService_ExternalTransferMoney_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, MoneyTransfer_ExternalTransferMoney_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *moneyTransferServiceClient) TestEmptyGET(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*OkayResponse, error) {
+func (c *moneyTransferClient) TestEmptyGET(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*OkayResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(OkayResponse)
-	err := c.cc.Invoke(ctx, MoneyTransferService_TestEmptyGET_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, MoneyTransfer_TestEmptyGET_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *moneyTransferServiceClient) TestEmptyPOST(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*OkayResponse, error) {
+func (c *moneyTransferClient) TestEmptyPOST(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*OkayResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(OkayResponse)
-	err := c.cc.Invoke(ctx, MoneyTransferService_TestEmptyPOST_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, MoneyTransfer_TestEmptyPOST_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *moneyTransferServiceClient) TestCheckAccountNoProcessing(ctx context.Context, in *CheckAccountRequest, opts ...grpc.CallOption) (*OkayResponse, error) {
+func (c *moneyTransferClient) TestCheckAccountNoProcessing(ctx context.Context, in *CheckAccountRequest, opts ...grpc.CallOption) (*OkayResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(OkayResponse)
-	err := c.cc.Invoke(ctx, MoneyTransferService_TestCheckAccountNoProcessing_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, MoneyTransfer_TestCheckAccountNoProcessing_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *moneyTransferServiceClient) TestCheckAccountJustAuth(ctx context.Context, in *CheckAccountRequest, opts ...grpc.CallOption) (*OkayResponse, error) {
+func (c *moneyTransferClient) TestCheckAccountJustAuth(ctx context.Context, in *CheckAccountRequest, opts ...grpc.CallOption) (*OkayResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(OkayResponse)
-	err := c.cc.Invoke(ctx, MoneyTransferService_TestCheckAccountJustAuth_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, MoneyTransfer_TestCheckAccountJustAuth_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *moneyTransferServiceClient) TestInternalTransferMoneyNoProcessing(ctx context.Context, in *InternalTransferMoneyRequest, opts ...grpc.CallOption) (*OkayResponse, error) {
+func (c *moneyTransferClient) TestInternalTransferMoneyNoProcessing(ctx context.Context, in *InternalTransferMoneyRequest, opts ...grpc.CallOption) (*OkayResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(OkayResponse)
-	err := c.cc.Invoke(ctx, MoneyTransferService_TestInternalTransferMoneyNoProcessing_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, MoneyTransfer_TestInternalTransferMoneyNoProcessing_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *moneyTransferServiceClient) TestInternalTransferMoneyJustAuth(ctx context.Context, in *InternalTransferMoneyRequest, opts ...grpc.CallOption) (*OkayResponse, error) {
+func (c *moneyTransferClient) TestInternalTransferMoneyJustAuth(ctx context.Context, in *InternalTransferMoneyRequest, opts ...grpc.CallOption) (*OkayResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(OkayResponse)
-	err := c.cc.Invoke(ctx, MoneyTransferService_TestInternalTransferMoneyJustAuth_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, MoneyTransfer_TestInternalTransferMoneyJustAuth_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// MoneyTransferServiceServer is the server API for MoneyTransferService service.
-// All implementations must embed UnimplementedMoneyTransferServiceServer
+// MoneyTransferServer is the server API for MoneyTransfer service.
+// All implementations must embed UnimplementedMoneyTransferServer
 // for forward compatibility.
-type MoneyTransferServiceServer interface {
+type MoneyTransferServer interface {
 	// Kiểm tra tài khoản
 	CheckAccount(context.Context, *CheckAccountRequest) (*CheckAccountResponse, error)
 	// Nhận tiền (Receive Money)
@@ -177,293 +177,293 @@ type MoneyTransferServiceServer interface {
 	TestCheckAccountJustAuth(context.Context, *CheckAccountRequest) (*OkayResponse, error)
 	TestInternalTransferMoneyNoProcessing(context.Context, *InternalTransferMoneyRequest) (*OkayResponse, error)
 	TestInternalTransferMoneyJustAuth(context.Context, *InternalTransferMoneyRequest) (*OkayResponse, error)
-	mustEmbedUnimplementedMoneyTransferServiceServer()
+	mustEmbedUnimplementedMoneyTransferServer()
 }
 
-// UnimplementedMoneyTransferServiceServer must be embedded to have
+// UnimplementedMoneyTransferServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedMoneyTransferServiceServer struct{}
+type UnimplementedMoneyTransferServer struct{}
 
-func (UnimplementedMoneyTransferServiceServer) CheckAccount(context.Context, *CheckAccountRequest) (*CheckAccountResponse, error) {
+func (UnimplementedMoneyTransferServer) CheckAccount(context.Context, *CheckAccountRequest) (*CheckAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckAccount not implemented")
 }
-func (UnimplementedMoneyTransferServiceServer) ReceiveMoney(context.Context, *ReceiveMoneyRequest) (*ReceiveMoneyResponse, error) {
+func (UnimplementedMoneyTransferServer) ReceiveMoney(context.Context, *ReceiveMoneyRequest) (*ReceiveMoneyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReceiveMoney not implemented")
 }
-func (UnimplementedMoneyTransferServiceServer) InternalTransferMoney(context.Context, *InternalTransferMoneyRequest) (*InternalTransferMoneyResponse, error) {
+func (UnimplementedMoneyTransferServer) InternalTransferMoney(context.Context, *InternalTransferMoneyRequest) (*InternalTransferMoneyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InternalTransferMoney not implemented")
 }
-func (UnimplementedMoneyTransferServiceServer) ExternalTransferMoney(context.Context, *ExternalTransferMoneyRequest) (*ExternalTransferMoneyResponse, error) {
+func (UnimplementedMoneyTransferServer) ExternalTransferMoney(context.Context, *ExternalTransferMoneyRequest) (*ExternalTransferMoneyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExternalTransferMoney not implemented")
 }
-func (UnimplementedMoneyTransferServiceServer) TestEmptyGET(context.Context, *Empty) (*OkayResponse, error) {
+func (UnimplementedMoneyTransferServer) TestEmptyGET(context.Context, *Empty) (*OkayResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TestEmptyGET not implemented")
 }
-func (UnimplementedMoneyTransferServiceServer) TestEmptyPOST(context.Context, *Empty) (*OkayResponse, error) {
+func (UnimplementedMoneyTransferServer) TestEmptyPOST(context.Context, *Empty) (*OkayResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TestEmptyPOST not implemented")
 }
-func (UnimplementedMoneyTransferServiceServer) TestCheckAccountNoProcessing(context.Context, *CheckAccountRequest) (*OkayResponse, error) {
+func (UnimplementedMoneyTransferServer) TestCheckAccountNoProcessing(context.Context, *CheckAccountRequest) (*OkayResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TestCheckAccountNoProcessing not implemented")
 }
-func (UnimplementedMoneyTransferServiceServer) TestCheckAccountJustAuth(context.Context, *CheckAccountRequest) (*OkayResponse, error) {
+func (UnimplementedMoneyTransferServer) TestCheckAccountJustAuth(context.Context, *CheckAccountRequest) (*OkayResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TestCheckAccountJustAuth not implemented")
 }
-func (UnimplementedMoneyTransferServiceServer) TestInternalTransferMoneyNoProcessing(context.Context, *InternalTransferMoneyRequest) (*OkayResponse, error) {
+func (UnimplementedMoneyTransferServer) TestInternalTransferMoneyNoProcessing(context.Context, *InternalTransferMoneyRequest) (*OkayResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TestInternalTransferMoneyNoProcessing not implemented")
 }
-func (UnimplementedMoneyTransferServiceServer) TestInternalTransferMoneyJustAuth(context.Context, *InternalTransferMoneyRequest) (*OkayResponse, error) {
+func (UnimplementedMoneyTransferServer) TestInternalTransferMoneyJustAuth(context.Context, *InternalTransferMoneyRequest) (*OkayResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TestInternalTransferMoneyJustAuth not implemented")
 }
-func (UnimplementedMoneyTransferServiceServer) mustEmbedUnimplementedMoneyTransferServiceServer() {}
-func (UnimplementedMoneyTransferServiceServer) testEmbeddedByValue()                              {}
+func (UnimplementedMoneyTransferServer) mustEmbedUnimplementedMoneyTransferServer() {}
+func (UnimplementedMoneyTransferServer) testEmbeddedByValue()                       {}
 
-// UnsafeMoneyTransferServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to MoneyTransferServiceServer will
+// UnsafeMoneyTransferServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to MoneyTransferServer will
 // result in compilation errors.
-type UnsafeMoneyTransferServiceServer interface {
-	mustEmbedUnimplementedMoneyTransferServiceServer()
+type UnsafeMoneyTransferServer interface {
+	mustEmbedUnimplementedMoneyTransferServer()
 }
 
-func RegisterMoneyTransferServiceServer(s grpc.ServiceRegistrar, srv MoneyTransferServiceServer) {
-	// If the following call pancis, it indicates UnimplementedMoneyTransferServiceServer was
+func RegisterMoneyTransferServer(s grpc.ServiceRegistrar, srv MoneyTransferServer) {
+	// If the following call pancis, it indicates UnimplementedMoneyTransferServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&MoneyTransferService_ServiceDesc, srv)
+	s.RegisterService(&MoneyTransfer_ServiceDesc, srv)
 }
 
-func _MoneyTransferService_CheckAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MoneyTransfer_CheckAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CheckAccountRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MoneyTransferServiceServer).CheckAccount(ctx, in)
+		return srv.(MoneyTransferServer).CheckAccount(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MoneyTransferService_CheckAccount_FullMethodName,
+		FullMethod: MoneyTransfer_CheckAccount_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MoneyTransferServiceServer).CheckAccount(ctx, req.(*CheckAccountRequest))
+		return srv.(MoneyTransferServer).CheckAccount(ctx, req.(*CheckAccountRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MoneyTransferService_ReceiveMoney_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MoneyTransfer_ReceiveMoney_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ReceiveMoneyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MoneyTransferServiceServer).ReceiveMoney(ctx, in)
+		return srv.(MoneyTransferServer).ReceiveMoney(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MoneyTransferService_ReceiveMoney_FullMethodName,
+		FullMethod: MoneyTransfer_ReceiveMoney_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MoneyTransferServiceServer).ReceiveMoney(ctx, req.(*ReceiveMoneyRequest))
+		return srv.(MoneyTransferServer).ReceiveMoney(ctx, req.(*ReceiveMoneyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MoneyTransferService_InternalTransferMoney_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MoneyTransfer_InternalTransferMoney_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(InternalTransferMoneyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MoneyTransferServiceServer).InternalTransferMoney(ctx, in)
+		return srv.(MoneyTransferServer).InternalTransferMoney(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MoneyTransferService_InternalTransferMoney_FullMethodName,
+		FullMethod: MoneyTransfer_InternalTransferMoney_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MoneyTransferServiceServer).InternalTransferMoney(ctx, req.(*InternalTransferMoneyRequest))
+		return srv.(MoneyTransferServer).InternalTransferMoney(ctx, req.(*InternalTransferMoneyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MoneyTransferService_ExternalTransferMoney_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MoneyTransfer_ExternalTransferMoney_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ExternalTransferMoneyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MoneyTransferServiceServer).ExternalTransferMoney(ctx, in)
+		return srv.(MoneyTransferServer).ExternalTransferMoney(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MoneyTransferService_ExternalTransferMoney_FullMethodName,
+		FullMethod: MoneyTransfer_ExternalTransferMoney_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MoneyTransferServiceServer).ExternalTransferMoney(ctx, req.(*ExternalTransferMoneyRequest))
+		return srv.(MoneyTransferServer).ExternalTransferMoney(ctx, req.(*ExternalTransferMoneyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MoneyTransferService_TestEmptyGET_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MoneyTransfer_TestEmptyGET_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MoneyTransferServiceServer).TestEmptyGET(ctx, in)
+		return srv.(MoneyTransferServer).TestEmptyGET(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MoneyTransferService_TestEmptyGET_FullMethodName,
+		FullMethod: MoneyTransfer_TestEmptyGET_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MoneyTransferServiceServer).TestEmptyGET(ctx, req.(*Empty))
+		return srv.(MoneyTransferServer).TestEmptyGET(ctx, req.(*Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MoneyTransferService_TestEmptyPOST_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MoneyTransfer_TestEmptyPOST_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MoneyTransferServiceServer).TestEmptyPOST(ctx, in)
+		return srv.(MoneyTransferServer).TestEmptyPOST(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MoneyTransferService_TestEmptyPOST_FullMethodName,
+		FullMethod: MoneyTransfer_TestEmptyPOST_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MoneyTransferServiceServer).TestEmptyPOST(ctx, req.(*Empty))
+		return srv.(MoneyTransferServer).TestEmptyPOST(ctx, req.(*Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MoneyTransferService_TestCheckAccountNoProcessing_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MoneyTransfer_TestCheckAccountNoProcessing_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CheckAccountRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MoneyTransferServiceServer).TestCheckAccountNoProcessing(ctx, in)
+		return srv.(MoneyTransferServer).TestCheckAccountNoProcessing(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MoneyTransferService_TestCheckAccountNoProcessing_FullMethodName,
+		FullMethod: MoneyTransfer_TestCheckAccountNoProcessing_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MoneyTransferServiceServer).TestCheckAccountNoProcessing(ctx, req.(*CheckAccountRequest))
+		return srv.(MoneyTransferServer).TestCheckAccountNoProcessing(ctx, req.(*CheckAccountRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MoneyTransferService_TestCheckAccountJustAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MoneyTransfer_TestCheckAccountJustAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CheckAccountRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MoneyTransferServiceServer).TestCheckAccountJustAuth(ctx, in)
+		return srv.(MoneyTransferServer).TestCheckAccountJustAuth(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MoneyTransferService_TestCheckAccountJustAuth_FullMethodName,
+		FullMethod: MoneyTransfer_TestCheckAccountJustAuth_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MoneyTransferServiceServer).TestCheckAccountJustAuth(ctx, req.(*CheckAccountRequest))
+		return srv.(MoneyTransferServer).TestCheckAccountJustAuth(ctx, req.(*CheckAccountRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MoneyTransferService_TestInternalTransferMoneyNoProcessing_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MoneyTransfer_TestInternalTransferMoneyNoProcessing_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(InternalTransferMoneyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MoneyTransferServiceServer).TestInternalTransferMoneyNoProcessing(ctx, in)
+		return srv.(MoneyTransferServer).TestInternalTransferMoneyNoProcessing(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MoneyTransferService_TestInternalTransferMoneyNoProcessing_FullMethodName,
+		FullMethod: MoneyTransfer_TestInternalTransferMoneyNoProcessing_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MoneyTransferServiceServer).TestInternalTransferMoneyNoProcessing(ctx, req.(*InternalTransferMoneyRequest))
+		return srv.(MoneyTransferServer).TestInternalTransferMoneyNoProcessing(ctx, req.(*InternalTransferMoneyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MoneyTransferService_TestInternalTransferMoneyJustAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MoneyTransfer_TestInternalTransferMoneyJustAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(InternalTransferMoneyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MoneyTransferServiceServer).TestInternalTransferMoneyJustAuth(ctx, in)
+		return srv.(MoneyTransferServer).TestInternalTransferMoneyJustAuth(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MoneyTransferService_TestInternalTransferMoneyJustAuth_FullMethodName,
+		FullMethod: MoneyTransfer_TestInternalTransferMoneyJustAuth_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MoneyTransferServiceServer).TestInternalTransferMoneyJustAuth(ctx, req.(*InternalTransferMoneyRequest))
+		return srv.(MoneyTransferServer).TestInternalTransferMoneyJustAuth(ctx, req.(*InternalTransferMoneyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// MoneyTransferService_ServiceDesc is the grpc.ServiceDesc for MoneyTransferService service.
+// MoneyTransfer_ServiceDesc is the grpc.ServiceDesc for MoneyTransfer service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var MoneyTransferService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "moneytransfer.MoneyTransferService",
-	HandlerType: (*MoneyTransferServiceServer)(nil),
+var MoneyTransfer_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "moneytransfer.MoneyTransfer",
+	HandlerType: (*MoneyTransferServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "CheckAccount",
-			Handler:    _MoneyTransferService_CheckAccount_Handler,
+			Handler:    _MoneyTransfer_CheckAccount_Handler,
 		},
 		{
 			MethodName: "ReceiveMoney",
-			Handler:    _MoneyTransferService_ReceiveMoney_Handler,
+			Handler:    _MoneyTransfer_ReceiveMoney_Handler,
 		},
 		{
 			MethodName: "InternalTransferMoney",
-			Handler:    _MoneyTransferService_InternalTransferMoney_Handler,
+			Handler:    _MoneyTransfer_InternalTransferMoney_Handler,
 		},
 		{
 			MethodName: "ExternalTransferMoney",
-			Handler:    _MoneyTransferService_ExternalTransferMoney_Handler,
+			Handler:    _MoneyTransfer_ExternalTransferMoney_Handler,
 		},
 		{
 			MethodName: "TestEmptyGET",
-			Handler:    _MoneyTransferService_TestEmptyGET_Handler,
+			Handler:    _MoneyTransfer_TestEmptyGET_Handler,
 		},
 		{
 			MethodName: "TestEmptyPOST",
-			Handler:    _MoneyTransferService_TestEmptyPOST_Handler,
+			Handler:    _MoneyTransfer_TestEmptyPOST_Handler,
 		},
 		{
 			MethodName: "TestCheckAccountNoProcessing",
-			Handler:    _MoneyTransferService_TestCheckAccountNoProcessing_Handler,
+			Handler:    _MoneyTransfer_TestCheckAccountNoProcessing_Handler,
 		},
 		{
 			MethodName: "TestCheckAccountJustAuth",
-			Handler:    _MoneyTransferService_TestCheckAccountJustAuth_Handler,
+			Handler:    _MoneyTransfer_TestCheckAccountJustAuth_Handler,
 		},
 		{
 			MethodName: "TestInternalTransferMoneyNoProcessing",
-			Handler:    _MoneyTransferService_TestInternalTransferMoneyNoProcessing_Handler,
+			Handler:    _MoneyTransfer_TestInternalTransferMoneyNoProcessing_Handler,
 		},
 		{
 			MethodName: "TestInternalTransferMoneyJustAuth",
-			Handler:    _MoneyTransferService_TestInternalTransferMoneyJustAuth_Handler,
+			Handler:    _MoneyTransfer_TestInternalTransferMoneyJustAuth_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -135,7 +135,7 @@ func runGrpcServer(
 	grpcServer := grpc.NewServer(grpcLogger)
 
 	// Register the ShardManService to the gRPC server
-	pb.RegisterShardManagementServiceServer(grpcServer, shardmanService)
+	pb.RegisterShardManagementServer(grpcServer, shardmanService)
 
 	// Enable reflection for gRPC, useful for debugging or using CLI tools like grpcurl
 	reflection.Register(grpcServer)
@@ -199,7 +199,7 @@ func runGatewayServer(
 	// Create a new gRPC Gateway multiplexer to route HTTP requests
 	grpcMux := runtime.NewServeMux(jsonOption)
 
-	err = pb.RegisterShardManagementServiceHandlerServer(ctx, grpcMux, shardmanService)
+	err = pb.RegisterShardManagementHandlerServer(ctx, grpcMux, shardmanService)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Shardman Service: HTTPGateway service cannot register handler")
 	}

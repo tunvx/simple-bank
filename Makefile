@@ -42,6 +42,12 @@ start-services:
 stop-services:
 	docker compose --env-file .env -f docker-compose.services.yml down
 
+start-monitor:
+	docker compose --env-file .env -f docker-compose.monitor.yml up -d 
+
+stop-monitor:
+	docker compose --env-file .env -f docker-compose.monitor.yml down
+
 # Build image for each service
 build-auth:
 	docker build -t $(IMAGE_PREFIX)vnb-auth-service:$(VERSION) -f vnb-auth-service/Dockerfile .

@@ -30,7 +30,7 @@ message OkayResponse {
     string ok = 1;
 }
 
-service MoneyTransferService {
+service MoneyTransfer {
     // Kiểm tra tài khoản
     rpc CheckAccount (CheckAccountRequest) returns (CheckAccountResponse) {
         option (google.api.http) = {

@@ -87,8 +87,8 @@ services:
     # deploy:
     #   resources:
     #     limits:
-    #       cpus: "4"
-    #       memory: "10GB"
+    #       cpus: "0.5"
+    #       memory: "1GB"
 
   core-database-02:
     container_name: core-database-02
@@ -115,8 +115,8 @@ services:
     # deploy:
     #   resources:
     #     limits:
-    #       cpus: "4"
-    #       memory: "10GB"
+    #       cpus: "0.5"
+    #       memory: "1GB"
 
 ### Command for optim postgres
 # command: >

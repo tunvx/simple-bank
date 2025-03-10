@@ -181,7 +181,7 @@ func runGrpcServer(
 	grpcServer := grpc.NewServer(grpcLogger)
 
 	// Register the transactionService to the gRPC server
-	pb.RegisterMoneyTransferServiceServer(grpcServer, tranService)
+	pb.RegisterMoneyTransferServer(grpcServer, tranService)
 
 	// Enable reflection for gRPC, useful for debugging or using CLI tools like grpcurl
 	reflection.Register(grpcServer)
@@ -246,7 +246,7 @@ func runGatewayServer(
 	// Create a new gRPC Gateway multiplexer to route HTTP requests
 	grpcMux := runtime.NewServeMux(jsonOption)
 
-	err = pb.RegisterMoneyTransferServiceHandlerServer(ctx, grpcMux, tranService)
+	err = pb.RegisterMoneyTransferHandlerServer(ctx, grpcMux, tranService)
 	if err != nil {
 		log.Fatal().Err(err).Msg("MoneyTransfer Service: HTTPGateway service cannot register handler")
 	}

@@ -15,11 +15,11 @@ import (
 )
 
 type Service struct {
-	pb.UnimplementedCustomerManagementServiceServer
+	pb.UnimplementedCustomerManagementServer
 	config          util.Config
 	stores          []db.Store
 	tokenMaker      token.Maker
-	shardmanClient  shardman.ShardManagementServiceClient
+	shardmanClient  shardman.ShardManagementClient
 	taskDistributor worker.TaskDistributor
 }
 
@@ -48,7 +48,7 @@ func NewService(config util.Config, stores []db.Store, taskDistributor worker.Ta
 		config:          config,
 		stores:          stores,
 		tokenMaker:      tokenMaker,
-		shardmanClient:  shardman.NewShardManagementServiceClient(conn),
+		shardmanClient:  shardman.NewShardManagementClient(conn),
 		taskDistributor: taskDistributor,
 	}
 

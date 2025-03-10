@@ -11,7 +11,7 @@
   },
   "tags": [
     {
-      "name": "ShardManagementService"
+      "name": "ShardManagement"
     }
   ],
   "consumes": [
@@ -25,7 +25,7 @@
       "post": {
         "summary": "Insert account shard",
         "description": "Use this API to insert account shard",
-        "operationId": "ShardManagementService_InsertAccountShard",
+        "operationId": "ShardManagement_InsertAccountShard",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -51,7 +51,7 @@
           }
         ],
         "tags": [
-          "ShardManagementService"
+          "ShardManagement"
         ]
       }
     },
@@ -59,7 +59,7 @@
       "post": {
         "summary": "Get Account Shard Pair",
         "description": "Use this API to look up account shard_id Pair by account_id Pair",
-        "operationId": "ShardManagementService_LookupAccountShardPair",
+        "operationId": "ShardManagement_LookupAccountShardPair",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -85,7 +85,7 @@
           }
         ],
         "tags": [
-          "ShardManagementService"
+          "ShardManagement"
         ]
       }
     },
@@ -93,7 +93,7 @@
       "get": {
         "summary": "Get Account Shard",
         "description": "Use this API to look up account shard_id by account_id",
-        "operationId": "ShardManagementService_LookupAccountShard",
+        "operationId": "ShardManagement_LookupAccountShard",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -118,7 +118,7 @@
           }
         ],
         "tags": [
-          "ShardManagementService"
+          "ShardManagement"
         ]
       }
     },
@@ -126,7 +126,7 @@
       "post": {
         "summary": "Insert customer shard",
         "description": "Use this API to insert customer shard",
-        "operationId": "ShardManagementService_InsertCustomerShard",
+        "operationId": "ShardManagement_InsertCustomerShard",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -152,7 +152,7 @@
           }
         ],
         "tags": [
-          "ShardManagementService"
+          "ShardManagement"
         ]
       }
     },
@@ -160,7 +160,7 @@
       "get": {
         "summary": "Get Customer Shard",
         "description": "Use this API to look up customter shard_id by customer_rid",
-        "operationId": "ShardManagementService_LookupCustomerShard",
+        "operationId": "ShardManagement_LookupCustomerShard",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -184,7 +184,7 @@
           }
         ],
         "tags": [
-          "ShardManagementService"
+          "ShardManagement"
         ]
       }
     }

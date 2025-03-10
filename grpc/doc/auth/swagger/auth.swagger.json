@@ -11,7 +11,7 @@
   },
   "tags": [
     {
-      "name": "AuthService"
+      "name": "Auth"
     }
   ],
   "consumes": [
@@ -25,7 +25,7 @@
       "post": {
         "summary": "Create customer credential",
         "description": "Use this API to create a customer credential",
-        "operationId": "AuthService_CreateCustomerCredential",
+        "operationId": "Auth_CreateCustomerCredential",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -51,13 +51,13 @@
           }
         ],
         "tags": [
-          "AuthService"
+          "Auth"
         ]
       },
       "patch": {
         "summary": "Update customer credential",
         "description": "Use this API to update the customer credential",
-        "operationId": "AuthService_UpdateCustomerCredential",
+        "operationId": "Auth_UpdateCustomerCredential",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -83,7 +83,7 @@
           }
         ],
         "tags": [
-          "AuthService"
+          "Auth"
         ]
       }
     },
@@ -91,7 +91,7 @@
       "post": {
         "summary": "Login customer",
         "description": "Use this API to login user and get access token",
-        "operationId": "AuthService_LoginCustomer",
+        "operationId": "Auth_LoginCustomer",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -117,7 +117,7 @@
           }
         ],
         "tags": [
-          "AuthService"
+          "Auth"
         ]
       }
     },
@@ -125,7 +125,7 @@
       "get": {
         "summary": "Generate banker role access token",
         "description": "Use this API to generate an access token with banker role for testing purposes",
-        "operationId": "AuthService_GenerateTestAccessToken",
+        "operationId": "Auth_GenerateTestAccessToken",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -141,7 +141,7 @@
           }
         },
         "tags": [
-          "AuthService"
+          "Auth"
         ]
       }
     }

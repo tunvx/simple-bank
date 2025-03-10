@@ -19,17 +19,17 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ShardManagementService_InsertAccountShard_FullMethodName     = "/shardman.ShardManagementService/InsertAccountShard"
-	ShardManagementService_InsertCustomerShard_FullMethodName    = "/shardman.ShardManagementService/InsertCustomerShard"
-	ShardManagementService_LookupAccountShardPair_FullMethodName = "/shardman.ShardManagementService/LookupAccountShardPair"
-	ShardManagementService_LookupAccountShard_FullMethodName     = "/shardman.ShardManagementService/LookupAccountShard"
-	ShardManagementService_LookupCustomerShard_FullMethodName    = "/shardman.ShardManagementService/LookupCustomerShard"
+	ShardManagement_InsertAccountShard_FullMethodName     = "/shardman.ShardManagement/InsertAccountShard"
+	ShardManagement_InsertCustomerShard_FullMethodName    = "/shardman.ShardManagement/InsertCustomerShard"
+	ShardManagement_LookupAccountShardPair_FullMethodName = "/shardman.ShardManagement/LookupAccountShardPair"
+	ShardManagement_LookupAccountShard_FullMethodName     = "/shardman.ShardManagement/LookupAccountShard"
+	ShardManagement_LookupCustomerShard_FullMethodName    = "/shardman.ShardManagement/LookupCustomerShard"
 )
 
-// ShardManagementServiceClient is the client API for ShardManagementService service.
+// ShardManagementClient is the client API for ShardManagement service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ShardManagementServiceClient interface {
+type ShardManagementClient interface {
 	InsertAccountShard(ctx context.Context, in *InsertAccountShardRequest, opts ...grpc.CallOption) (*InsertAccountShardResponse, error)
 	InsertCustomerShard(ctx context.Context, in *InsertCustomerShardRequest, opts ...grpc.CallOption) (*InsertCustomerShardResponse, error)
 	LookupAccountShardPair(ctx context.Context, in *LookupAccountShardPairRequest, opts ...grpc.CallOption) (*LookupAccountShardPairResponse, error)
@@ -37,236 +37,235 @@ type ShardManagementServiceClient interface {
 	LookupCustomerShard(ctx context.Context, in *LookupCustomerShardRequest, opts ...grpc.CallOption) (*LookupCustomerShardResponse, error)
 }
 
-type shardManagementServiceClient struct {
+type shardManagementClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewShardManagementServiceClient(cc grpc.ClientConnInterface) ShardManagementServiceClient {
-	return &shardManagementServiceClient{cc}
+func NewShardManagementClient(cc grpc.ClientConnInterface) ShardManagementClient {
+	return &shardManagementClient{cc}
 }
 
-func (c *shardManagementServiceClient) InsertAccountShard(ctx context.Context, in *InsertAccountShardRequest, opts ...grpc.CallOption) (*InsertAccountShardResponse, error) {
+func (c *shardManagementClient) InsertAccountShard(ctx context.Context, in *InsertAccountShardRequest, opts ...grpc.CallOption) (*InsertAccountShardResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(InsertAccountShardResponse)
-	err := c.cc.Invoke(ctx, ShardManagementService_InsertAccountShard_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ShardManagement_InsertAccountShard_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *shardManagementServiceClient) InsertCustomerShard(ctx context.Context, in *InsertCustomerShardRequest, opts ...grpc.CallOption) (*InsertCustomerShardResponse, error) {
+func (c *shardManagementClient) InsertCustomerShard(ctx context.Context, in *InsertCustomerShardRequest, opts ...grpc.CallOption) (*InsertCustomerShardResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(InsertCustomerShardResponse)
-	err := c.cc.Invoke(ctx, ShardManagementService_InsertCustomerShard_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ShardManagement_InsertCustomerShard_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *shardManagementServiceClient) LookupAccountShardPair(ctx context.Context, in *LookupAccountShardPairRequest, opts ...grpc.CallOption) (*LookupAccountShardPairResponse, error) {
+func (c *shardManagementClient) LookupAccountShardPair(ctx context.Context, in *LookupAccountShardPairRequest, opts ...grpc.CallOption) (*LookupAccountShardPairResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(LookupAccountShardPairResponse)
-	err := c.cc.Invoke(ctx, ShardManagementService_LookupAccountShardPair_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ShardManagement_LookupAccountShardPair_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *shardManagementServiceClient) LookupAccountShard(ctx context.Context, in *LookupAccountShardRequest, opts ...grpc.CallOption) (*LookupAccountShardResponse, error) {
+func (c *shardManagementClient) LookupAccountShard(ctx context.Context, in *LookupAccountShardRequest, opts ...grpc.CallOption) (*LookupAccountShardResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(LookupAccountShardResponse)
-	err := c.cc.Invoke(ctx, ShardManagementService_LookupAccountShard_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ShardManagement_LookupAccountShard_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *shardManagementServiceClient) LookupCustomerShard(ctx context.Context, in *LookupCustomerShardRequest, opts ...grpc.CallOption) (*LookupCustomerShardResponse, error) {
+func (c *shardManagementClient) LookupCustomerShard(ctx context.Context, in *LookupCustomerShardRequest, opts ...grpc.CallOption) (*LookupCustomerShardResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(LookupCustomerShardResponse)
-	err := c.cc.Invoke(ctx, ShardManagementService_LookupCustomerShard_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ShardManagement_LookupCustomerShard_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ShardManagementServiceServer is the server API for ShardManagementService service.
-// All implementations must embed UnimplementedShardManagementServiceServer
+// ShardManagementServer is the server API for ShardManagement service.
+// All implementations must embed UnimplementedShardManagementServer
 // for forward compatibility.
-type ShardManagementServiceServer interface {
+type ShardManagementServer interface {
 	InsertAccountShard(context.Context, *InsertAccountShardRequest) (*InsertAccountShardResponse, error)
 	InsertCustomerShard(context.Context, *InsertCustomerShardRequest) (*InsertCustomerShardResponse, error)
 	LookupAccountShardPair(context.Context, *LookupAccountShardPairRequest) (*LookupAccountShardPairResponse, error)
 	LookupAccountShard(context.Context, *LookupAccountShardRequest) (*LookupAccountShardResponse, error)
 	LookupCustomerShard(context.Context, *LookupCustomerShardRequest) (*LookupCustomerShardResponse, error)
-	mustEmbedUnimplementedShardManagementServiceServer()
+	mustEmbedUnimplementedShardManagementServer()
 }
 
-// UnimplementedShardManagementServiceServer must be embedded to have
+// UnimplementedShardManagementServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedShardManagementServiceServer struct{}
+type UnimplementedShardManagementServer struct{}
 
-func (UnimplementedShardManagementServiceServer) InsertAccountShard(context.Context, *InsertAccountShardRequest) (*InsertAccountShardResponse, error) {
+func (UnimplementedShardManagementServer) InsertAccountShard(context.Context, *InsertAccountShardRequest) (*InsertAccountShardResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InsertAccountShard not implemented")
 }
-func (UnimplementedShardManagementServiceServer) InsertCustomerShard(context.Context, *InsertCustomerShardRequest) (*InsertCustomerShardResponse, error) {
+func (UnimplementedShardManagementServer) InsertCustomerShard(context.Context, *InsertCustomerShardRequest) (*InsertCustomerShardResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InsertCustomerShard not implemented")
 }
-func (UnimplementedShardManagementServiceServer) LookupAccountShardPair(context.Context, *LookupAccountShardPairRequest) (*LookupAccountShardPairResponse, error) {
+func (UnimplementedShardManagementServer) LookupAccountShardPair(context.Context, *LookupAccountShardPairRequest) (*LookupAccountShardPairResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LookupAccountShardPair not implemented")
 }
-func (UnimplementedShardManagementServiceServer) LookupAccountShard(context.Context, *LookupAccountShardRequest) (*LookupAccountShardResponse, error) {
+func (UnimplementedShardManagementServer) LookupAccountShard(context.Context, *LookupAccountShardRequest) (*LookupAccountShardResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LookupAccountShard not implemented")
 }
-func (UnimplementedShardManagementServiceServer) LookupCustomerShard(context.Context, *LookupCustomerShardRequest) (*LookupCustomerShardResponse, error) {
+func (UnimplementedShardManagementServer) LookupCustomerShard(context.Context, *LookupCustomerShardRequest) (*LookupCustomerShardResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LookupCustomerShard not implemented")
 }
-func (UnimplementedShardManagementServiceServer) mustEmbedUnimplementedShardManagementServiceServer() {
-}
-func (UnimplementedShardManagementServiceServer) testEmbeddedByValue() {}
+func (UnimplementedShardManagementServer) mustEmbedUnimplementedShardManagementServer() {}
+func (UnimplementedShardManagementServer) testEmbeddedByValue()                         {}
 
-// UnsafeShardManagementServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ShardManagementServiceServer will
+// UnsafeShardManagementServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ShardManagementServer will
 // result in compilation errors.
-type UnsafeShardManagementServiceServer interface {
-	mustEmbedUnimplementedShardManagementServiceServer()
+type UnsafeShardManagementServer interface {
+	mustEmbedUnimplementedShardManagementServer()
 }
 
-func RegisterShardManagementServiceServer(s grpc.ServiceRegistrar, srv ShardManagementServiceServer) {
-	// If the following call pancis, it indicates UnimplementedShardManagementServiceServer was
+func RegisterShardManagementServer(s grpc.ServiceRegistrar, srv ShardManagementServer) {
+	// If the following call pancis, it indicates UnimplementedShardManagementServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&ShardManagementService_ServiceDesc, srv)
+	s.RegisterService(&ShardManagement_ServiceDesc, srv)
 }
 
-func _ShardManagementService_InsertAccountShard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ShardManagement_InsertAccountShard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(InsertAccountShardRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ShardManagementServiceServer).InsertAccountShard(ctx, in)
+		return srv.(ShardManagementServer).InsertAccountShard(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ShardManagementService_InsertAccountShard_FullMethodName,
+		FullMethod: ShardManagement_InsertAccountShard_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ShardManagementServiceServer).InsertAccountShard(ctx, req.(*InsertAccountShardRequest))
+		return srv.(ShardManagementServer).InsertAccountShard(ctx, req.(*InsertAccountShardRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ShardManagementService_InsertCustomerShard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ShardManagement_InsertCustomerShard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(InsertCustomerShardRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ShardManagementServiceServer).InsertCustomerShard(ctx, in)
+		return srv.(ShardManagementServer).InsertCustomerShard(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ShardManagementService_InsertCustomerShard_FullMethodName,
+		FullMethod: ShardManagement_InsertCustomerShard_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ShardManagementServiceServer).InsertCustomerShard(ctx, req.(*InsertCustomerShardRequest))
+		return srv.(ShardManagementServer).InsertCustomerShard(ctx, req.(*InsertCustomerShardRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ShardManagementService_LookupAccountShardPair_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ShardManagement_LookupAccountShardPair_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(LookupAccountShardPairRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ShardManagementServiceServer).LookupAccountShardPair(ctx, in)
+		return srv.(ShardManagementServer).LookupAccountShardPair(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ShardManagementService_LookupAccountShardPair_FullMethodName,
+		FullMethod: ShardManagement_LookupAccountShardPair_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ShardManagementServiceServer).LookupAccountShardPair(ctx, req.(*LookupAccountShardPairRequest))
+		return srv.(ShardManagementServer).LookupAccountShardPair(ctx, req.(*LookupAccountShardPairRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ShardManagementService_LookupAccountShard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ShardManagement_LookupAccountShard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(LookupAccountShardRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ShardManagementServiceServer).LookupAccountShard(ctx, in)
+		return srv.(ShardManagementServer).LookupAccountShard(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ShardManagementService_LookupAccountShard_FullMethodName,
+		FullMethod: ShardManagement_LookupAccountShard_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ShardManagementServiceServer).LookupAccountShard(ctx, req.(*LookupAccountShardRequest))
+		return srv.(ShardManagementServer).LookupAccountShard(ctx, req.(*LookupAccountShardRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ShardManagementService_LookupCustomerShard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ShardManagement_LookupCustomerShard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(LookupCustomerShardRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ShardManagementServiceServer).LookupCustomerShard(ctx, in)
+		return srv.(ShardManagementServer).LookupCustomerShard(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ShardManagementService_LookupCustomerShard_FullMethodName,
+		FullMethod: ShardManagement_LookupCustomerShard_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ShardManagementServiceServer).LookupCustomerShard(ctx, req.(*LookupCustomerShardRequest))
+		return srv.(ShardManagementServer).LookupCustomerShard(ctx, req.(*LookupCustomerShardRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// ShardManagementService_ServiceDesc is the grpc.ServiceDesc for ShardManagementService service.
+// ShardManagement_ServiceDesc is the grpc.ServiceDesc for ShardManagement service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var ShardManagementService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "shardman.ShardManagementService",
-	HandlerType: (*ShardManagementServiceServer)(nil),
+var ShardManagement_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "shardman.ShardManagement",
+	HandlerType: (*ShardManagementServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "InsertAccountShard",
-			Handler:    _ShardManagementService_InsertAccountShard_Handler,
+			Handler:    _ShardManagement_InsertAccountShard_Handler,
 		},
 		{
 			MethodName: "InsertCustomerShard",
-			Handler:    _ShardManagementService_InsertCustomerShard_Handler,
+			Handler:    _ShardManagement_InsertCustomerShard_Handler,
 		},
 		{
 			MethodName: "LookupAccountShardPair",
-			Handler:    _ShardManagementService_LookupAccountShardPair_Handler,
+			Handler:    _ShardManagement_LookupAccountShardPair_Handler,
 		},
 		{
 			MethodName: "LookupAccountShard",
-			Handler:    _ShardManagementService_LookupAccountShard_Handler,
+			Handler:    _ShardManagement_LookupAccountShard_Handler,
 		},
 		{
 			MethodName: "LookupCustomerShard",
-			Handler:    _ShardManagementService_LookupCustomerShard_Handler,
+			Handler:    _ShardManagement_LookupCustomerShard_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

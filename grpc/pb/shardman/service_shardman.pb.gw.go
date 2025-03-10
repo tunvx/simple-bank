@@ -31,7 +31,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_ShardManagementService_InsertAccountShard_0(ctx context.Context, marshaler runtime.Marshaler, client ShardManagementServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ShardManagement_InsertAccountShard_0(ctx context.Context, marshaler runtime.Marshaler, client ShardManagementClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq InsertAccountShardRequest
 	var metadata runtime.ServerMetadata
 
@@ -44,7 +44,7 @@ func request_ShardManagementService_InsertAccountShard_0(ctx context.Context, ma
 
 }
 
-func local_request_ShardManagementService_InsertAccountShard_0(ctx context.Context, marshaler runtime.Marshaler, server ShardManagementServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ShardManagement_InsertAccountShard_0(ctx context.Context, marshaler runtime.Marshaler, server ShardManagementServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq InsertAccountShardRequest
 	var metadata runtime.ServerMetadata
 
@@ -57,7 +57,7 @@ func local_request_ShardManagementService_InsertAccountShard_0(ctx context.Conte
 
 }
 
-func request_ShardManagementService_InsertCustomerShard_0(ctx context.Context, marshaler runtime.Marshaler, client ShardManagementServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ShardManagement_InsertCustomerShard_0(ctx context.Context, marshaler runtime.Marshaler, client ShardManagementClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq InsertCustomerShardRequest
 	var metadata runtime.ServerMetadata
 
@@ -70,7 +70,7 @@ func request_ShardManagementService_InsertCustomerShard_0(ctx context.Context, m
 
 }
 
-func local_request_ShardManagementService_InsertCustomerShard_0(ctx context.Context, marshaler runtime.Marshaler, server ShardManagementServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ShardManagement_InsertCustomerShard_0(ctx context.Context, marshaler runtime.Marshaler, server ShardManagementServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq InsertCustomerShardRequest
 	var metadata runtime.ServerMetadata
 
@@ -83,7 +83,7 @@ func local_request_ShardManagementService_InsertCustomerShard_0(ctx context.Cont
 
 }
 
-func request_ShardManagementService_LookupAccountShardPair_0(ctx context.Context, marshaler runtime.Marshaler, client ShardManagementServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ShardManagement_LookupAccountShardPair_0(ctx context.Context, marshaler runtime.Marshaler, client ShardManagementClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq LookupAccountShardPairRequest
 	var metadata runtime.ServerMetadata
 
@@ -96,7 +96,7 @@ func request_ShardManagementService_LookupAccountShardPair_0(ctx context.Context
 
 }
 
-func local_request_ShardManagementService_LookupAccountShardPair_0(ctx context.Context, marshaler runtime.Marshaler, server ShardManagementServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ShardManagement_LookupAccountShardPair_0(ctx context.Context, marshaler runtime.Marshaler, server ShardManagementServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq LookupAccountShardPairRequest
 	var metadata runtime.ServerMetadata
 
@@ -109,7 +109,7 @@ func local_request_ShardManagementService_LookupAccountShardPair_0(ctx context.C
 
 }
 
-func request_ShardManagementService_LookupAccountShard_0(ctx context.Context, marshaler runtime.Marshaler, client ShardManagementServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ShardManagement_LookupAccountShard_0(ctx context.Context, marshaler runtime.Marshaler, client ShardManagementClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq LookupAccountShardRequest
 	var metadata runtime.ServerMetadata
 
@@ -135,7 +135,7 @@ func request_ShardManagementService_LookupAccountShard_0(ctx context.Context, ma
 
 }
 
-func local_request_ShardManagementService_LookupAccountShard_0(ctx context.Context, marshaler runtime.Marshaler, server ShardManagementServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ShardManagement_LookupAccountShard_0(ctx context.Context, marshaler runtime.Marshaler, server ShardManagementServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq LookupAccountShardRequest
 	var metadata runtime.ServerMetadata
 
@@ -161,7 +161,7 @@ func local_request_ShardManagementService_LookupAccountShard_0(ctx context.Conte
 
 }
 
-func request_ShardManagementService_LookupCustomerShard_0(ctx context.Context, marshaler runtime.Marshaler, client ShardManagementServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ShardManagement_LookupCustomerShard_0(ctx context.Context, marshaler runtime.Marshaler, client ShardManagementClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq LookupCustomerShardRequest
 	var metadata runtime.ServerMetadata
 
@@ -187,7 +187,7 @@ func request_ShardManagementService_LookupCustomerShard_0(ctx context.Context, m
 
 }
 
-func local_request_ShardManagementService_LookupCustomerShard_0(ctx context.Context, marshaler runtime.Marshaler, server ShardManagementServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ShardManagement_LookupCustomerShard_0(ctx context.Context, marshaler runtime.Marshaler, server ShardManagementServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq LookupCustomerShardRequest
 	var metadata runtime.ServerMetadata
 
@@ -213,14 +213,14 @@ func local_request_ShardManagementService_LookupCustomerShard_0(ctx context.Cont
 
 }
 
-// RegisterShardManagementServiceHandlerServer registers the http handlers for service ShardManagementService to "mux".
-// UnaryRPC     :call ShardManagementServiceServer directly.
+// RegisterShardManagementHandlerServer registers the http handlers for service ShardManagement to "mux".
+// UnaryRPC     :call ShardManagementServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterShardManagementServiceHandlerFromEndpoint instead.
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterShardManagementHandlerFromEndpoint instead.
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
-func RegisterShardManagementServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ShardManagementServiceServer) error {
+func RegisterShardManagementHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ShardManagementServer) error {
 
-	mux.Handle("POST", pattern_ShardManagementService_InsertAccountShard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_ShardManagement_InsertAccountShard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -228,12 +228,12 @@ func RegisterShardManagementServiceHandlerServer(ctx context.Context, mux *runti
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/shardman.ShardManagementService/InsertAccountShard", runtime.WithHTTPPathPattern("/v1/shards/accounts"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/shardman.ShardManagement/InsertAccountShard", runtime.WithHTTPPathPattern("/v1/shards/accounts"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ShardManagementService_InsertAccountShard_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ShardManagement_InsertAccountShard_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -241,11 +241,11 @@ func RegisterShardManagementServiceHandlerServer(ctx context.Context, mux *runti
 			return
 		}
 
-		forward_ShardManagementService_InsertAccountShard_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ShardManagement_InsertAccountShard_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_ShardManagementService_InsertCustomerShard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_ShardManagement_InsertCustomerShard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -253,12 +253,12 @@ func RegisterShardManagementServiceHandlerServer(ctx context.Context, mux *runti
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/shardman.ShardManagementService/InsertCustomerShard", runtime.WithHTTPPathPattern("/v1/shards/customers"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/shardman.ShardManagement/InsertCustomerShard", runtime.WithHTTPPathPattern("/v1/shards/customers"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ShardManagementService_InsertCustomerShard_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ShardManagement_InsertCustomerShard_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -266,11 +266,11 @@ func RegisterShardManagementServiceHandlerServer(ctx context.Context, mux *runti
 			return
 		}
 
-		forward_ShardManagementService_InsertCustomerShard_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ShardManagement_InsertCustomerShard_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_ShardManagementService_LookupAccountShardPair_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_ShardManagement_LookupAccountShardPair_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -278,12 +278,12 @@ func RegisterShardManagementServiceHandlerServer(ctx context.Context, mux *runti
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/shardman.ShardManagementService/LookupAccountShardPair", runtime.WithHTTPPathPattern("/v1/shards/accounts/lookup-pair"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/shardman.ShardManagement/LookupAccountShardPair", runtime.WithHTTPPathPattern("/v1/shards/accounts/lookup-pair"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ShardManagementService_LookupAccountShardPair_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ShardManagement_LookupAccountShardPair_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -291,11 +291,11 @@ func RegisterShardManagementServiceHandlerServer(ctx context.Context, mux *runti
 			return
 		}
 
-		forward_ShardManagementService_LookupAccountShardPair_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ShardManagement_LookupAccountShardPair_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_ShardManagementService_LookupAccountShard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_ShardManagement_LookupAccountShard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -303,12 +303,12 @@ func RegisterShardManagementServiceHandlerServer(ctx context.Context, mux *runti
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/shardman.ShardManagementService/LookupAccountShard", runtime.WithHTTPPathPattern("/v1/shards/accounts/lookup/{account_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/shardman.ShardManagement/LookupAccountShard", runtime.WithHTTPPathPattern("/v1/shards/accounts/lookup/{account_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ShardManagementService_LookupAccountShard_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ShardManagement_LookupAccountShard_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -316,11 +316,11 @@ func RegisterShardManagementServiceHandlerServer(ctx context.Context, mux *runti
 			return
 		}
 
-		forward_ShardManagementService_LookupAccountShard_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ShardManagement_LookupAccountShard_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_ShardManagementService_LookupCustomerShard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_ShardManagement_LookupCustomerShard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -328,12 +328,12 @@ func RegisterShardManagementServiceHandlerServer(ctx context.Context, mux *runti
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/shardman.ShardManagementService/LookupCustomerShard", runtime.WithHTTPPathPattern("/v1/shards/customers/lookup/{customer_rid}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/shardman.ShardManagement/LookupCustomerShard", runtime.WithHTTPPathPattern("/v1/shards/customers/lookup/{customer_rid}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ShardManagementService_LookupCustomerShard_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ShardManagement_LookupCustomerShard_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -341,16 +341,16 @@ func RegisterShardManagementServiceHandlerServer(ctx context.Context, mux *runti
 			return
 		}
 
-		forward_ShardManagementService_LookupCustomerShard_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ShardManagement_LookupCustomerShard_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	return nil
 }
 
-// RegisterShardManagementServiceHandlerFromEndpoint is same as RegisterShardManagementServiceHandler but
+// RegisterShardManagementHandlerFromEndpoint is same as RegisterShardManagementHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterShardManagementServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+func RegisterShardManagementHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.NewClient(endpoint, opts...)
 	if err != nil {
 		return err
@@ -370,129 +370,129 @@ func RegisterShardManagementServiceHandlerFromEndpoint(ctx context.Context, mux 
 		}()
 	}()
 
-	return RegisterShardManagementServiceHandler(ctx, mux, conn)
+	return RegisterShardManagementHandler(ctx, mux, conn)
 }
 
-// RegisterShardManagementServiceHandler registers the http handlers for service ShardManagementService to "mux".
+// RegisterShardManagementHandler registers the http handlers for service ShardManagement to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterShardManagementServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterShardManagementServiceHandlerClient(ctx, mux, NewShardManagementServiceClient(conn))
+func RegisterShardManagementHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return RegisterShardManagementHandlerClient(ctx, mux, NewShardManagementClient(conn))
 }
 
-// RegisterShardManagementServiceHandlerClient registers the http handlers for service ShardManagementService
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "ShardManagementServiceClient".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "ShardManagementServiceClient"
+// RegisterShardManagementHandlerClient registers the http handlers for service ShardManagement
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "ShardManagementClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "ShardManagementClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "ShardManagementServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
-func RegisterShardManagementServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ShardManagementServiceClient) error {
+// "ShardManagementClient" to call the correct interceptors. This client ignores the HTTP middlewares.
+func RegisterShardManagementHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ShardManagementClient) error {
 
-	mux.Handle("POST", pattern_ShardManagementService_InsertAccountShard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_ShardManagement_InsertAccountShard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/shardman.ShardManagementService/InsertAccountShard", runtime.WithHTTPPathPattern("/v1/shards/accounts"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/shardman.ShardManagement/InsertAccountShard", runtime.WithHTTPPathPattern("/v1/shards/accounts"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ShardManagementService_InsertAccountShard_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ShardManagement_InsertAccountShard_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ShardManagementService_InsertAccountShard_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ShardManagement_InsertAccountShard_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_ShardManagementService_InsertCustomerShard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_ShardManagement_InsertCustomerShard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/shardman.ShardManagementService/InsertCustomerShard", runtime.WithHTTPPathPattern("/v1/shards/customers"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/shardman.ShardManagement/InsertCustomerShard", runtime.WithHTTPPathPattern("/v1/shards/customers"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ShardManagementService_InsertCustomerShard_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ShardManagement_InsertCustomerShard_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ShardManagementService_InsertCustomerShard_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ShardManagement_InsertCustomerShard_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_ShardManagementService_LookupAccountShardPair_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_ShardManagement_LookupAccountShardPair_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/shardman.ShardManagementService/LookupAccountShardPair", runtime.WithHTTPPathPattern("/v1/shards/accounts/lookup-pair"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/shardman.ShardManagement/LookupAccountShardPair", runtime.WithHTTPPathPattern("/v1/shards/accounts/lookup-pair"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ShardManagementService_LookupAccountShardPair_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ShardManagement_LookupAccountShardPair_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ShardManagementService_LookupAccountShardPair_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ShardManagement_LookupAccountShardPair_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_ShardManagementService_LookupAccountShard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_ShardManagement_LookupAccountShard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/shardman.ShardManagementService/LookupAccountShard", runtime.WithHTTPPathPattern("/v1/shards/accounts/lookup/{account_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/shardman.ShardManagement/LookupAccountShard", runtime.WithHTTPPathPattern("/v1/shards/accounts/lookup/{account_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ShardManagementService_LookupAccountShard_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ShardManagement_LookupAccountShard_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ShardManagementService_LookupAccountShard_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ShardManagement_LookupAccountShard_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_ShardManagementService_LookupCustomerShard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_ShardManagement_LookupCustomerShard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/shardman.ShardManagementService/LookupCustomerShard", runtime.WithHTTPPathPattern("/v1/shards/customers/lookup/{customer_rid}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/shardman.ShardManagement/LookupCustomerShard", runtime.WithHTTPPathPattern("/v1/shards/customers/lookup/{customer_rid}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ShardManagementService_LookupCustomerShard_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ShardManagement_LookupCustomerShard_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ShardManagementService_LookupCustomerShard_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ShardManagement_LookupCustomerShard_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -500,25 +500,25 @@ func RegisterShardManagementServiceHandlerClient(ctx context.Context, mux *runti
 }
 
 var (
-	pattern_ShardManagementService_InsertAccountShard_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "shards", "accounts"}, ""))
+	pattern_ShardManagement_InsertAccountShard_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "shards", "accounts"}, ""))
 
-	pattern_ShardManagementService_InsertCustomerShard_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "shards", "customers"}, ""))
+	pattern_ShardManagement_InsertCustomerShard_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "shards", "customers"}, ""))
 
-	pattern_ShardManagementService_LookupAccountShardPair_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "shards", "accounts", "lookup-pair"}, ""))
+	pattern_ShardManagement_LookupAccountShardPair_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "shards", "accounts", "lookup-pair"}, ""))
 
-	pattern_ShardManagementService_LookupAccountShard_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "shards", "accounts", "lookup", "account_id"}, ""))
+	pattern_ShardManagement_LookupAccountShard_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "shards", "accounts", "lookup", "account_id"}, ""))
 
-	pattern_ShardManagementService_LookupCustomerShard_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "shards", "customers", "lookup", "customer_rid"}, ""))
+	pattern_ShardManagement_LookupCustomerShard_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "shards", "customers", "lookup", "customer_rid"}, ""))
 )
 
 var (
-	forward_ShardManagementService_InsertAccountShard_0 = runtime.ForwardResponseMessage
+	forward_ShardManagement_InsertAccountShard_0 = runtime.ForwardResponseMessage
 
-	forward_ShardManagementService_InsertCustomerShard_0 = runtime.ForwardResponseMessage
+	forward_ShardManagement_InsertCustomerShard_0 = runtime.ForwardResponseMessage
 
-	forward_ShardManagementService_LookupAccountShardPair_0 = runtime.ForwardResponseMessage
+	forward_ShardManagement_LookupAccountShardPair_0 = runtime.ForwardResponseMessage
 
-	forward_ShardManagementService_LookupAccountShard_0 = runtime.ForwardResponseMessage
+	forward_ShardManagement_LookupAccountShard_0 = runtime.ForwardResponseMessage
 
-	forward_ShardManagementService_LookupCustomerShard_0 = runtime.ForwardResponseMessage
+	forward_ShardManagement_LookupCustomerShard_0 = runtime.ForwardResponseMessage
 )

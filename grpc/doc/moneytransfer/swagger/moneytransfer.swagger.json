@@ -11,7 +11,7 @@
   },
   "tags": [
     {
-      "name": "MoneyTransferService"
+      "name": "MoneyTransfer"
     }
   ],
   "consumes": [
@@ -25,7 +25,7 @@
       "post": {
         "summary": "Check Account",
         "description": "Validate account status and currency.",
-        "operationId": "MoneyTransferService_CheckAccount",
+        "operationId": "MoneyTransfer_CheckAccount",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -51,7 +51,7 @@
           }
         ],
         "tags": [
-          "MoneyTransferService"
+          "MoneyTransfer"
         ]
       }
     },
@@ -59,7 +59,7 @@
       "post": {
         "summary": "Receive Money",
         "description": "Perform an money receiving.",
-        "operationId": "MoneyTransferService_ReceiveMoney",
+        "operationId": "MoneyTransfer_ReceiveMoney",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -85,7 +85,7 @@
           }
         ],
         "tags": [
-          "MoneyTransferService"
+          "MoneyTransfer"
         ]
       }
     },
@@ -93,7 +93,7 @@
       "post": {
         "summary": "External Money Transfer",
         "description": "Perform an money transfer to another bank.",
-        "operationId": "MoneyTransferService_ExternalTransferMoney",
+        "operationId": "MoneyTransfer_ExternalTransferMoney",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -119,7 +119,7 @@
           }
         ],
         "tags": [
-          "MoneyTransferService"
+          "MoneyTransfer"
         ]
       }
     },
@@ -127,7 +127,7 @@
       "post": {
         "summary": "Internal Money Transfer",
         "description": "Perform an money transfer within the bank.",
-        "operationId": "MoneyTransferService_InternalTransferMoney",
+        "operationId": "MoneyTransfer_InternalTransferMoney",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -153,7 +153,7 @@
           }
         ],
         "tags": [
-          "MoneyTransferService"
+          "MoneyTransfer"
         ]
       }
     },
@@ -161,7 +161,7 @@
       "post": {
         "summary": "Mock Check Account with Auth",
         "description": "Simulates account validation with authentication processing.",
-        "operationId": "MoneyTransferService_TestCheckAccountJustAuth",
+        "operationId": "MoneyTransfer_TestCheckAccountJustAuth",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -187,7 +187,7 @@
           }
         ],
         "tags": [
-          "MoneyTransferService"
+          "MoneyTransfer"
         ]
       }
     },
@@ -195,7 +195,7 @@
       "post": {
         "summary": "Mock Check Account",
         "description": "Simulates account validation without processing.",
-        "operationId": "MoneyTransferService_TestCheckAccountNoProcessing",
+        "operationId": "MoneyTransfer_TestCheckAccountNoProcessing",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -221,7 +221,7 @@
           }
         ],
         "tags": [
-          "MoneyTransferService"
+          "MoneyTransfer"
         ]
       }
     },
@@ -229,7 +229,7 @@
       "get": {
         "summary": "Limit Empty Get",
         "description": "Basic server connectivity test using a GET request.",
-        "operationId": "MoneyTransferService_TestEmptyGET",
+        "operationId": "MoneyTransfer_TestEmptyGET",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -245,7 +245,7 @@
           }
         },
         "tags": [
-          "MoneyTransferService"
+          "MoneyTransfer"
         ]
       }
     },
@@ -253,7 +253,7 @@
       "post": {
         "summary": "Limit Empty Post",
         "description": "Basic server connectivity test using a POST request.",
-        "operationId": "MoneyTransferService_TestEmptyPOST",
+        "operationId": "MoneyTransfer_TestEmptyPOST",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -279,7 +279,7 @@
           }
         ],
         "tags": [
-          "MoneyTransferService"
+          "MoneyTransfer"
         ]
       }
     },
@@ -287,7 +287,7 @@
       "post": {
         "summary": "Mock Internal Transfer with Auth",
         "description": "Simulates an internal transfer request with authentication processing.",
-        "operationId": "MoneyTransferService_TestInternalTransferMoneyJustAuth",
+        "operationId": "MoneyTransfer_TestInternalTransferMoneyJustAuth",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -313,7 +313,7 @@
           }
         ],
         "tags": [
-          "MoneyTransferService"
+          "MoneyTransfer"
         ]
       }
     },
@@ -321,7 +321,7 @@
       "post": {
         "summary": "Mock Internal Transfer",
         "description": "Simulates an internal transfer request without processing.",
-        "operationId": "MoneyTransferService_TestInternalTransferMoneyNoProcessing",
+        "operationId": "MoneyTransfer_TestInternalTransferMoneyNoProcessing",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -347,7 +347,7 @@
           }
         ],
         "tags": [
-          "MoneyTransferService"
+          "MoneyTransfer"
         ]
       }
     }
