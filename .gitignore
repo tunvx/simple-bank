@@ -27,4 +27,9 @@ go.work.sum
 *.ipynb
 *.DS_Store
 
+*.env
+config.env
+config.dev.env
+**/config.env
+**/*.env
 
