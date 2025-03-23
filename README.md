@@ -156,20 +156,33 @@ After deploy monitor, do the following steps:
 |-----|-----------|-------------------|----------------|-----------------------|------------------|------------------|------------------|------------------|------------------|
 | 1   | Raw       | Empty GET         | 3              | -                     | *                | -                | -                | -                | -                |
 | 2   | Raw       | Empty POST        | 3              | -                     | *                | -                | -                | -                | -                |
-| 3   | gRPC      | Empty GET         | 3              | 6,128,749             | **34,047**       | 2.9              | 0.167            | 59.04            | 4.56             |
-| 4   | gRPC      | Empty POST        | 3              | 5,344,435             | **29,690**       | 3.32             | 0.194            | 34.86            | 6.4              |
-| 5   | gRPC      | Check Account     | 3              | 3,251,939             | **18,065**       | 5.49             | 0.329            | 127.54           | 11.77            |
-| 6   | gRPC      | Transfer Money    | 3              | 1,278,048             | **7,099**        | 14.0             | 2.07             | 588.27           | 22.95            |
+| 3   | gRPC      | Empty GET         | 3              | 7,351,829             | **40,772**       | 2.44             | 0.096            | 4010            | 1.43             |
+| 4   | gRPC      | Empty POST        | 3              | 6,833,348             | **37,941**       | 2.62             | 0.092            | 1400             | 1.61              |
+| 5   | gRPC      | Check Account     | 3              | 4,100,233             | **22,765**       | 4.38             | 0.196            | 1400           | 4.01            |
+| 6   | gRPC      | Transfer Money    | 3              | 679,187               | **3,772**        | 26.49            | 1.50             | 721.19           | 39.15            |
 
 
 Refer to the `docs` folder for details (experiment and analyze results):
 ```bash
-  https://github.com/tunvx/simple-bank/tree/main/docs
+  https://github.com/tunvx/simple-bank/blob/main/docs/performance-testing.md
+
+  https://github.com/tunvx/simple-bank/tree/main/testing/performance_testing_results
 ```
 
 ## Deploy to Kubernetes
 
 ## Documentation
+After deploy, refer to the `swagger docs` for each service:
+
+```bash
+  http://shardman.banking.local/docs/
+  
+  http://auth.banking.local/docs/
+  
+  http://cusman.banking.local/docs/
+  
+  http://moneytransfer.banking.local/docs/
+```
 
 ## Appendix
 

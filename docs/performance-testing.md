@@ -1,4 +1,83 @@
-# 1. Testing transfer money on one shard (a single shard 0.5 CPU, 1GB RAM)
+# 1. Test Summary
+| No. | Test Scenario | Resource | Duration (min) | TPS (tran/s) | Avg Latency (ms) | P95 Latency (ms) |
+|-----|---------------|----------|----------------|-----|-------------|-----------------|
+| 1 | Money Transfer | 1 shard (each shard 0.5 CPU, 1GB RAM) | 1m | **1445** | 69.15 | 94.29 |  
+| 2 | Money Transfer | 2 shard (each shard 0.5 CPU, 1GB RAM) | 1m | **2383** | 41.92 | 78.03 |  
+| 3 | Money Transfer | 2 shard (each shard 5.0 CPU, 6GB RAM) | 1m | **3987** | 25.06 | 39.26 |  
+| 4 | pgbench | 1 database node (10 CPU, 12GB RAM) | 1m | **5565** | 17.96 | - |  
+
+# 2. Observations & Analysis
+## Money Transfer
+- **Khi sử dụng 1 shard (0.5 CPU, 1GB RAM):**
+   - Đạt 1445 TPS, độ trễ trung bình 69.15 ms, P95 latency 94.29 ms.
+
+- **Khi mở rộng lên 2 shards (mỗi shard 0.5 CPU, 1GB RAM):**
+   - TPS tăng lên 2383 TPS (tăng ~65% so với 1 shard).
+   - Độ trễ trung bình giảm còn 41.92 ms, P95 latency giảm còn 78.03 ms.
+
+- **Khi thêm resource cho 2 shards (mỗi shard 5 CPU, 6GB RAM):**
+   - TPS đạt 3987 TPS, tăng thêm nhưng không tuyến tính với tài nguyên tăng.
+   - Độ trễ trung bình giảm còn 25.06 ms, P95 latency giảm còn 39.26 ms.
+
+## pgbench
+- Với 1 database node (10 CPU, 12GB RAM), đạt 5565 TPS, độ trễ trung bình 17.96ms.
+- Transaction đơn giản hơn, mô phỏng giao dịch ngân hàng, bao gồm: 1 SELECT, 3 UPDATE, 1 INSERT, không có thêm xử lý ngoài DB.
+
+```sql
+1. BEGIN;
+2. UPDATE pgbench_accounts SET abalance = abalance + :delta WHERE aid = :aid;
+3. SELECT abalance FROM pgbench_accounts WHERE aid = :aid;
+4. UPDATE pgbench_tellers SET tbalance = tbalance + :delta WHERE tid = :tid;
+5. UPDATE pgbench_branches SET bbalance = bbalance + :delta WHERE bid = :bid;
+6. INSERT INTO pgbench_history (tid, bid, aid, delta, mtime) VALUES (:tid, :bid, :aid, :delta, CURRENT_TIMESTAMP);
+7. COMMIT;
+```
+
+# 3. Detailed Analysis (oservation from monitoring chart)
+My Test Machine: Macbook Pro M1 (10 CPU, 12GB RAM)
+
+## Money Transfer vs. pgbench
+- Money Transfer có TPS thấp hơn so với pgbench (cấu hình tương đương):
+   - Ngữ cảnh Money Transfer:
+      - Gồm 2 transaction con: mỗi transaction có 1 UPDATE, 1 INSERT.
+      - Có thêm thao tác ghi Kafka (gây thêm I/O disk).
+   - pgbench đơn giản hơn, không có xử lý ngoài DB.
+
+=> Money Transfer chỉ đạt ~70% TPS so với pgbench, chủ yếu do có thêm thao tác ghi ngoài (Kafka) và nhiều transaction nhỏ.
+
+## CPU Usage
+Biểu đồ CPU không đạt mức bão hòa (<40% CPU test machine), chứng tỏ CPU không phải là nút thắt cổ chai chính (total 100% CPU).
+
+Khi tăng số lượng CPU từ 0.5 → 10 CPU, mức sử dụng CPU tăng lên nhưng không tương ứng với mức tăng của TPS.
+
+## Memory Usage
+RAM sử dụng thấp (~4GB RAM), không có dấu hiệu bị thiếu bộ nhớ (total 12GB RAM).
+
+Điều này gợi ý rằng vấn đề không phải do bộ nhớ bị hạn chế.
+
+## Disk I/O và Network Traffic
+- **I/O Metrics:**
+   - **Context switch:** ~160k (rất cao)
+   - **I/O Utilization:** ~80%
+   - **Disk IO:** ~5k ops/s
+   - **Time Spent on I/Os:** ~80%
+   - **Disk R/W merged:** ~1.2k ops/s
+
+Transaction có nhiều insert/update nhưng mỗi lần chỉ ghi một lượng nhỏ dữ liệu thay vì batch insert/update, việc ghi lên đĩa liên tục với cường độ cao gây ra disk I/O bottleneck.
+
+## Conclusion
+- **Nút thắt chính:**
+
+   - **Disk I/O bottleneck:** Transaction nhỏ lẻ, liên tục ghi disk + Kafka log → Disk utilization cao (~80%), gây giới hạn TPS.
+
+   - **Context switch quá nhiều (~160k):** Do xử lý nhiều transaction nhỏ, thread lifecycle ngắn, dẫn đến overhead scheduling.
+
+   - **CPU và RAM không phải giới hạn chính**, dù CPU tăng mạnh nhưng TPS không tỷ lệ thuận, chủ yếu vì bottleneck nằm ở disk và context switching.
+
+# Appendix
+![Architecture Diagram](./performance-testing.png)
+
+## Test 1. Testing transfer money on one shard (a single shard 0.5 CPU, 1GB RAM)
 ```sh
 $ k6 run --vus 100 --duration 1m k6_scripts/transfer_money.js
 
@@ -41,7 +120,7 @@ running (1m00.0s), 000/100 VUs, 86776 complete and 0 interrupted iterations
 default ✓ [======================================] 100 VUs  1m0s
 ```
 
-# 2. Testing transfer money on two shard (each shard 0.5 CPU, 1GB RAM)
+## Test 2. Testing transfer money on two shard (each shard 0.5 CPU, 1GB RAM)
 ```sh
 $ k6 run --vus 100 --duration 1m k6_scripts/transfer_money.js
 
@@ -84,10 +163,9 @@ running (1m00.1s), 000/100 VUs, 143141 complete and 0 interrupted iterations
 default ✓ [======================================] 100 VUs  1m0s
 ```
 
-# 3. Testing transfer money on two shard (no limit resource [ 10 CPU, 12GB RAM ])
+## Test 3. Testing transfer money on two shard (no limit resource [ 10 CPU, 12GB RAM ])
 ```sh
-$ k6 run --vus 100 --duration 2m k6_scripts/transfer_money.js
-
+$ k6 run --vus 100 --duration 1m k6_scripts/transfer_money.js
 
           /\      |‾‾| /‾‾/   /‾‾/   
      /\  /  \     |  |/  /   /  /    
@@ -96,38 +174,39 @@ $ k6 run --vus 100 --duration 2m k6_scripts/transfer_money.js
   / __________ \  |__| \__\ \_____/ .io
 
      execution: local
-        script: k6_scripts/transfer_money.js
+        script: testing/k6_scripts/transfer_money.js
         output: -
 
-     scenarios: (100.00%) 1 scenario, 100 max VUs, 2m30s max duration (incl. graceful stop):
-              * default: 100 looping VUs for 2m0s (gracefulStop: 30s)
+     scenarios: (100.00%) 1 scenario, 100 max VUs, 1m30s max duration (incl. graceful stop):
+              * default: 100 looping VUs for 1m0s (gracefulStop: 30s)
 
-INFO[0120] Preparing the end-of-test summary...          source=console
-INFO[0120]      ✓ is status 200
+INFO[0060] Preparing the end-of-test summary...          source=console
+INFO[0060]      ✓ is status 200
 
-     checks.........................: 100.00% ✓ 445727      ✗ 0     
-     data_received..................: 526 MB  4.4 MB/s
-     data_sent......................: 297 MB  2.5 MB/s
-     http_req_blocked...............: avg=2.21µs  min=0s     med=1µs     max=15.22ms  p(90)=2µs     p(95)=3µs    
-     http_req_connecting............: avg=512ns   min=0s     med=0s      max=3.1ms    p(90)=0s      p(95)=0s     
-     http_req_duration..............: avg=26.82ms min=1.87ms med=29.37ms max=564.52ms p(90)=36.85ms p(95)=39.61ms
-       { expected_response:true }...: avg=26.82ms min=1.87ms med=29.37ms max=564.52ms p(90)=36.85ms p(95)=39.61ms
-     http_req_failed................: 0.00%   ✓ 0           ✗ 445727
-     http_req_receiving.............: avg=23.52µs min=5µs    med=19µs    max=14.51ms  p(90)=30µs    p(95)=36µs   
-     http_req_sending...............: avg=12.02µs min=3µs    med=8µs     max=20.64ms  p(90)=15µs    p(95)=17µs   
-     http_req_tls_handshaking.......: avg=0s      min=0s     med=0s      max=0s       p(90)=0s      p(95)=0s     
-     http_req_waiting...............: avg=26.78ms min=1.84ms med=29.33ms max=560.75ms p(90)=36.81ms p(95)=39.56ms
-     http_reqs......................: 445727  3713.634673/s
-     iteration_duration.............: avg=26.91ms min=1.95ms med=29.46ms max=564.72ms p(90)=36.94ms p(95)=39.7ms 
-     iterations.....................: 445727  3713.634673/s
+     checks.........................: 100.00% ✓ 239393      ✗ 0     
+     data_received..................: 283 MB  4.7 MB/s
+     data_sent......................: 159 MB  2.7 MB/s
+     http_req_blocked...............: avg=2.55µs  min=0s     med=1µs     max=4.18ms p(90)=2µs     p(95)=2µs    
+     http_req_connecting............: avg=970ns   min=0s     med=0s      max=2.95ms p(90)=0s      p(95)=0s     
+     http_req_duration..............: avg=24.98ms min=1.18ms med=28.23ms max=1.05s  p(90)=36.12ms p(95)=39.19ms
+       { expected_response:true }...: avg=24.98ms min=1.18ms med=28.23ms max=1.05s  p(90)=36.12ms p(95)=39.19ms
+     http_req_failed................: 0.00%   ✓ 0           ✗ 239393
+     http_req_receiving.............: avg=20.58µs min=5µs    med=17µs    max=4.58ms p(90)=29µs    p(95)=37µs   
+     http_req_sending...............: avg=9.91µs  min=2µs    med=8µs     max=5.39ms p(90)=13µs    p(95)=17µs   
+     http_req_tls_handshaking.......: avg=0s      min=0s     med=0s      max=0s     p(90)=0s      p(95)=0s     
+     http_req_waiting...............: avg=24.95ms min=1.15ms med=28.2ms  max=1.05s  p(90)=36.09ms p(95)=39.16ms
+     http_reqs......................: 239393  3987.697809/s
+     iteration_duration.............: avg=25.06ms min=1.24ms med=28.31ms max=1.05s  p(90)=36.19ms p(95)=39.26ms
+     iterations.....................: 239393  3987.697809/s
      vus............................: 100     min=100       max=100 
      vus_max........................: 100     min=100       max=100   source=console
+ERRO[0060] failed to handle the end-of-test summary      error="Could not save some summary information:\n\t- could not open 'json_results/transfer_money_VU_100_DURATION_1M0S.json': open json_results/transfer_money_VU_100_DURATION_1M0S.json: no such file or directory"
 
-running (2m00.0s), 000/100 VUs, 445727 complete and 0 interrupted iterations
-default ✓ [======================================] 100 VUs  2m0s
+running (1m00.0s), 000/100 VUs, 239393 complete and 0 interrupted iterations
+default ✓ [======================================] 100 VUs  1m0s
 ```
 
-# 4. Testing with pgbench
+## Test 4. Testing with pgbench
 ```sh
 $ pgbench -i -s 10 mydb
 dropping old tables...
@@ -152,44 +231,5 @@ latency average = 17.968 ms
 initial connection time = 35.468 ms
 tps = 5565.384840 (without initial connection time)
 ```
-
-# 5. Monitoring four test
-![Architecture Diagram](./performance-testing-monitoring.png)
-
-# 6. Phân tích kết quả
-My Test Machine: Macbook Pro M1 (10 CPU, 12GB RAM)
-
-### 1. Kết quả kiểm thử
-- **1 shard (0.5 CPU, 1GB RAM):** 1445 TPS, avg latency 69.15ms.
-- **2 shards (0.5 CPU, 2GB RAM each):** 2383 TPS, avg latency 41.92ms.
-- **2 shards (10 CPU, 12GB RAM each):** 3713 TPS, avg latency 26.91ms.
-    - **Context 1:** 1 transaction: 2 update, 2 insert.
-    - **Context 2:**
-        - **1 kafka write:** 1 insert
-        - **1 transaction:** 1 update, 1 insert.
-        - **1 transaction:** 1 update, 1 insert.
-- pgbench test (10 CPU, 12GB RAM each): 5565 TPS, avg latency 17.968ms.
-    - 1 transaction: 1 SELECT, 3 UPDATE, 1 INSERT
-
-Nhìn qua, việc tăng số lượng CPU và RAM giúp giảm độ trễ trung bình (latency), nhưng TPS không tăng đáng kể khi tài nguyên tăng lên nhiều lần.
-- 5565 TPS (pgbench) * 2/3 = ~3713 TPS (transfer money) (vì ngữ cảnh chuyển tiền có thêm 1 lần kafka ghi xuống đĩa nữa)
-
-### 2. Quan sát từ biểu đồ monitoring
-**a) CPU Usage**
-Biểu đồ CPU không đạt mức bão hòa (có phần trống), chứng tỏ CPU không phải là nút thắt cổ chai chính.
-Khi tăng số lượng CPU từ 0.5 → 10, mức sử dụng CPU tăng lên nhưng không tương ứng với mức tăng của TPS.
-**b) Memory Usage**
-RAM sử dụng thấp, không có dấu hiệu bị thiếu bộ nhớ.
-Điều này gợi ý rằng vấn đề không phải do bộ nhớ bị hạn chế.
-**c) Disk I/O và Network Traffic**
-Nếu có nhiều update nhưng mỗi lần chỉ ghi một lượng nhỏ dữ liệu, việc ghi đĩa liên tục có thể gây ra context switch cao (~160k) và gây tắc nghẽn I/O (IO utilization:: 80%, Disk IO:: 5k io/s).
-Nếu transaction ghi xuống DB theo từng bản ghi nhỏ thay vì batch insert/update, số lần gọi I/O sẽ quá nhiều.
-### 3. Kết luận
-Nút thắt chính có thể là context switch quá nhiều. Khi cập nhật từng record nhỏ lẻ, số lượng syscalls và context switch tăng mạnh, khiến hiệu suất bị giới hạn.
-Disk I/O có thể là vấn đề. Nếu DB liên tục ghi dữ liệu theo từng giao dịch nhỏ mà không batch lại, tốc độ ghi của ổ đĩa sẽ giới hạn TPS.
-CPU không phải vấn đề lớn, nhưng overhead scheduling có thể là nguyên nhân. Việc tăng CPU từ 0.5 lên 10 có thể dẫn đến nhiều thread hơn, nhưng nếu mỗi thread chỉ làm việc rất ngắn rồi chuyển context, hệ thống sẽ mất thời gian để quản lý hơn là thực sự xử lý logic.
-
-### 4. AWS Limitatioin
-- **pgbench:** [41,498 transactions with Amazon Aurora PostgreSQL-compatibleedition dr4.16xlarge - 64 vCPUs, 488 GiB.](https://d1.awsstatic.com/product-marketing/Aurora/RDS_Aurora_PostgreSQL_Performance_Assessment_Benchmarking_V1-0.pdf)
 
 

@@ -1,0 +1,159 @@
+(base) tunv@MacBook-Pro testing % 
+(base) tunv@MacBook-Pro testing % ./run_k6_all_test.sh
+Running script: k6_scripts/empty_get.js
+
+          /\      |‾‾| /‾‾/   /‾‾/   
+     /\  /  \     |  |/  /   /  /    
+    /  \/    \    |     (   /   ‾‾\  
+   /          \   |  |\  \ |  (‾)  | 
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: k6_scripts/empty_get.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 100 max VUs, 3m30s max duration (incl. graceful stop):
+              * default: 100 looping VUs for 3m0s (gracefulStop: 30s)
+
+INFO[0182] Preparing the end-of-test summary...          source=console
+INFO[0182]      ✓ is status 200
+
+     checks.........................: 100.00% ✓ 7351829      ✗ 0      
+     data_received..................: 875 MB  4.9 MB/s
+     data_sent......................: 713 MB  4.0 MB/s
+     http_req_blocked...............: avg=755ns   min=0s      med=1µs      max=6.26ms p(90)=1µs    p(95)=2µs   
+     http_req_connecting............: avg=34ns    min=0s      med=0s       max=3.21ms p(90)=0s     p(95)=0s    
+     http_req_duration..............: avg=2.41ms  min=82µs    med=643µs    max=4.01s  p(90)=1.16ms p(95)=1.4ms 
+       { expected_response:true }...: avg=2.41ms  min=82µs    med=643µs    max=4.01s  p(90)=1.16ms p(95)=1.4ms 
+     http_req_failed................: 0.00%   ✓ 0            ✗ 7351829
+     http_req_receiving.............: avg=10.41µs min=3µs     med=8µs      max=9.9ms  p(90)=18µs   p(95)=24µs  
+     http_req_sending...............: avg=3.45µs  min=1µs     med=2µs      max=6.57ms p(90)=6µs    p(95)=8µs   
+     http_req_tls_handshaking.......: avg=0s      min=0s      med=0s       max=0s     p(90)=0s     p(95)=0s    
+     http_req_waiting...............: avg=2.4ms   min=73µs    med=630µs    max=4.01s  p(90)=1.15ms p(95)=1.39ms
+     http_reqs......................: 7351829 40772.243816/s
+     iteration_duration.............: avg=2.44ms  min=96.79µs med=671.08µs max=4.01s  p(90)=1.19ms p(95)=1.43ms
+     iterations.....................: 7351829 40772.243816/s
+     vus............................: 100     min=100        max=100  
+     vus_max........................: 100     min=100        max=100    source=console
+
+running (3m00.3s), 000/100 VUs, 7351829 complete and 0 interrupted iterations
+default ✓ [======================================] 100 VUs  3m0s
+Completed script: k6_scripts/empty_get.js. Sleeping for 120 seconds.
+Running script: k6_scripts/empty_post.js
+
+          /\      |‾‾| /‾‾/   /‾‾/   
+     /\  /  \     |  |/  /   /  /    
+    /  \/    \    |     (   /   ‾‾\  
+   /          \   |  |\  \ |  (‾)  | 
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: k6_scripts/empty_post.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 100 max VUs, 3m30s max duration (incl. graceful stop):
+              * default: 100 looping VUs for 3m0s (gracefulStop: 30s)
+
+INFO[0181] Preparing the end-of-test summary...          source=console
+INFO[0181]      ✓ is status 200
+
+     checks.........................: 100.00% ✓ 6833348      ✗ 0      
+     data_received..................: 813 MB  4.5 MB/s
+     data_sent......................: 1.5 GB  8.3 MB/s
+     http_req_blocked...............: avg=765ns   min=0s      med=1µs      max=3.5ms   p(90)=1µs    p(95)=2µs   
+     http_req_connecting............: avg=25ns    min=0s      med=0s       max=2.64ms  p(90)=0s     p(95)=0s    
+     http_req_duration..............: avg=2.59ms  min=72µs    med=689µs    max=1.4s    p(90)=1.28ms p(95)=1.56ms
+       { expected_response:true }...: avg=2.59ms  min=72µs    med=689µs    max=1.4s    p(90)=1.28ms p(95)=1.56ms
+     http_req_failed................: 0.00%   ✓ 0            ✗ 6833348
+     http_req_receiving.............: avg=10.72µs min=3µs     med=8µs      max=10.11ms p(90)=18µs   p(95)=24µs  
+     http_req_sending...............: avg=4.17µs  min=1µs     med=3µs      max=5.57ms  p(90)=7µs    p(95)=10µs  
+     http_req_tls_handshaking.......: avg=0s      min=0s      med=0s       max=0s      p(90)=0s     p(95)=0s    
+     http_req_waiting...............: avg=2.57ms  min=0s      med=674µs    max=1.4s    p(90)=1.27ms p(95)=1.55ms
+     http_reqs......................: 6833348 37941.685805/s
+     iteration_duration.............: avg=2.62ms  min=92.91µs med=725.91µs max=1.4s    p(90)=1.32ms p(95)=1.61ms
+     iterations.....................: 6833348 37941.685805/s
+     vus............................: 100     min=100        max=100  
+     vus_max........................: 100     min=100        max=100    source=console
+
+running (3m00.1s), 000/100 VUs, 6833348 complete and 0 interrupted iterations
+default ✓ [======================================] 100 VUs  3m0s
+Completed script: k6_scripts/empty_post.js. Sleeping for 120 seconds.
+Running script: k6_scripts/check_account.js
+
+          /\      |‾‾| /‾‾/   /‾‾/   
+     /\  /  \     |  |/  /   /  /    
+    /  \/    \    |     (   /   ‾‾\  
+   /          \   |  |\  \ |  (‾)  | 
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: k6_scripts/check_account.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 100 max VUs, 3m30s max duration (incl. graceful stop):
+              * default: 100 looping VUs for 3m0s (gracefulStop: 30s)
+
+INFO[0181] Preparing the end-of-test summary...          source=console
+INFO[0181]      ✓ is status 200
+
+     checks.........................: 100.00% ✓ 4100233      ✗ 0      
+     data_received..................: 636 MB  3.5 MB/s
+     data_sent......................: 2.3 GB  13 MB/s
+     http_req_blocked...............: avg=813ns   min=0s       med=1µs    max=4.36ms p(90)=1µs    p(95)=2µs   
+     http_req_connecting............: avg=45ns    min=0s       med=0s     max=3.48ms p(90)=0s     p(95)=0s    
+     http_req_duration..............: avg=4.34ms  min=173µs    med=1.31ms max=1.4s   p(90)=2.99ms p(95)=3.96ms
+       { expected_response:true }...: avg=4.34ms  min=173µs    med=1.31ms max=1.4s   p(90)=2.99ms p(95)=3.96ms
+     http_req_failed................: 0.00%   ✓ 0            ✗ 4100233
+     http_req_receiving.............: avg=10.44µs min=3µs      med=7µs    max=6.18ms p(90)=17µs   p(95)=24µs  
+     http_req_sending...............: avg=4.61µs  min=1µs      med=3µs    max=5.54ms p(90)=8µs    p(95)=11µs  
+     http_req_tls_handshaking.......: avg=0s      min=0s       med=0s     max=0s     p(90)=0s     p(95)=0s    
+     http_req_waiting...............: avg=4.33ms  min=165µs    med=1.29ms max=1.4s   p(90)=2.97ms p(95)=3.94ms
+     http_reqs......................: 4100233 22765.633542/s
+     iteration_duration.............: avg=4.38ms  min=196.12µs med=1.35ms max=1.4s   p(90)=3.04ms p(95)=4.01ms
+     iterations.....................: 4100233 22765.633542/s
+     vus............................: 100     min=100        max=100  
+     vus_max........................: 100     min=100        max=100    source=console
+
+running (3m00.1s), 000/100 VUs, 4100233 complete and 0 interrupted iterations
+default ✓ [======================================] 100 VUs  3m0s
+Completed script: k6_scripts/check_account.js. Sleeping for 120 seconds.
+Running script: k6_scripts/transfer_money.js
+
+          /\      |‾‾| /‾‾/   /‾‾/   
+     /\  /  \     |  |/  /   /  /    
+    /  \/    \    |     (   /   ‾‾\  
+   /          \   |  |\  \ |  (‾)  | 
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: k6_scripts/transfer_money.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 100 max VUs, 3m30s max duration (incl. graceful stop):
+              * default: 100 looping VUs for 3m0s (gracefulStop: 30s)
+
+INFO[0180] Preparing the end-of-test summary...          source=console
+INFO[0180]      ✓ is status 200
+
+     checks.........................: 100.00% ✓ 679187     ✗ 0     
+     data_received..................: 803 MB  4.5 MB/s
+     data_sent......................: 452 MB  2.5 MB/s
+     http_req_blocked...............: avg=2.06µs  min=0s     med=1µs     max=13.71ms  p(90)=2µs     p(95)=3µs    
+     http_req_connecting............: avg=245ns   min=0s     med=0s      max=3.7ms    p(90)=0s      p(95)=0s     
+     http_req_duration..............: avg=26.39ms min=1.42ms med=28.28ms max=721.09ms p(90)=36.8ms  p(95)=39.04ms
+       { expected_response:true }...: avg=26.39ms min=1.42ms med=28.28ms max=721.09ms p(90)=36.8ms  p(95)=39.04ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 679187
+     http_req_receiving.............: avg=24.83µs min=5µs    med=20µs    max=22.57ms  p(90)=32µs    p(95)=39µs   
+     http_req_sending...............: avg=12.63µs min=2µs    med=8µs     max=16.83ms  p(90)=16µs    p(95)=19µs   
+     http_req_tls_handshaking.......: avg=0s      min=0s     med=0s      max=0s       p(90)=0s      p(95)=0s     
+     http_req_waiting...............: avg=26.35ms min=1.4ms  med=28.25ms max=721.06ms p(90)=36.76ms p(95)=39ms   
+     http_reqs......................: 679187  3772.71981/s
+     iteration_duration.............: avg=26.49ms min=1.5ms  med=28.38ms max=721.19ms p(90)=36.9ms  p(95)=39.15ms
+     iterations.....................: 679187  3772.71981/s
+     vus............................: 100     min=100      max=100 
+     vus_max........................: 100     min=100      max=100   source=console
+
+running (3m00.0s), 000/100 VUs, 679187 complete and 0 interrupted iterations
+default ✓ [======================================] 100 VUs  3m0s
+Completed script: k6_scripts/transfer_money.js. Sleeping for 120 seconds.
+All scripts completed.

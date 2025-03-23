@@ -4,17 +4,13 @@ vus=100
 duration="3m"
 
 scripts=(
-  "k6_scripts/check_account_just_auth.js"
-  "k6_scripts/check_account_no_processing.js"
-  "k6_scripts/check_account.js"
   "k6_scripts/empty_get.js"
   "k6_scripts/empty_post.js"
-  "k6_scripts/transfer_money_just_auth.js"
-  "k6_scripts/transfer_money_no_processing.js"
+  "k6_scripts/check_account.js"
   "k6_scripts/transfer_money.js"
 )
 
-sleep_time=180
+sleep_time=120
 
 for script in "${scripts[@]}"; do
   echo "Running script: $script"

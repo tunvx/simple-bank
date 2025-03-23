@@ -10,7 +10,7 @@ export const options = {
 };
 
 
-let totalAccounts = 20000;
+let totalAccounts = 50000;
 let apiHost = "http://localhost:8083";               // Docker 
 // let apiHost = "http://moneytransfer.banking.local";     // Minikube
 let failedRequestCounter = new Counter('failed_requests');
