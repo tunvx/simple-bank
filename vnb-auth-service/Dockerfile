@@ -9,7 +9,7 @@ RUN cd vnb-auth-service && go build -o main main.go
 FROM alpine:3.21
 WORKDIR /app
 COPY --from=builder /app/vnb-auth-service/main .
-COPY config.env .
+# COPY config.env . # For security reasons, mount config.env file from host to volume, and do not bake into image.
 COPY start.sh .
 COPY wait-for.sh .
 COPY vnb-auth-service/db/migration ./db/migration

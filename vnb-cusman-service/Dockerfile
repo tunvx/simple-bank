@@ -9,7 +9,7 @@ RUN cd vnb-cusman-service && go build -o main main.go
 FROM alpine:3.21
 WORKDIR /app
 COPY --from=builder /app/vnb-cusman-service/main .
-COPY config.env .
+# COPY config.env . # For security reasons, mount config.env file from host to volume, and do not bake into image.
 COPY start.sh .
 COPY wait-for.sh .
 COPY vnb-cusman-service/db/migration ./db/migration

@@ -1,4 +1,4 @@
-name: CI - Build and Push Auth Service Image
+name: CI/CD - Build and Push Auth Service Image
 
 on:
   push:
@@ -6,13 +6,13 @@ on:
       - main
     paths:
       - 'vnb-auth-service/**'
-      - 'config.env'
+      - 'start.sh' # I use that for trigger all.
       - 'vnb-auth-service/Dockerfile'
 
 env:
   DOCKER_REPOSITORY: tunvx/vnb-auth-service
   # BASE_TAG: ${{ github.sha }}
-  BASE_TAG: 0.0.1
+  BASE_TAG: 0.0.3
 
 jobs:
   build-and-push:

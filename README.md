@@ -109,6 +109,27 @@ UPDATE accounts SET balance = balance + amount WHERE id = destination_id;
 ✅ **Provides automatic recovery** → Rollback mechanisms ensure data integrity.
 
 ## Docker Deployment - Quick Start Guide
+### Configuration Requirements
+To deploy the service, you need to prepare:
+
+1. **Service Configuration File:**
+    - `config.env`: Contains specific configuration details for the service (e.g., database credentials, secret keys, ports, etc.).
+    - This file is **not baked into the Docker image for security reasons**.
+    - You must mount the `config.env` file into the container at runtime (using `docker-compose` or `docker run`).
+
+2. **Docker Environment Configuration File:**
+    - `.env`: Used for general Docker Compose settings (such as network configuration, volume paths, image versions, etc.).
+
+---
+
+📩 Contact me to get sample configuration files tailored for your environment:
+```graphql
+Email: tunv.todo@gmail.com
+Telegram: @tu7568
+```
+---
+
+
 ### Docker Deployment Steps
 1. Clone the project:
 ```bash

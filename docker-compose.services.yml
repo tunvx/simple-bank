@@ -32,6 +32,8 @@ services:
       - "10443:443"
     networks:
       - bank-network
+    volumes:
+      - ./config.env:/app/config.env
 
   auth-service:
     container_name: auth-service
@@ -42,6 +44,8 @@ services:
       - "10444:443"
     networks:
       - bank-network
+    volumes:
+      - ./config.env:/app/config.env
 
   cusman-service:
     container_name: cusman-service
@@ -52,6 +56,8 @@ services:
       - "10445:443"
     networks:
       - bank-network
+    volumes:
+      - ./config.env:/app/config.env
 
   moneytransfer-service:
     container_name: moneytransfer-service
@@ -62,3 +68,5 @@ services:
       - "10446:443"
     networks:
       - bank-network
+    volumes:
+      - ./config.env:/app/config.env
